@@ -1,6 +1,7 @@
-from tkinter import Frame
+from tkinter import Frame, BOTH
 
 import frame.rootManager as rootManager
+import utils.tkUtils as tkUtils
 
 from frame.iFrame import IFrame
 
@@ -12,16 +13,14 @@ class FMain(IFrame):
     def draw(self):
         root = rootManager.getRoot()
 
-        frameB1 = Frame(root, bg='#1E1E1E')
-        b1 = super().createButton(master=frameB1, text="Jouer", cmd=self.playButtonAction)
-        b1.pack()
-        frameB1.pack()
+        b1 = super().createButton(text="Jouer", cmd=self.playButtonAction, fontSize=18)
+        tkUtils.packRelativeRatio(root, b1, 0.2, 0.2, "w")
 
-        b2 = super().createButton(text="Options", cmd=self.settingButtonAction)
-        b2.pack()
+        b2 = super().createButton(text="Options", cmd=self.settingButtonAction, fontSize=18)
+        tkUtils.packRelativeRatio(root, b2, 0.2, 0.05, "w")
 
-        b3 = super().createButton(text="Quitter", cmd=rootManager.destroyRoot)
-        b3.pack()
+        b3 = super().createButton(text="Quitter", cmd=rootManager.destroyRoot, fontSize=18)
+        tkUtils.packRelativeRatio(root, b3, 0.2, 0.05, "w")
 
 
     def playButtonAction(self):

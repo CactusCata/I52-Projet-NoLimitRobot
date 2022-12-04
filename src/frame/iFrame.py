@@ -48,6 +48,7 @@ class IFrame():
         """
         if (not filsUtils.fileExist(path)):
             print(f"Le fichier \"{path}\"n'existe pas")
+            return
 
         if (master is None):
             master = rootManager.getRoot()
@@ -59,36 +60,38 @@ class IFrame():
         self.registerItem(imgId)
 
 
-    def createButton(self, master=None, text="", cmd=None):
+    def createButton(self, master=None, text="", cmd=None, fontSize=14):
         """
         Crée un bouton
 
             - master: Si n'est pas utilisé, alors prend la valeur de rootManager.getRoot
             - text: Texte du bouton
             - cmd: fonction executée lorsque l'utilisateur appuie sur le bouton
+            - fontSize: taille de la police d'écriture du texte
         """
         if (master is None):
             master = rootManager.getRoot()
 
-        button = Button(master, text=text, command=cmd, bg="#1E1E1E", fg="#ABB2B9", font=("Arial", 12))
+        button = Button(master, text=text, command=cmd, bg="#1E1E1E", fg="#ABB2B9", font=("Arial", fontSize))
         self.registerItem(button)
         return button
 
-    def createLabel(self, master=None, text=""):
+    def createLabel(self, master=None, text="", fontSize=14):
         """
         Crée un label
 
             - master: Si n'est pas utilisé, alors prend la valeur de rootManager.getRoot
             - text: Texte du label
+            - fontSize: taille de la police d'écriture du texte
         """
         if (master is None):
             master = rootManager.getRoot()
 
-        label = Label(master, text=text, bg="#1E1E1E", fg="#ABB2B9", font=("Arial", 12))
+        label = Label(master, text=text, bg="#1E1E1E", fg="#ABB2B9", font=("Arial", fontSize))
         self.registerItem(label)
         return label
 
-    def createTextBox(self, master=None, defaultText="", width=10, height=1):
+    def createTextBox(self, master=None, defaultText="", width=10, height=1, fontSize=14):
         """
         Crée une boite à texte
 
@@ -96,16 +99,17 @@ class IFrame():
             - defaultText: Texte par défaut au moment de l'initialisation de la boite à texte
             - width: Nombre de pixel en largeur de la boite à texte
             - height: Nombre de pixel en hauteur de la boite à texte
+            - fontSize: taille de la police d'écriture du texte
         """
         if (master is None):
             master = rootManager.getRoot()
 
-        textBox = Text(master, width=width, height=height, bg='#1E1E1E', fg='#ABB2B9', font=("Arial", 12))
+        textBox = Text(master, width=width, height=height, bg='#1E1E1E', fg='#ABB2B9', font=("Arial", fontSize))
         textBox.insert(1.0, defaultText)
         self.registerItem(textBox)
         return textBox
 
-    def createScalebar(self, master=None, text="", orientation="horizontal", from_=0, to=10, defaultValue=None, length=100, tickInterval=2, resolution=1):
+    def createScalebar(self, master=None, text="", orientation="horizontal", from_=0, to=10, defaultValue=None, length=100, tickInterval=2, resolution=1, fontSize=14):
         """
         Crée une échelle
 
@@ -118,6 +122,7 @@ class IFrame():
             - length: Longueur de l'échelle en pixel
             - tickInterval: Pas de la graduation de l'échelle
             - resolution: Ecart entre deux valeurs consécutives 
+            - fontSize: taille de la police d'écriture du texte
         """
         if (master is None):
             master = rootManager.getRoot()
@@ -125,24 +130,25 @@ class IFrame():
         if defaultValue == None:
             defaultValue = from_
 
-        scalebar = Scale(master, orient=orientation, from_=from_, to=to, resolution=resolution, tickinterval=tickInterval, length=length, label=text, bg='#1E1E1E', fg='#ABB2B9', font=("Arial", 12))
+        scalebar = Scale(master, orient=orientation, from_=from_, to=to, resolution=resolution, tickinterval=tickInterval, length=length, label=text, bg='#1E1E1E', fg='#ABB2B9', font=("Arial", fontSize))
         scalebar.set(defaultValue)
         self.registerItem(scalebar)
         return scalebar
 
-    def createComboBox(self, master=None, list=["default"], callback=None):
+    def createComboBox(self, master=None, list=["default"], callback=None, fontSize=14):
         """
         Crée une liste à choix
 
             - master: Si n'est pas utilisé, alors prend la valeur de rootManager.getRoot
             - list: L'ensemble des chaines de caractères
             - callback: Fonction à executer lorsque la sélection de la liste à choix change
+            - fontSize: taille de la police d'écriture du texte
         """
         if (master is None):
             master = rootManager.getRoot()
 
         combobox = Combobox(self.master, values=list)
-        combobox.configure(font=("Arial", 12))
+        combobox.configure(font=("Arial", fontSize))
 
         if (callback != None):
             combobox.bind("<<ComboboxSelected>>", callback)

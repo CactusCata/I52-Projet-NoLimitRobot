@@ -18,3 +18,9 @@ def lockRootDimensions(root, dimensions):
     """
     root.minsize(dimensions[0], dimensions[1])
     root.maxsize(dimensions[0], dimensions[1])
+
+def packRelativeRatio(root, item, ratioX, ratioY, anchor):
+    winWidth = root.winfo_width()
+    winHeight = root.winfo_height()
+
+    item.pack(padx=int(ratioX * winWidth), pady=int(ratioY * winHeight), anchor=anchor)
