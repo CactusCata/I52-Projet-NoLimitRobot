@@ -5,27 +5,32 @@ import utils.tkUtils as tkUtils
 
 from frame.iFrame import IFrame
 
-from frame.fTest import FTest
-#from fSetting import FSetting
+from frame.frames.party.fPlay import FPlay
+from frame.frames.settings.fSettings import FSettings
 
 class FMain(IFrame):
+
+    def __init__(self):
+        super().__init__()
 
     def draw(self):
         root = rootManager.getRoot()
 
+        l1 = super().createLabel(text=rootManager.GAME_NAME)
+        l1.pack()
+
         b1 = super().createButton(text="Jouer", cmd=self.playButtonAction, fontSize=18)
-        tkUtils.packRelativeRatio(root, b1, 0.2, 0.2, "w")
+        b1.pack()
 
         b2 = super().createButton(text="Options", cmd=self.settingButtonAction, fontSize=18)
-        tkUtils.packRelativeRatio(root, b2, 0.2, 0.05, "w")
+        b2.pack()
 
         b3 = super().createButton(text="Quitter", cmd=rootManager.destroyRoot, fontSize=18)
-        tkUtils.packRelativeRatio(root, b3, 0.2, 0.05, "w")
+        b3.pack()
 
 
     def playButtonAction(self):
-        rootManager.clearCurrentFrame()
-        rootManager.runNewFrame(FTest())
+        rootManager.runNewFrame(FPlay(self))
 
     def settingButtonAction(self):
-        pass
+        rootManager.runNewFrame(FSettings(self))

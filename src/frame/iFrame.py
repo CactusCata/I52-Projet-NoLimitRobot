@@ -8,8 +8,9 @@ from PIL import Image, ImageTk
 
 class IFrame():
 
-    def __init__(self):
+    def __init__(self, previousFrame=None):
         self.items = []
+        self.previousFrame = previousFrame
 
     def createFrame(self, master=None):
         """
@@ -171,3 +172,7 @@ class IFrame():
         Renseigne qu'un objet (widget, etc...) a été crée
         """
         self.items.append(item)
+
+    def reopenLastFrame(self):
+        if (self.previousFrame is not None):
+            rootManager.runNewFrame(self.previousFrame)

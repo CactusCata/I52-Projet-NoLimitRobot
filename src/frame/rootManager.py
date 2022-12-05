@@ -1,6 +1,6 @@
 from tkinter import Tk
 
-from frame.fMain import FMain
+from frame.frames.fMain import FMain
 
 import utils.tkUtils as tkUtils
 
@@ -63,6 +63,8 @@ def clearCurrentFrame():
 
 def runNewFrame(frame):
     global currentFrame
+
+    clearCurrentFrame()
 
     currentFrame = frame
     frame.draw()
