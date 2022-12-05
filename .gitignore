@@ -1,5 +1,5 @@
 # Compiled class file
-*.class
+*.pyc
 
 # Log file
 *.log
