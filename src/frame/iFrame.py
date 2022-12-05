@@ -3,7 +3,7 @@ import frame.rootManager as rootManager
 import utils.fileUtils as filsUtils
 
 from tkinter import Button, Label, Text, Scale, Frame, Canvas
-from tkinter.ttk import Combobox
+from tkinter.ttk import Combobox, Checkbutton
 from PIL import Image, ImageTk
 
 class IFrame():
@@ -109,6 +109,15 @@ class IFrame():
         textBox.insert(1.0, defaultText)
         self.registerItem(textBox)
         return textBox
+
+    def createCheckButton(self, master=None, text="", callback=None):
+        if (master is None):
+            master = rootManager.getRoot()
+
+        checkButton = Checkbutton(master, text=text, command=callback)
+        self.registerItem(checkButton)
+        return checkButton
+
 
     def createScalebar(self, master=None, text="", orientation="horizontal", from_=0, to=10, defaultValue=None, length=100, tickInterval=2, resolution=1, fontSize=14):
         """
