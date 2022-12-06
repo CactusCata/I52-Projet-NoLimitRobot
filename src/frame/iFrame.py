@@ -157,7 +157,7 @@ class IFrame():
         if (master is None):
             master = rootManager.getRoot()
 
-        combobox = Combobox(self.master, values=list)
+        combobox = Combobox(master, values=list)
         combobox.configure(font=("Arial", fontSize))
 
         if (callback != None):

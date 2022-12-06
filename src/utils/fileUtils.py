@@ -5,3 +5,9 @@ def fileExist(path):
 
 def isWindows():
     return os.name == 'nt'
+
+def getAllFileInDirectory(path):
+    return os.listdir(path)
+
+def deleteFile(file):
+    os.remove(file)
