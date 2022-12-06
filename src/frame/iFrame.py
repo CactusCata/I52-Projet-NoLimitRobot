@@ -4,7 +4,7 @@ import utils.fileUtils as filsUtils
 
 from tkinter import Button, Label, Text, Scale, Frame, Canvas
 from tkinter.ttk import Combobox, Checkbutton
-from PIL import Image, ImageTk
+from PIL import ImageTk
 
 class IFrame():
 
@@ -35,11 +35,11 @@ class IFrame():
         if (master is None):
             master = rootManager.getRoot()
 
-        canvas = Canvas(master, bg='#1E1E1E')
+        canvas = Canvas(master, bg='#1E1E1E', width=width, height=height)
         self.registerItem(canvas)
         return canvas
 
-    def drawImage(self, master=None, path="", posX=0, posY=0):
+    def drawImage(self, master=None, canvas=None, image=None, posX=0, posY=0):
         """
         Crée une image
 
@@ -47,18 +47,14 @@ class IFrame():
             - text: Chemin du fichier
             - (posX, posY): place l'image aux coordonnées demandées
         """
-        if (not filsUtils.fileExist(path)):
-            print(f"Le fichier \"{path}\"n'existe pas")
-            return
+        if (canvas is None):
+            if (master is None):
+                master = rootManager.getRoot()
+            canvas = self.createCanvas(width=image.size[0] + posX, height=image.size[1] + posY, anchor="nw")
 
-        if (master is None):
-            master = rootManager.getRoot()
-
-        img = Image.open(path)
-        tatras = ImageTk.PhotoImage(img)
-        canvas = self.createCanvas(width=img.size[0] + posX, height=img.size[1] + posY)
-        imgId = canvas.create_image(posX, posY, image=tatras)
-        self.registerItem(imgId)
+        imgId = canvas.create_image(posX, posY, image=image)
+        #self.registerItem(imgId)
+        #canvas.delete(itemID)
 
 
     def createButton(self, master=None, text="", cmd=None, fontSize=14):

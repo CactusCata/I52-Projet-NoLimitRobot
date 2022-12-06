@@ -1,5 +1,6 @@
 import utils.fileUtils as fileUtils
 import json
+from map.map import Map
 
 MAP_EXTENSION_NAME = "dat"
 MAP_FOLDER_PATH = "../config/maps/"
@@ -11,7 +12,11 @@ def loadMapNames():
     Charge le nom des maps dans le dossier config/maps/
     """
     global mapNames
-    mapNames = fileUtils.getAllFileInDirectory(MAP_FOLDER_PATH)
+    mapNamesAndExtension = fileUtils.getAllFileInDirectory(MAP_FOLDER_PATH)
+    mapNames = []
+
+    for mapNameAndExtension in mapNamesAndExtension:
+        mapNames.append(mapNameAndExtension.split(".")[0])
 
 def getLoadedMaps():
     """
@@ -35,7 +40,7 @@ def createMapFile(mapName):
     """
     file = open(f"{MAP_FOLDER_PATH}{mapName}.{MAP_EXTENSION_NAME}", "w")
 
-    map = [[0] * 20] * 20
+    map = [[0] * 30] * 20
     file.write(json.dumps(map))
     file.close()
 
@@ -47,7 +52,7 @@ def loadMapFileContent(mapName):
 
     mapFileContent = json.load(file)
     file.close()
-    return mapFileContent
+    return Map(mapFileContent)
 
 def deleteMap(mapName):
     """
