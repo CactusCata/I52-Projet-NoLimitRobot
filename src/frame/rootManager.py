@@ -64,6 +64,8 @@ def clearCurrentFrame():
     """
     if (currentFrame is not None):
         currentFrame.clearFrame()
+    else:
+        print("is none")
 
 def runNewFrame(frame):
     global currentFrame

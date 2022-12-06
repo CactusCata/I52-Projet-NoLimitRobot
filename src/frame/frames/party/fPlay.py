@@ -13,20 +13,14 @@ class FPlay(IFrame):
     def draw(self):
         root = rootManager.getRoot()
 
-        b1 = super().createButton(text="Nouvelle partie", cmd=self.newParty)
+        b1 = super().createButton(text="Nouvelle partie", cmd=lambda: rootManager.runNewFrame(FPPlayerConfig(self)))
         b1.pack()
 
-        b2 = super().createButton(text="Charger partie", cmd=self.loadParty)
+        b2 = super().createButton(text="Charger partie", cmd=lambda:rootManager.runNewFrame(FLoadParty(self)))
         b2.pack()
 
         b3 = super().createButton(text="Aide")
         b3.pack()
 
-        b4 = super().createButton(text="Retour", cmd=super().reopenLastFrame)
+        b4 = super().createButton(text="Retour", cmd=lambda:super(FPlay, self).reopenLastFrame())
         b4.pack()
-
-    def newParty(self):
-        rootManager.runNewFrame(FPPlayerConfig(self))
-
-    def loadParty(self):
-        rootManager.runNewFrame(FLoadParty(self))

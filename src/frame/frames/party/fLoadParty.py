@@ -9,3 +9,9 @@ class FLoadParty(IFrame):
 
     def draw(self):
         root = rootManager.getRoot()
+
+        b3 = super().createButton(text="Aide")
+        b3.pack()
+
+        b4 = super().createButton(text="Retour", cmd=lambda:super(FLoadParty, self).reopenLastFrame())
+        b4.pack()
