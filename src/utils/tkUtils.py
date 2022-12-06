@@ -6,7 +6,7 @@ def setupRootGeometry(root, ratio=0.5):
     screenHeight = root.winfo_screenheight()
 
     rootHeight = (int) (ratio * screenHeight)
-    rootWidth = (int) (rootHeight * 1.618) # omg the god golden number
+    rootWidth = (int) (ratio * screenWidth)
 
     # widthxheight+x+y
     root.geometry(f"{rootWidth}x{rootHeight}+{(screenWidth - rootWidth) // 2}+{(screenHeight - rootHeight) // 2}")

@@ -4,6 +4,7 @@ from frame.frames.fMain import FMain
 
 import utils.tkUtils as tkUtils
 import utils.fileUtils as fileUtils
+import image.imageManager as imageManager
 
 GAME_NAME = "No Limit Robot"
 
@@ -19,6 +20,8 @@ def initRoot():
 
     # Crée la fenêtre
     root = Tk()
+
+    imageManager.loadImagesTk()
 
     # Dimensionne la fenêtre en fonction de l'écran de l'utilisateur
     # et bloque le dimensionnement de la fenêtre
