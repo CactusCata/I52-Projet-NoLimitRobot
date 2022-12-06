@@ -31,7 +31,7 @@ class FCreateRobot(IFrame):
         PathOptionnal.pack()
         textPath = super().createLabel(PathOptionnal, "(Optionnel)\t")
         textPath.pack(side="left")
-        buttonPath = super().createButton(PathOptionnal,text="Sélectionner votre Robot", cmd=lambda:self.selecPath()) #filedialog.askopenfile(mode='r')
+        buttonPath = super().createButton(PathOptionnal,text="Sélectionner votre Logo", cmd=lambda:self.selecPath()) #filedialog.askopenfile(mode='r')
         buttonPath.pack(side="right")
 
         buttonConfirm = super().createButton(text="Confirmer", cmd=lambda:rootManager.runNewFrame(FEditRobot(self)))
@@ -40,7 +40,7 @@ class FCreateRobot(IFrame):
         buttonHelp = super().createButton(text="Aide")
         buttonHelp.pack()
 
-        buttonBack = super().createButton(text="Retour", cmd=lambda:(FConfigRobot, self).reopenLastFrame)
+        buttonBack = super().createButton(text="Retour", cmd=lambda:super(FCreateRobot, self).reopenLastFrame())
         buttonBack.pack()
 
 
