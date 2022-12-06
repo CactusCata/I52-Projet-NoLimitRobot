@@ -1,4 +1,4 @@
-from tkinter import Tk
+from tkinter import Tk, PhotoImage
 
 from frame.frames.fMain import FMain
 
@@ -28,10 +28,9 @@ def initRoot():
     # Applique quelques propriétés à la fenêtre
     root.title(GAME_NAME)
     root.configure(background='#1E1E1E')
-    if (fileUtils.isWindows()):
-        root.iconbitmap('../res/img/icon.ico')
-    else:
-        root.iconbitmap('../res/img/icon.xbm')
+
+    icon = PhotoImage(file='../res/img/icon.png')
+    root.iconphoto(False, icon)
     root.protocol("WM_DELETE_WINDOW", destroyRoot)
 
     # Lance le menu principal

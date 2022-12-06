@@ -23,7 +23,7 @@ class FCreateMap(IFrame):
         helpButton = super().createButton(text="Aide")
         helpButton.pack()
 
-        returnButton = super().createButton(text="Retour", cmd=lambda:super(FCreateMap, self).reopenLastFrame())
+        returnButton = super().createButton(text="Retour", cmd=super().reopenLastFrame)
         returnButton.pack()
 
     def confirmButtonAction(self):
