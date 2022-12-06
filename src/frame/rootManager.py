@@ -3,6 +3,7 @@ from tkinter import Tk
 from frame.frames.fMain import FMain
 
 import utils.tkUtils as tkUtils
+import utils.fileUtils as fileUtils
 
 GAME_NAME = "No Limit Robot"
 
@@ -27,7 +28,10 @@ def initRoot():
     # Applique quelques propriétés à la fenêtre
     root.title(GAME_NAME)
     root.configure(background='#1E1E1E')
-    root.iconbitmap('../res/img/icon.ico')
+    if (fileUtils.fileExist('../res/img/icon.ico')):
+        root.iconbitmap('../res/img/icon.ico')
+    else:
+        print("Can't load icon")
     root.protocol("WM_DELETE_WINDOW", destroyRoot)
 
     # Lance le menu principal
