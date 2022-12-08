@@ -2,7 +2,7 @@ import frame.rootManager as rootManager
 
 import utils.fileUtils as filsUtils
 
-from tkinter import Button, Label, Text, Scale, Frame, Canvas
+from tkinter import Button, Label, Text, Scale, Frame, Canvas, Radiobutton
 from tkinter.ttk import Combobox, Checkbutton
 from PIL import ImageTk
 
@@ -39,7 +39,7 @@ class IFrame():
         self.registerItem(canvas)
         return canvas
 
-    def drawImage(self, master=None, canvas=None, image=None, posX=0, posY=0):
+    def drawImage(self, master=None, canvas=None, image=None, posX=0, posY=0, tag=None):
         """
         Crée une image
 
@@ -52,7 +52,7 @@ class IFrame():
                 master = rootManager.getRoot()
             canvas = self.createCanvas(width=image.size[0] + posX, height=image.size[1] + posY, anchor="nw")
 
-        imgId = canvas.create_image(posX, posY, image=image)
+        imgId = canvas.create_image(posX, posY, image=image, tag=(tag,))
         #self.registerItem(imgId)
         #canvas.delete(itemID)
 
@@ -115,7 +115,7 @@ class IFrame():
         return checkButton
 
 
-    def createScalebar(self, master=None, text="", orientation="horizontal", from_=0, to=10, defaultValue=None, length=100, tickInterval=2, resolution=1, fontSize=14):
+    def createScalebar(self, master=None, text="", orientation="horizontal", from_=0, to=10, defaultValue=None, length=100, tickInterval=2, resolution=1, fontSize=14, callback=None):
         """
         Crée une échelle
 
@@ -136,10 +136,20 @@ class IFrame():
         if defaultValue == None:
             defaultValue = from_
 
-        scalebar = Scale(master, orient=orientation, from_=from_, to=to, resolution=resolution, tickinterval=tickInterval, length=length, label=text, bg='#1E1E1E', fg='#ABB2B9', font=("Arial", fontSize))
+        scalebar = Scale(master, orient=orientation, from_=from_, to=to, resolution=resolution, tickinterval=tickInterval, length=length, label=text, bg='#1E1E1E', fg='#ABB2B9', font=("Arial", fontSize), command=callback)
         scalebar.set(defaultValue)
         self.registerItem(scalebar)
         return scalebar
+
+    def createRadioButton(self, master=None, text="", serializedValue=None, variable=None, callback=None):
+        if (master is None):
+            master = rootManager.getRoot()
+
+        radioButton = Radiobutton(master,  bg='#1E1E1E', fg='#ABB2B9', variable=variable, text=text, value=serializedValue, command=callback)
+
+        self.registerItem(radioButton)
+
+        return radioButton
 
     def createComboBox(self, master=None, list=["default"], callback=None, fontSize=14):
         """

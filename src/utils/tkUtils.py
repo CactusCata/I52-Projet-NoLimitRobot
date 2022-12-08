@@ -24,3 +24,18 @@ def packRelativeRatio(root, item, ratioX, ratioY, anchor):
     winHeight = root.winfo_height()
 
     item.pack(padx=int(ratioX * winWidth), pady=int(ratioY * winHeight), anchor=anchor)
+
+def startWithFunction(str1, str2):
+    return str1.startswith(str2)
+
+def itemHasTag(canvas, itemID, patternFunction, pattern):
+    tags = canvas.gettags(itemID)
+    n = len(tags)
+    i = 0
+    while (i < n) and (not patternFunction(tags[i], pattern)):
+        i += 1
+    
+    if (i >= n):
+        return None
+    else:
+        return tags[i]

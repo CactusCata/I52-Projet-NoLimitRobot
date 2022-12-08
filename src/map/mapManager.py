@@ -5,6 +5,11 @@ from map.map import Map
 MAP_EXTENSION_NAME = "dat"
 MAP_FOLDER_PATH = "../config/maps/"
 
+MAP_LINE_AMOUNT = 20
+MAP_COL_AMOUNT = 30
+MAP_MAX_ROCK_PERCENTAGE = 20
+MAP_MAX_ROCK_AMOUNT = int((MAP_MAX_ROCK_PERCENTAGE / 100) * MAP_LINE_AMOUNT * MAP_COL_AMOUNT)
+
 mapNames = []
 
 def loadMapNames():
