@@ -9,3 +9,6 @@ class FEditRobot(IFrame):
 
     def draw(self):
         root = rootManager.getRoot()
+
+        buttonBack = super().createButton(text="Retour", cmd=lambda:super(FEditRobot, self).reopenLastFrame())
+        buttonBack.pack()
