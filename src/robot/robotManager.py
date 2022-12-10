@@ -67,6 +67,6 @@ def createRobotInstructions(name, nbinstr):
     Créée le fichier instructions.rbt dans le dossier du robot
     """
     file = open(f"../config/robots/{name}/instructions.rbt", "w")
-    mininst = f";Robot du nom de {name}!FT\nAL\nMI\nAL\nMI\nAL" #Information puis urgence puis n les instructions
+    mininst = f";Robot du nom de {name}\n!FT\nAL\nMI\nAL\nMI\nAL" #Information puis urgence puis n les instructions
     file.write(mininst)
     file.close()
