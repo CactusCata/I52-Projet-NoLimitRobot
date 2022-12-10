@@ -56,6 +56,7 @@ class FCreateRobot(IFrame):
         """
         original = askopenfile(mode='r')
         robotname = boxname.get("1.0","end")
+        robotname = uglynametorealname(robotname)
         new_one = f"../res/img/robot/" + robotname + ".png" #Chemin depuis le main !!!
         copyfile(original.name, new_one)
 
@@ -76,6 +77,7 @@ class FCreateRobot(IFrame):
         différentes erreurs présentes
         """
         filename = stringName.get("1.0", "end")
+        print(f"Filename = {filename}")
         description = stringDesc.get("1.0", "end")
         if len(filename) != 1: #taille nulle
             createNewRobot(filename, description)

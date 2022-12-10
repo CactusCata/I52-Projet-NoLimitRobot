@@ -30,18 +30,29 @@ def createNewRobot(name, desc = "", nbinstr = 6):
         return False
     else:
         robotnames.append(name)
-
-    createRobotDirectory(name)
-    createRobotProperties(name, dir, desc)
-    createRobotInstructions(name, nbinstr) #Mettre des commandes de bases du style 6 x déplacements
+    realname = uglynametorealname(name)
+    realdesc = uglynametorealname(desc)
+    createRobotDirectory(realname)
+    createRobotProperties(realname, dir, realdesc)
+    createRobotInstructions(realname, nbinstr) #Mettre des commandes de bases du style 6 x déplacements
 
 def createRobotDirectory(name):
     """
     Créée un répertoire du nom du robot mit en paramètre
     """
+    print(f"LE NOM LA : {name}")
     os.mkdir(f"../config/robots/{name}") #chemin relatif depuis le main.py
 
-def createRobotProperties(name, dir, desc):
+def uglynametorealname(name):
+    realname = ""
+    for c in name:
+        if c == '\n':
+            return realname
+        else:
+            realname += c
+    print(realname)
+
+def createRobotProperties(name, dir, desc=""):
     """
     Créée le fichier properties.rbt dans le dossier du robot avec comme attributs
     la description qu'elle soit vierge ou non
