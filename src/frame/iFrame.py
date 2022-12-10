@@ -127,12 +127,12 @@ class IFrame():
             - defaultValue: Valeur initiale du curseur de l'échelle
             - length: Longueur de l'échelle en pixel
             - tickInterval: Pas de la graduation de l'échelle
-            - resolution: Ecart entre deux valeurs consécutives 
+            - resolution: Ecart entre deux valeurs consécutives
             - fontSize: taille de la police d'écriture du texte
         """
         if (master is None):
             master = rootManager.getRoot()
-        
+
         if defaultValue == None:
             defaultValue = from_
 
