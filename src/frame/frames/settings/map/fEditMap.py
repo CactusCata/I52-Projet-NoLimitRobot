@@ -50,6 +50,9 @@ class FEditMap(IFrame):
         self.scalebarRandomRock = super().createScalebar(text="Pourcentage de rocher aléatoire", from_=0, to=20, defaultValue=5, length=300, tickInterval=5, resolution=1, callback=lambda event: self.scalebarChangeEvent(event))
         self.scalebarRandomRock.place(x=1050, y=50)
 
+        buttonSaveMap = super().createButton(text="Sauvegarder", cmd=lambda:self.saveMap())
+        buttonSaveMap.place(x=1050, y=500)
+
         buttonHelp = super().createButton(text="Aide")
         buttonHelp.place(x=1050, y=550)
 
@@ -63,7 +66,25 @@ class FEditMap(IFrame):
         if (self.map != None):
             percentageOfRock = self.scalebarRandomRock.get()
             self.regenerateMap(percentageOfRock)
+
+            # Mise à jour graphique de la map
+            self.canvasMap.delete("all")
+            self.drawGrid()
+
+            # Mise à jour du label qui compte les rochers
+            self.updateRockAmountLabel()
         
+
+    def updateRockAmountLabel(self):
+        """
+        Met à jour le label qui compte le nombre de rocher sur la map
+        """
+        self.labelRockAmount["text"] = f"Nombre de rocher {self.map.getRockAmount()}/{MAP_MAX_ROCK_AMOUNT}"
+
+        if (self.labelRockAmount["fg"] == "#FF0000" and self.map.getRockAmount() <= MAP_MAX_ROCK_AMOUNT):
+            self.labelRockAmount["fg"] = '#ABB2B9'
+        elif (self.labelRockAmount["fg"] == "#ABB2B9" and self.map.getRockAmount() > MAP_MAX_ROCK_AMOUNT):
+            self.labelRockAmount["fg"] = '#FF0000'
 
     def regenerateMap(self, percentageOfRock):
         """
@@ -78,20 +99,16 @@ class FEditMap(IFrame):
         rockAmountNeeded = int((percentageOfRock / 100) * MAP_COL_AMOUNT * MAP_LINE_AMOUNT)
         rocksPlaces = []
         while (self.map.getRockAmount() < rockAmountNeeded):
-            i = 0
-            while i < MAP_LINE_AMOUNT:
-                j = 0
-                while j < MAP_COL_AMOUNT:
-                    if self.map.get(i, j) != 1:
-                        if uniform(0, 1) * 100 < percentageOfRock: # placement d'un bloc
+            for i in range(MAP_LINE_AMOUNT):
+                for j in range(MAP_COL_AMOUNT):
+                    if self.map.get(i, j) != 1: # Si un rocher n'est pas présent
+                        if uniform(0, 1) * 100 < percentageOfRock: # on essaye d'en placer un
                             if (self.map.placeRock(i, j)):
                                 rocksPlaces.append((i, j))
-                        else: # placement d'air
+                        else: # il y aura une case d'air, mais on doit vérifier si l'air peut légalement être là, si ce n'est pas le cas, on ajoute un bloc de roche
                             if (not self.map.canPlaceAir(i, j)):
                                 self.map.placeRock(i, j)
                                 rocksPlaces.append((i, j))
-                    j += 1
-                i += 1
 
         # On supprime les rochers superflu s'il y en a
         n = len(rocksPlaces) - 1
@@ -99,17 +116,14 @@ class FEditMap(IFrame):
             randomRockPos = rocksPlaces[randint(0, n)]
             self.map.placeAir(randomRockPos[0], randomRockPos[1])
 
-        # Suppression de tous les éléments 
-        self.canvasMap.delete("all")
-        self.drawGrid()
-
-        # On met à jour le label
-        self.labelRockAmount["text"] = f"Nombre de rocher {self.map.getRockAmount()}/{MAP_MAX_ROCK_AMOUNT}"
-
 
     def clickAndMoveMouseEvent(self, x1, y1):
+        """
+        Evenement déclanché lorsque l'utilisateur clique sur le canvas
+        """
+
         ids = self.canvasMap.find_withtag("current")
-        if (len(ids) > 0):
+        if (len(ids) != 0):
             id = ids[0] # id de l'élément sur la souris
             tag = tkUtils.itemHasTag(self.canvasMap, id, tkUtils.startWithFunction, "figure")
             if (tag != None):
@@ -121,17 +135,14 @@ class FEditMap(IFrame):
                 if (self.stringVarRadioButton.get() == "ROCK" and self.map.getMatrix()[line][col] != 1):
                     if self.map.placeRock(line, col):
                         img = imageManager.IMG_MAP_ROCK_TK
-                        self.labelRockAmount["text"] = f"Nombre de rocher {self.map.getRockAmount()}/{MAP_MAX_ROCK_AMOUNT}"
-                        if (self.map.getRockAmount() > int(0.2 * (20 * 30))):
-                            self.labelRockAmount["fg"] = "#FF0000"
                 elif (self.stringVarRadioButton.get() == "AIR" and self.map.getMatrix()[line][col] != 0):
                     if (self.map.placeAir(line, col)):
                         img = imageManager.IMG_MAP_AIR_TK
-                        self.labelRockAmount["text"] = f"Nombre de rocher {self.map.getRockAmount()}/{MAP_MAX_ROCK_AMOUNT}"
-                        if (self.labelRockAmount["fg"] == "#FF0000" and self.map.getRockAmount() <= MAP_MAX_ROCK_AMOUNT):
-                            self.labelRockAmount["fg"] = "#000000"
 
-                super().drawImage(canvas=self.canvasMap, image=img, posX=col*22 +21, posY=line*22 + 21, tag=f"figure:{line},{col}")
+                if (img != None): # Si le bloc a changé, alors on supprime l'ancien bloc et on supprime le nouveau
+                    self.updateRockAmountLabel()
+                    self.canvasMap.delete(id)
+                    super().drawImage(canvas=self.canvasMap, image=img, posX=col*22 +21, posY=line*22 + 21, tag=f"figure:{line},{col}")
 
     def getTagCoordinates(self, tag):
         coordsInfo = tag.split(":")[1]
@@ -140,6 +151,9 @@ class FEditMap(IFrame):
         return line, col
 
     def radioButtonChanged(self):
+        """
+        Evenement déclanché lorsque l'utilisateur change l'état du radio button
+        """
         print("value changed")
         print(self.stringVarRadioButton.get())
 
@@ -153,10 +167,16 @@ class FEditMap(IFrame):
 
         # object map associé
         self.map = mapManager.loadMapFileContent(self.mapName)
-        self.labelRockAmount["text"] = f"Nombre de rocher {self.map.getRockAmount()}/{MAP_MAX_ROCK_AMOUNT}"
+        self.updateRockAmountLabel()
 
         self.drawGrid()
         #self.updateCanvasMap()
+
+    def saveMap(self):
+        """
+        Sauvegarde l'état actuel de la map
+        """
+        mapManager.saveMap(self.mapName, self.map)
 
     def drawGrid(self):
         xStart = 10
@@ -164,15 +184,12 @@ class FEditMap(IFrame):
         xPas = 22
         yPas = 22
 
-        lineAmount = 20
-        colAmount = 30
-
-        lineSize = lineAmount * xPas
-        colSize = colAmount * yPas
+        lineSize = MAP_LINE_AMOUNT * xPas
+        colSize = MAP_COL_AMOUNT * yPas
 
         
-        for line in range(lineAmount):
-            for col in range(colAmount):
+        for line in range(MAP_LINE_AMOUNT):
+            for col in range(MAP_COL_AMOUNT):
                 caseValue = self.map.getMatrix()[line][col]
                 coords = (xStart + (col * xPas), yStart + (line * yPas))
 
@@ -188,9 +205,9 @@ class FEditMap(IFrame):
             
 
         # Dessin des lignes
-        for i in range(lineAmount + 1):
+        for i in range(MAP_LINE_AMOUNT + 1):
             self.canvasMap.create_line(xStart, yStart + (i * yPas), xStart + colSize, yStart + (i * yPas))
 
         # Dessin des colonnes
-        for i in range(colAmount + 1):
+        for i in range(MAP_COL_AMOUNT + 1):
             self.canvasMap.create_line(xStart + (i * xPas), yStart, xStart + (i * xPas), yStart + lineSize)

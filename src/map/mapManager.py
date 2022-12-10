@@ -59,6 +59,16 @@ def loadMapFileContent(mapName):
     file.close()
     return Map(mapFileContent)
 
+def saveMap(mapName, map):
+    """
+    Sauvegarde dans un fichier la map
+    """
+    file = open(f"{MAP_FOLDER_PATH}{mapName}.{MAP_EXTENSION_NAME}", "w")
+
+    mapMatrix = map.getMatrix()
+    file.write(json.dumps(mapMatrix))
+    file.close()
+
 def deleteMap(mapName):
     """
     Supprime la map de la liste des maps chargées

@@ -177,9 +177,7 @@ class IFrame():
         """
         Supprime tous les objets (widgets, etc...) crées
         """
-        print(f"Taille de la liste: {len(self.items)}")
         for item in self.items:
-            print("Item has been cleared")
             item.destroy()
         self.items = []
 
