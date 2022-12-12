@@ -1,12 +1,12 @@
 from tkinter.filedialog import askopenfile
-from shutil import copyfile
-from pathlib import Path
 
 import frame.rootManager as rootManager
 from frame.frames.settings.robot.fEditRobot import FEditRobot
-from robot.robotManager import *
+import robot.robotManager as robotManager
 
 from frame.iFrame import IFrame
+
+from tkinter import INSERT
 
 class FCreateRobot(IFrame):
 
@@ -27,13 +27,17 @@ class FCreateRobot(IFrame):
         DescOptionnal.pack()
         textDescription = super().createLabel(DescOptionnal, "(Optionnel) Description :\t")
         textDescription.pack(side="left")
-        textboxDescription = super().createTextBox(DescOptionnal,"",width = 50, height = 20)
+        textboxDescription = super().createTextBox(DescOptionnal, width = 50, height = 20)
         textboxDescription.pack(side="right")
 
         PathOptionnal = super().createFrame(root) #choix optionnel
         PathOptionnal.pack()
         textPath = super().createLabel(PathOptionnal, "(Optionnel) Logo :\t")
         textPath.pack(side="left")
+
+        self.textBoxPath = super().createTextBox(PathOptionnal)
+        self.textBoxPath.pack(side="left")
+
         buttonPath = super().createButton(PathOptionnal,text="Sélectionner votre Logo", cmd=lambda:self.selecPath(textboxName)) #filedialog.askopenfile(mode='r')
         buttonPath.pack(side="right")
 
@@ -55,10 +59,8 @@ class FCreateRobot(IFrame):
         L'image en .png possède le même nom que le répertoire de ce dit robot.
         """
         original = askopenfile(mode='r')
-        robotname = boxname.get("1.0","end")
-        robotname = uglynametorealname(robotname)
-        new_one = f"../res/img/robot/" + robotname + ".png" #Chemin depuis le main !!!
-        copyfile(original.name, new_one)
+        correctText = robotManager.uglynametorealname(original.name)
+        self.textBoxPath.insert(INSERT, correctText)
 
     def getFileName(self, charstar):
         """
@@ -73,13 +75,15 @@ class FCreateRobot(IFrame):
         return realfile
 
     def followingFrame(self, root, stringName, stringDesc):
-        """ S'occupe de passer à la prochaine fenêtre ou non, en fonction des
+        """
+        S'occupe de passer à la prochaine fenêtre ou non, en fonction des
         différentes erreurs présentes
         """
         filename = stringName.get("1.0", "end")
         description = stringDesc.get("1.0", "end")
+        logoPath = self.textBoxPath.get("1.0", "end")
         if len(filename) != 1: #taille nulle
-            createNewRobot(filename, description)
+            robotManager.createNewRobot(filename, description, logoPath)
             rootManager.runNewFrame(FEditRobot(self))
 
         else:

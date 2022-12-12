@@ -1,6 +1,7 @@
 import utils.fileUtils as fileUtils
-import json
 import os
+import shutil
+
 
 ROBOT_EXTENSION_NAME = "rbt"
 ROBOT_FOLDER_PATH = "../config/robots/"
@@ -22,7 +23,7 @@ def getLoadedRobots():
     """
     return robotnames
 
-def createNewRobot(name, desc = "", nbinstr = 6):
+def createNewRobot(name, desc = "", nbinstr = 6, logoPath=None):
     """
     Créée un nouveau robot en ajoutant son nom dans la liste des noms puis
     créée un répertoire du nom du robot
@@ -34,7 +35,8 @@ def createNewRobot(name, desc = "", nbinstr = 6):
     realname = uglynametorealname(name)
     realdesc = uglynametorealname(desc)
     createRobotDirectory(realname)
-    createRobotProperties(realname, dir, realdesc)
+    createRobotProperties(realname, realdesc)
+    createRobotLogo(realname, logoPath)
     createRobotInstructions(realname, nbinstr) #Mettre des commandes de bases du style 6 x déplacements
 
 def createRobotDirectory(name):
@@ -51,7 +53,7 @@ def uglynametorealname(name):
         else:
             realname += c
 
-def createRobotProperties(name, dir, desc=""):
+def createRobotProperties(name, desc=""):
     """
     Créée le fichier properties.rbt dans le dossier du robot avec comme attributs
     la description qu'elle soit vierge ou non
@@ -69,3 +71,9 @@ def createRobotInstructions(name, nbinstr):
     mininst = f";Robot du nom de {name}\n!FT\nAL\nMI\nAL\nMI\nAL" #Information puis urgence puis n les instructions
     file.write(mininst)
     file.close()
+
+def createRobotLogo(name, logoPath):
+    if (not os.path.exists(logoPath)):
+        logoPath = "res/img/robot/default_robot.png"
+    
+    shutil.copyfile(logoPath, f"{ROBOT_FOLDER_PATH}{name}/icon.png")
