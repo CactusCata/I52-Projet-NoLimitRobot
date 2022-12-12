@@ -2,8 +2,8 @@ import utils.fileUtils as fileUtils
 import json
 import os
 
-MAP_EXTENSION_NAME = "rbt"
-MAP_FOLDER_PATH = "../config/robots/"
+ROBOT_EXTENSION_NAME = "rbt"
+ROBOT_FOLDER_PATH = "../config/robots/"
 
 robotnames = []
 
@@ -12,7 +12,7 @@ def LoadRobotsNames():
     Récupère tous les noms de robots utilisés depuis le dossier config/robots
     """
     global robotnames
-    robotNames = fileUtils.getAllFileInDirectory(MAP_FOLDER_PATH)
+    robotnames = fileUtils.getAllFileInDirectory(MAP_FOLDER_PATH)
 
 def getLoadedRobots():
     """
@@ -40,7 +40,6 @@ def createRobotDirectory(name):
     """
     Créée un répertoire du nom du robot mit en paramètre
     """
-    print(f"LE NOM LA : {name}")
     os.mkdir(f"../config/robots/{name}") #chemin relatif depuis le main.py
 
 def uglynametorealname(name):
@@ -50,14 +49,13 @@ def uglynametorealname(name):
             return realname
         else:
             realname += c
-    print(realname)
 
 def createRobotProperties(name, dir, desc=""):
     """
     Créée le fichier properties.rbt dans le dossier du robot avec comme attributs
     la description qu'elle soit vierge ou non
     """
-    file = open(f"../config/robots/{name}/properties.rbt", "w")
+    file = open(f"{ROBOT_FOLDER_PATH}{name}/properties.rbt", "w")
     file.write(desc)
     file.close()
 

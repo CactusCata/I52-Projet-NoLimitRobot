@@ -77,7 +77,6 @@ class FCreateRobot(IFrame):
         différentes erreurs présentes
         """
         filename = stringName.get("1.0", "end")
-        print(f"Filename = {filename}")
         description = stringDesc.get("1.0", "end")
         if len(filename) != 1: #taille nulle
             createNewRobot(filename, description)
