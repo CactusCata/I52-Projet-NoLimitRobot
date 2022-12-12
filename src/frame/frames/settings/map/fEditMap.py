@@ -7,6 +7,8 @@ import utils.tkUtils as tkUtils
 
 from tkinter import StringVar
 
+from map.mapDrawer import MapDrawer
+
 from frame.iFrame import IFrame
 
 from random import uniform, randint
@@ -18,6 +20,7 @@ class FEditMap(IFrame):
 
         self.map = None
         self.mapName = None
+        self.mapDrawer = None
 
     def draw(self):
         root = rootManager.getRoot()
@@ -47,11 +50,14 @@ class FEditMap(IFrame):
         self.labelRockAmount = super().createLabel(text=f"Nombre de rocher {0}/{MAP_MAX_ROCK_AMOUNT}")
         self.labelRockAmount.place(x=10, y=300)
 
+        # scalebar du pourcentage de rocher aléatoire
         self.scalebarRandomRock = super().createScalebar(text="Pourcentage de rocher aléatoire", from_=0, to=20, defaultValue=5, length=300, tickInterval=5, resolution=1, callback=lambda event: self.scalebarChangeEvent(event))
         self.scalebarRandomRock.place(x=1050, y=50)
 
-        buttonSaveMap = super().createButton(text="Sauvegarder", cmd=lambda:self.saveMap())
-        buttonSaveMap.place(x=1050, y=500)
+        # Bouton de sauvegarde de l'état de la map
+        self.buttonSaveMap = super().createButton(text="Sauvegarder", cmd=lambda:self.saveMap())
+        self.buttonSaveMap['state'] = "disabled"
+        self.buttonSaveMap.place(x=1050, y=500)
 
         buttonHelp = super().createButton(text="Aide")
         buttonHelp.place(x=1050, y=550)
@@ -68,11 +74,15 @@ class FEditMap(IFrame):
             self.regenerateMap(percentageOfRock)
 
             # Mise à jour graphique de la map
-            self.canvasMap.delete("all")
-            self.drawGrid()
+            self.mapDrawer.clear()
+            self.mapDrawer.drawMap()
+            self.mapDrawer.drawGrid()
 
             # Mise à jour du label qui compte les rochers
             self.updateRockAmountLabel()
+
+            # Proposer de sauvegarder l'état de la map
+            self.buttonSaveMap['state'] = "normal"
         
 
     def updateRockAmountLabel(self):
@@ -85,6 +95,7 @@ class FEditMap(IFrame):
             self.labelRockAmount["fg"] = '#ABB2B9'
         elif (self.labelRockAmount["fg"] == "#ABB2B9" and self.map.getRockAmount() > MAP_MAX_ROCK_AMOUNT):
             self.labelRockAmount["fg"] = '#FF0000'
+            self.buttonSaveMap["state"] = "disabled"
 
     def regenerateMap(self, percentageOfRock):
         """
@@ -116,39 +127,44 @@ class FEditMap(IFrame):
             randomRockPos = rocksPlaces[randint(0, n)]
             self.map.placeAir(randomRockPos[0], randomRockPos[1])
 
-
     def clickAndMoveMouseEvent(self, x1, y1):
         """
         Evenement déclanché lorsque l'utilisateur clique sur le canvas
         """
 
         ids = self.canvasMap.find_withtag("current")
-        if (len(ids) != 0):
-            id = ids[0] # id de l'élément sur la souris
-            tag = tkUtils.itemHasTag(self.canvasMap, id, tkUtils.startWithFunction, "figure")
-            if (tag != None):
-                figureCoordinates = self.getTagCoordinates(tag) # tag commencant par 'figure'
-                line = int(figureCoordinates[0])
-                col = int(figureCoordinates[1])
 
-                img = None
-                if (self.stringVarRadioButton.get() == "ROCK" and self.map.getMatrix()[line][col] != 1):
-                    if self.map.placeRock(line, col):
-                        img = imageManager.IMG_MAP_ROCK_TK
-                elif (self.stringVarRadioButton.get() == "AIR" and self.map.getMatrix()[line][col] != 0):
-                    if (self.map.placeAir(line, col)):
-                        img = imageManager.IMG_MAP_AIR_TK
+        # Ne pas traiter le cas où il n'y a pas d'élément à inspecter
+        if (len(ids) == 0):
+            return
 
-                if (img != None): # Si le bloc a changé, alors on supprime l'ancien bloc et on supprime le nouveau
-                    self.updateRockAmountLabel()
-                    self.canvasMap.delete(id)
-                    super().drawImage(canvas=self.canvasMap, image=img, posX=col*22 +21, posY=line*22 + 21, tag=f"figure:{line},{col}")
+        id = ids[0] # id de l'élément sur la souris
+        itemCoordinates = self.mapDrawer.getItemCoordinates(id)
 
-    def getTagCoordinates(self, tag):
-        coordsInfo = tag.split(":")[1]
-        line = coordsInfo.split(",")[0]
-        col = coordsInfo.split(",")[1]
-        return line, col
+        if (itemCoordinates == None):
+            return
+
+        line = itemCoordinates[0]
+        col = itemCoordinates[1]
+
+        img = None
+        if (self.stringVarRadioButton.get() == "ROCK" and self.map.getMatrix()[line][col] != 1):
+            if self.map.placeRock(line, col):
+                img = imageManager.IMG_MAP_ROCK_TK
+        elif (self.stringVarRadioButton.get() == "AIR" and self.map.getMatrix()[line][col] != 0):
+            if (self.map.placeAir(line, col)):
+                img = imageManager.IMG_MAP_AIR_TK
+
+        if (img != None): # Si le bloc a changé, alors on supprime l'ancien bloc et on dessine le nouveau
+            self.updateRockAmountLabel()
+            self.canvasMap.delete(id)
+            self.mapDrawer.drawImage(img, line, col, tag=f"figure:{line},{col}")
+
+            # Mise à jour de l'état du bouton en fonction de la quantité de rocher
+            if (self.map.getRockAmount() > MAP_MAX_ROCK_AMOUNT):
+                self.buttonSaveMap['state'] = "disabled"
+            else:
+                self.buttonSaveMap['state'] = "normal"
 
     def radioButtonChanged(self):
         """
@@ -169,45 +185,13 @@ class FEditMap(IFrame):
         self.map = mapManager.loadMapFileContent(self.mapName)
         self.updateRockAmountLabel()
 
-        self.drawGrid()
-        #self.updateCanvasMap()
+        self.mapDrawer = MapDrawer(self.canvasMap, self.map)
+        self.mapDrawer.drawMap()
+        self.mapDrawer.drawGrid()
 
     def saveMap(self):
         """
         Sauvegarde l'état actuel de la map
         """
         mapManager.saveMap(self.mapName, self.map)
-
-    def drawGrid(self):
-        xStart = 10
-        yStart = 10
-        xPas = 22
-        yPas = 22
-
-        lineSize = MAP_LINE_AMOUNT * xPas
-        colSize = MAP_COL_AMOUNT * yPas
-
-        
-        for line in range(MAP_LINE_AMOUNT):
-            for col in range(MAP_COL_AMOUNT):
-                caseValue = self.map.getMatrix()[line][col]
-                coords = (xStart + (col * xPas), yStart + (line * yPas))
-
-                imgToDraw = None
-                if (caseValue == 0):
-                    imgToDraw = imageManager.IMG_MAP_AIR_TK
-                elif (caseValue == 1):
-                    imgToDraw = imageManager.IMG_MAP_ROCK_TK
-                else:
-                    print("Block id not found")
-
-                super().drawImage(canvas=self.canvasMap, image=imgToDraw, posX=coords[0] + 10, posY=coords[1] + 10, tag=f"figure:{line},{col}")
-            
-
-        # Dessin des lignes
-        for i in range(MAP_LINE_AMOUNT + 1):
-            self.canvasMap.create_line(xStart, yStart + (i * yPas), xStart + colSize, yStart + (i * yPas))
-
-        # Dessin des colonnes
-        for i in range(MAP_COL_AMOUNT + 1):
-            self.canvasMap.create_line(xStart + (i * xPas), yStart, xStart + (i * xPas), yStart + lineSize)
+        self.buttonSaveMap['state'] = "disabled"

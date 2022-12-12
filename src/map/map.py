@@ -5,6 +5,7 @@ class Map:
     def __init__(self, matrixMap):
         self.matrixMap = matrixMap
 
+        # Initialisation du nombre de rocher
         self.rockAmount = 0
         for line in self.matrixMap:
             for col in line:
@@ -12,6 +13,9 @@ class Map:
                     self.rockAmount += 1
 
     def clear(self):
+        """
+        Remplie la map de vide
+        """
         matrix = []
         for i in range(len(self.matrixMap)):
             matrix.append([0] * len(self.matrixMap[0]))
@@ -20,9 +24,16 @@ class Map:
         self.rockAmount = 0
 
     def getRockAmount(self):
+        """
+        Renvoie le nombre de rocher qu'il y a dans la map
+        """
         return self.rockAmount
 
     def canPlaceAir(self, x, y):
+        """
+        Renvoie vrai si on peut placer un bloc d'air en (x,y)
+        Sinon renvoie faux
+        """
         # Coin inférieur gauche
         if (x > 0 and y < 29):
             if self.get(x - 1, y + 1) == 0 and self.get(x - 1, y) == 1 and self.get(x, y + 1) == 1:
@@ -46,6 +57,10 @@ class Map:
         return True
 
     def placeAir(self, x, y):
+        """
+        Place un bloc d'air si les conditions de canPlaceAir(x,y)
+        sont respectées
+        """
         if (self.get(x, y) == 0):
             return False
 
@@ -57,6 +72,10 @@ class Map:
         return True
 
     def canPlaceRock(self, x, y):
+        """
+        Renvoie vrai si on peut placer un bloc de roche en (x,y)
+        Sinon renvoie faux
+        """
         # Coin inférieur gauche
         if (x > 0 and y < 29):
             if self.get(x - 1, y + 1) == 1 and self.get(x - 1, y) == 0 and self.get(x, y + 1) == 0:
@@ -80,6 +99,10 @@ class Map:
         return True
 
     def placeRock(self, x, y):
+        """
+        Place un bloc de roche si les conditions de canPlaceRock(x,y)
+        sont respectées
+        """
         if (self.get(x, y) == 1):
             return False
 
@@ -92,38 +115,23 @@ class Map:
         return True
 
     def placeTerreplein(self, x, y):
+        """
+        Place un terreplain en (x,y)
+        """
         if (self.matrixMap[x][y] == 1):
             self.rockAmount -= 1
 
         self.matrixMap[x][y] = 2
 
     def getMatrix(self):
+        """
+        Renvoie la matrice correspondant à l'état
+        de la map
+        """
         return self.matrixMap
 
     def get(self, x, y):
+        """
+        Renvoie la valeur en (x,y) de la map
+        """
         return self.matrixMap[x][y]
-
-    def isLegal(self):
-        mapLineAmount = len(self.matrixMap)
-        mapColAmount = len(self.matrixMap[i])
-        for i in range(mapLineAmount - 1):
-            for j in range(mapColAmount - 1):
-                if (self.matrixMap[i][j] == 0 and self.matrixMap[i][j + 1] == 1 and self.matrixMap[i + 1][j] == 1 and self.matrixMap[i + 1][j + 1] == 0):
-                    return False
-                if (self.matrixMap[i][j] == 1 and self.matrixMap[i][j + 1] == 0 and self.matrixMap[i + 1][j] == 0 and self.matrixMap[i + 1][j + 1] == 1):
-                    return False
-
-    def suffle(self):
-        lineAmount = len(self.matrixMap)
-        colAmount = len(self.matrixMap[0])
-        n = lineAmount * colAmount
-        for i in range(n):
-            foundPlace = False
-            while not foundPlace:
-                j = i + randint(1 << 13) % ((n - 1) - i + 1)
-                leftLine = n // i
-                leftCol = i % lineAmount
-                rightLine = n // j
-                rightCol = j % lineAmount
-
-
