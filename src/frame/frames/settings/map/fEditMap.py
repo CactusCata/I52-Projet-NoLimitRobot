@@ -54,6 +54,11 @@ class FEditMap(IFrame):
         self.scalebarRandomRock = super().createScalebar(text="Pourcentage de rocher aléatoire", from_=0, to=20, defaultValue=5, length=300, tickInterval=5, resolution=1, callback=lambda event: self.scalebarChangeEvent(event))
         self.scalebarRandomRock.place(x=1050, y=50)
 
+        # bouton pour regenerer une map avec le pourcentage
+        # de rocher de la scalebar
+        self.buttonRegenerateRandomMap = super().createButton(text="Regenerer la map", cmd=lambda:self.scalebarChangeEvent(None)) 
+        self.buttonRegenerateRandomMap.place(x=1050, y=400)
+
         # Bouton de sauvegarde de l'état de la map
         self.buttonSaveMap = super().createButton(text="Sauvegarder", cmd=lambda:self.saveMap())
         self.buttonSaveMap['state'] = "disabled"
