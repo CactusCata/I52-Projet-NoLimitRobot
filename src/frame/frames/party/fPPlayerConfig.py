@@ -16,9 +16,9 @@ class FPPlayerConfig(IFrame):
         super().__init__(previousFrame)
 
     def draw(self):
-        root = rootManager.getRoot()
 
         robotsNames = robotManager.getLoadedRobots()
+        print(f"Loaded robots: {robotsNames}")
 
         robotsFile = []
         for robotName in robotsNames:
@@ -32,7 +32,7 @@ class FPPlayerConfig(IFrame):
         self.robotChooser.drawGrid()
         self.robotChooser.drawRobots()
 
-        self.canvas.bind("<Mouse>", lambda event:self.moveMouse(event.x, event.y))
+        self.canvas.bind("<Motion>", lambda event:self.moveMouse(event.x, event.y))
         self.canvas.bind("<Button-1>", lambda event:self.clickEvent(event.x, event.y))
 
         # Association entre un joueur numero i correspondant

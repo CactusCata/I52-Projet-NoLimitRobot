@@ -7,12 +7,13 @@ ROBOT_FOLDER_PATH = "../config/robots/"
 
 robotnames = []
 
-def LoadRobotsNames():
+def loadRobotsNames():
     """
     Récupère tous les noms de robots utilisés depuis le dossier config/robots
     """
     global robotnames
     robotnames = fileUtils.getAllFileInDirectory(ROBOT_FOLDER_PATH)
+    print(f"robotNames : {robotnames}")
 
 def getLoadedRobots():
     """

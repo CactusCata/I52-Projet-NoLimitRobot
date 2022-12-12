@@ -5,7 +5,10 @@ class RobotFile():
     def __init__(self, name):
         self.__name = name
         self.__desc = robotUtils.get_desc_from_name(name)
-        self.instr = robotUtils.get_instr_from_name(name)
+        self.__instr = robotUtils.get_instr_from_name(name)
+        self.print_name()
+        self.print_desc()
+        self.print_instr()
 
     def get_name(self):
         return self.__name

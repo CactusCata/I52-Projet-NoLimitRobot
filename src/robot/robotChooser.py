@@ -1,6 +1,6 @@
 import math
 
-class RobotChoosen:
+class RobotChooser:
 
     def __init__(self, canvas, robotsFileList=[], xStart=10, yStart=10, xPas=22, yPas=22):
         self.canvas = canvas
