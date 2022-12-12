@@ -12,7 +12,7 @@ def LoadRobotsNames():
     Récupère tous les noms de robots utilisés depuis le dossier config/robots
     """
     global robotnames
-    robotnames = fileUtils.getAllFileInDirectory(MAP_FOLDER_PATH)
+    robotnames = fileUtils.getAllFileInDirectory(ROBOT_FOLDER_PATH)
 
 def getLoadedRobots():
     """
