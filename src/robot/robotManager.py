@@ -46,6 +46,12 @@ def createRobotDirectory(name):
     os.mkdir(f"../config/robots/{name}") #chemin relatif depuis le main.py
 
 def uglynametorealname(name):
+    """
+    Transforme e la chaîne de caractère extraite depuis la boite textuelle
+    en une chaîne claire qui est retournée, sans les caractères qui n'ont pas lieu d'être, notamment
+    le '\n'
+
+    """
     realname = ""
     for c in name:
         if c == '\n':
@@ -75,5 +81,5 @@ def createRobotInstructions(name, nbinstr):
 def createRobotLogo(name, logoPath):
     if (not os.path.exists(logoPath)):
         logoPath = "res/img/robot/default_robot.png"
-    
+
     shutil.copyfile(logoPath, f"{ROBOT_FOLDER_PATH}{name}/icon.png")

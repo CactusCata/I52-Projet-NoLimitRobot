@@ -38,7 +38,7 @@ class Map:
         if (x > 0 and y < 29):
             if self.get(x - 1, y + 1) == 0 and self.get(x - 1, y) == 1 and self.get(x, y + 1) == 1:
                 return False
-        
+
         # Coin supérieur gauche
         if (x > 0 and y > 0):
             if self.get(x - 1, y - 1) == 0 and self.get(x - 1, y) == 1 and self.get(x, y - 1) == 1:
@@ -80,7 +80,7 @@ class Map:
         if (x > 0 and y < 29):
             if self.get(x - 1, y + 1) == 1 and self.get(x - 1, y) == 0 and self.get(x, y + 1) == 0:
                 return False
-        
+
         # Coin supérieur gauche
         if (x > 0 and y > 0):
             if self.get(x - 1, y - 1) == 1 and self.get(x - 1, y) == 0 and self.get(x, y - 1) == 0:
@@ -109,7 +109,7 @@ class Map:
         if not self.canPlaceRock(x, y):
             return False
 
-               
+
         self.rockAmount += 1
         self.matrixMap[x][y] = 1
         return True
@@ -135,3 +135,15 @@ class Map:
         Renvoie la valeur en (x,y) de la map
         """
         return self.matrixMap[x][y]
+
+    def modify(self, x, y, type_obj):
+        """
+        Modifie une case de la carte afin de la mettre à jour.
+        type_obj est le type de l'entité que l'on va mettre à jour sur la case.
+        0 est pour l'air (case libre)
+        1 est pour le rocher (case occupée)
+        2 est pour les robots (case occupée)
+        3 est pour les mines (case "libre" pour les déplacements, mais bloquante
+        pour les projectiles)
+        """
+        self.matrixMap[x][y] = type_obj
