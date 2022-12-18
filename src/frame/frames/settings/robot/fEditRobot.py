@@ -1,6 +1,7 @@
 import frame.rootManager as rootManager
 import robot.robotManager as robotManager
 import utils.instructionUtils as instructionUtils
+import instruction.instructionAnalyser as instructionAnalyser
 
 from frame.iFrame import IFrame
 from robot.robotFile import RobotFile
@@ -77,6 +78,10 @@ class FEditRobot(IFrame):
         frameHelpInstruct = super().createFrame()
         frameHelpInstruct.pack(side="right", ipadx=int(0.1 * root.winfo_width()))
 
+        self.labelInstructError = super().createLabel(master=frameHelpInstruct)
+        self.labelInstructError["wraplength"] = int(0.25 * root.winfo_width())
+        self.labelInstructError.pack()
+
         labelHelpInstruct = super().createLabel(master=frameHelpInstruct, text="Aide sur les instructions")
         labelHelpInstruct.pack()
 
@@ -130,7 +135,19 @@ class FEditRobot(IFrame):
         """
         robotName = self.currentRobotFile.get_name()
         robotDescription = self.entryDescription.get()
-        robotInstructions = self.instructTextBox.get("1.0", "end-1c").split('\n')
+        robotInstructionText = self.instructTextBox.get("1.0", "end-1c")
+
+        instructionCorrect = instructionAnalyser.instructionsAreValide(robotInstructionText)
+        if (instructionCorrect != instructionAnalyser.INSTRUCTION_CORRECT):
+            self.labelInstructError["text"] = instructionCorrect
+            return
+
+        print("test:" + self.labelInstructError["text"])
+        if (self.labelInstructError["text"] != ""):
+            print("text has been updated")
+            self.labelInstructError["text"] = ""
+            
+        robotInstructions = robotInstructionText.split('\n')
         robotManager.updateRobot(robotName, robotDescription, robotInstructions)
         self.buttonSave["state"] = "disabled"
         self.currentRobotHasChanged = False

@@ -7,9 +7,9 @@ from map.map import Map
 
 robotingame = []
 
-class RobotParty():
+class RobotParty(RobotFile):
 
-    def __init__(self, id, x, y, L_inst, map, energy=500, detec = 4):
+    def __init__(self, robotName, id, x, y, map, energy=500, detec = 4):
         """
         Initialise l'instance du Robot dans la partie.
         Ici sera stocké son énergie, qui descendra lors de la partie, comprise
@@ -21,18 +21,29 @@ class RobotParty():
         sera identique pour chaque robot.
         La liste d'instruction sera la liste initialisée par la classe RobotFile.
         L'état invisible vaudra True si invisible, False sinon.
-        """
 
+        Données:
+            - id: ?????
+            - x: un entier
+            - y: un entier
+            - instructions: liste de chaine de caractères
+            - map ?????
+            - energy: entier
+            - detect: entier
+        """
+        super().__init__(robotName)
         self.__id = id
         self.__energy = energy
         self.__x = x
         self.__y = y
         self.__detec = detec
-        self.__L_inst = L_inst
         self.__invisible = False
         robotingame.append(self)
         map.modify(x, y, 2)
 
+
+    def get_id(self):
+        return self.__id
 
     def get_energy(self):
         return self.__energy
@@ -43,13 +54,10 @@ class RobotParty():
     def get_y(self):
         return self.__y
 
-    def get_detec(self):
+    def get_detect_distance(self):
         return self.__detec
 
-    def get_id(self):
-        return self.__id
-
-    def get_state(self):
+    def is_vanish(self):
         return self.__invisible
 
     def print_id(self):

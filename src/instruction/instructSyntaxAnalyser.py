@@ -95,7 +95,12 @@ def action_simple():
     return lexicalUnit[1]
 
 def axiome(arrayOfLexicalUnits):
-    global lexicalUnits
+    global lexicalUnits, cc, col, line, arrayOfInstructions
+
+    cc = 0
+    col = 0
+    line = 0
+    arrayOfInstructions = []
 
     lexicalUnits = arrayOfLexicalUnits
     instructs()

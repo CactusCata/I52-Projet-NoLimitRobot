@@ -3,16 +3,22 @@ import instruction.instructSyntaxAnalyser as instructSyntaxAnalyser
 
 from instruction.instructionSyntaxException import InstructionSyntaxException
 
+INSTRUCTION_CORRECT = "correct"
+
 def instructionsAreValide(textInstruct):
     """
-    Renvoie une couple (ligne, col) de l'emplacement
-    de l'erreur s'il y en a une, sinon renvoie (-1, -1)
+    Renvoie un message.
+    Si valide renvoie "correct"
+    sinon renvoie le message d'erreur
     """
 
+    print(textInstruct)
+
     try:
-        lexicalsUnits = instructLexicalAnalyser.analex(textInstruct)
+        lexicalsUnits = instructLexicalAnalyser.analex(textInstruct + '\n')
+        print(lexicalsUnits)
         instructSyntaxAnalyser.axiome(lexicalsUnits)
     except InstructionSyntaxException as error:
-        return error.getErrorEmplacement()
-    finally:
-        return (-1, -1)
+        return str(error)
+        
+    return INSTRUCTION_CORRECT
