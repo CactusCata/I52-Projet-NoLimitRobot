@@ -6,7 +6,7 @@ import robot.robotManager as robotManager
 
 from frame.iFrame import IFrame
 
-from tkinter import INSERT
+from tkinter import END
 
 class FCreateRobot(IFrame):
 
@@ -16,82 +16,78 @@ class FCreateRobot(IFrame):
     def draw(self):
         root = rootManager.getRoot()
 
-        NameChoice = super().createFrame(root)
-        NameChoice.pack()
-        textName = super().createLabel(NameChoice, "Nom de ton robot mon cheum (O_O) :\t")
-        textName.pack(side="left")
-        textboxName = super().createTextBox(NameChoice)
-        textboxName.pack(side="right")
+        # Nom du robot
+        textName = super().createLabel(text="Nom du robot:")
+        textName.pack()
+        self.entryName = super().createEntry(width=15)
+        self.entryName.pack()
 
-        DescOptionnal = super().createFrame(root) #choix optionnel
-        DescOptionnal.pack()
-        textDescription = super().createLabel(DescOptionnal, "(Optionnel) Description :\t")
-        textDescription.pack(side="left")
-        textboxDescription = super().createTextBox(DescOptionnal, width = 50, height = 20)
-        textboxDescription.pack(side="right")
+        # Description
+        textDescription = super().createLabel(text="Description (Optionnelle):")
+        textDescription.pack()
+        self.entryDescription = super().createEntry(width=50)
+        self.entryDescription.pack()
 
-        PathOptionnal = super().createFrame(root) #choix optionnel
-        PathOptionnal.pack()
-        textPath = super().createLabel(PathOptionnal, "(Optionnel) Logo :\t")
-        textPath.pack(side="left")
+        # Logo
+        logoLabel = super().createLabel(text="Logo (Optionnel):")
+        logoLabel.pack()
+        logoButtonChooseLogoPath = super().createButton(text="Sélectionnez votre Logo", cmd=lambda:self.selectLogoPath())
+        logoButtonChooseLogoPath.pack()
+        self.entryLogoPath = super().createEntry(width=40)
+        self.entryLogoPath.pack()
 
-        self.textBoxPath = super().createTextBox(PathOptionnal)
-        self.textBoxPath.pack(side="left")
-
-        buttonPath = super().createButton(PathOptionnal,text="Sélectionner votre Logo", cmd=lambda:self.selecPath(textboxName)) #filedialog.askopenfile(mode='r')
-        buttonPath.pack(side="right")
-
-        buttonConfirm = super().createButton(text="Confirmer", cmd=lambda:self.followingFrame(root, textboxName, textboxDescription))
+        # Confirmer
+        buttonConfirm = super().createButton(text="Editer le robot", cmd=lambda:self.followingFrame())
         buttonConfirm.pack()
 
+        # Aide
         buttonHelp = super().createButton(text="Aide")
         buttonHelp.pack()
 
+        # Retour
         buttonBack = super().createButton(text="Retour", cmd=lambda:super(FCreateRobot, self).reopenLastFrame())
         buttonBack.pack()
 
-
-
-    def selecPath(self, boxname): #NOTE PERSO : Gérer la photo de base pour robot sans logo ajouté
+    def selectLogoPath(self):
         """
         Demande à l'utilisateur une image pour la copier coller dans le répertoire des
         images de robots, afin d'avoir une trace permanente des images des robots.
         L'image en .png possède le même nom que le répertoire de ce dit robot.
         """
-        original = askopenfile(mode='r')
-        correctText = robotManager.uglynametorealname(original.name)
-        self.textBoxPath.insert(INSERT, correctText)
+        file = askopenfile(mode='r')
+        if (file != None):
+            self.entryLogoPath.delete(0, "end")
+            self.entryLogoPath.insert(0, file.name)
 
-    def getFileName(self, charstar):
-        """
-        Extrait le nom du fichier avec son extension, depuis le chemin absolu.
-        """
-        file = ""
-        i = -1
-        while charstar[i] != '/':
-            file += charstar[i]
-            i -= 1
-        realfile = file[::-1]
-        return realfile
-
-    def followingFrame(self, root, stringName, stringDesc):
+    def followingFrame(self):
         """
         S'occupe de passer à la prochaine fenêtre ou non, en fonction des
         différentes erreurs présentes
         """
-        filename = stringName.get("1.0", "end")
-        description = stringDesc.get("1.0", "end")
-        logoPath = self.textBoxPath.get("1.0", "end")
-        if len(filename) != 1: #taille nulle
-            robotManager.createNewRobot(filename, description, logoPath)
-            rootManager.runNewFrame(FEditRobot(self))
+        robotName = self.entryName.get()
+        description = self.entryDescription.get()
+        logoPath = self.entryLogoPath.get()
 
-        else:
-            labelerror = super().createLabel(root, "Vous n'avez pas donné de nom à votre robot ! (/OxO)/ (vous)", 30)
-            labelerror["fg"] = "#FA0000"
-            labelerror.pack()
-            labelerror.after(5000, lambda:self.error(root, labelerror))
+        print(f"filename: \"{robotName}\"")
+        print(f"description: \"{description}\"")
+        print(f"logopath: \"{logoPath}")
 
-    def error(self, root, widget): #Erreur si l'utilisateur n'a pas mit de nom
+        if len(robotName) == 0:
+            self.createMessage("Vous n'avez pas donné de nom à votre robot !")
+            return
 
+        if robotName in robotManager.getLoadedRobots():
+            self.createMessage("Le nom du robot est déjà utilisé")
+            return
+
+        robotManager.createNewRobot(robotName, description, [], logoPath)
+        rootManager.runNewFrame(FEditRobot(self))
+
+    def error(self, widget): #Erreur si l'utilisateur n'a pas mit de nom
         widget.destroy()
+
+    def createMessage(self, message):
+        labelerror = super().createLabel(message, 30)
+        labelerror["fg"] = "#FA0000"
+        labelerror.pack()
+        labelerror.after(5000, lambda:self.error(labelerror))

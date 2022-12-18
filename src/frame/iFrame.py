@@ -2,7 +2,7 @@ import frame.rootManager as rootManager
 
 import utils.fileUtils as filsUtils
 
-from tkinter import Button, Label, Text, Scale, Frame, Canvas, Radiobutton
+from tkinter import Button, Label, Text, Scale, Frame, Canvas, Radiobutton, Entry
 from tkinter.ttk import Combobox, Checkbutton
 from PIL import ImageTk
 
@@ -105,6 +105,23 @@ class IFrame():
         textBox.insert(1.0, defaultText)
         self.registerItem(textBox)
         return textBox
+
+    def createEntry(self, master=None, defaultText="", width=10, fontSize=14):
+        """
+        Crée une boite à texte
+
+            - master: Si n'est pas utilisé, alors prend la valeur de rootManager.getRoot
+            - defaultText: Texte par défaut au moment de l'initialisation de la boite à texte
+            - width: Nombre de pixel en largeur de la boite à texte
+            - fontSize: taille de la police d'écriture du texte
+        """
+        if (master is None):
+            master = rootManager.getRoot()
+
+        entryBox = Entry(master, width=width, bg='#1E1E1E', fg='#ABB2B9', font=("Arial", fontSize))
+        entryBox.insert(0, defaultText)
+        self.registerItem(entryBox)
+        return entryBox
 
     def createCheckButton(self, master=None, text="", callback=None):
         if (master is None):

@@ -1,7 +1,7 @@
 from map.mapManager import MAP_LINE_AMOUNT, MAP_COL_AMOUNT
 
 import image.imageManager as imageManager
-import utils.tkUtils as tkUtils
+import utils.tkinter.tkUtils as tkUtils
 
 class MapDrawer:
 

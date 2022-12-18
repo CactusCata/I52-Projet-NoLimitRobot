@@ -2,7 +2,7 @@ from tkinter import Tk, PhotoImage
 
 from frame.frames.fMain import FMain
 
-import utils.tkUtils as tkUtils
+import utils.tkinter.tkUtils as tkUtils
 import utils.fileUtils as fileUtils
 import image.imageManager as imageManager
 
@@ -66,8 +66,6 @@ def clearCurrentFrame():
     """
     if (currentFrame is not None):
         currentFrame.clearFrame()
-    else:
-        print("is none")
 
 def runNewFrame(frame):
     global currentFrame

@@ -1,7 +1,7 @@
 from tkinter import Frame, BOTH
 
 import frame.rootManager as rootManager
-import utils.tkUtils as tkUtils
+import utils.tkinter.tkUtils as tkUtils
 
 from frame.iFrame import IFrame
 

@@ -23,6 +23,13 @@ class Map:
         self.matrixMap = matrix
         self.rockAmount = 0
 
+    def isAccessible(self, pos):
+        """
+        Renvoie vrai si la case demandé est bien dans les dimensions de la map et que la case est accessible.
+        Renvoie faux sinon
+        """
+        return 0 <= pos[0] < len(self.matrixMap) and 0 <= pos[1] < len(self.matrixMap[1]) and self.get(pos[0], pos[1]) == 0
+
     def getRockAmount(self):
         """
         Renvoie le nombre de rocher qu'il y a dans la map

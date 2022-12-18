@@ -1,33 +1,68 @@
 import utils.robotUtils as robotUtils
+import image.imageManager as imageManager
 
 class RobotFile():
+    """
+    Cette classe contient les informations d'un robot
+    stockés sous forme de fichier dans config/robots/{nom_robot}/instructions.rbt
+    Elle permet également de récuperer le chemin du logo du robot
+    ainsi que la possibilité de la charger pour tkinter.
+    """
 
     def __init__(self, name):
         self.__name = name
         self.__desc = robotUtils.get_desc_from_name(name)
         self.__instr = robotUtils.get_instr_from_name(name)
-        self.print_name()
-        self.print_desc()
-        self.print_instr()
+        self.__logoPath = robotUtils.get_logo_path_from_name(name)
+        self.__logoImg = None
+        self.__logoTk = None
 
     def get_name(self):
+        """
+        Renvoie le nom du robot        
+        """
         return self.__name
 
-    def get_name(self):
+    def get_desc(self):
+        """
+        Renvoie la description du robot
+        """
         return self.__desc
 
     def get_instr(self):
+        """
+        Renvoie la liste des instructions du robot
+        """
         return self.__instr
 
-    def print_name(self):
-        print(f"Nom du Robot : {self.__name}")
+    def get_logo_path(self):
+        """
+        Renvoie le chemin du logo
+        """
+        return self.__logoPath
 
-    def print_desc(self):
+    def logo_is_loaded(self):
+        """
+        Renvoie:
+            - True si le logo a bien été chargé
+            - False si le logo n'a pas été chargé
 
-        print(f"Description du robot : {self.__desc}")
+        Pour charger le logo du robot, il est nécéssaire
+        d'executer la méthode robotFile.load_logo()
+        """
+        return self.__logoTk != None
 
-    def print_instr(self):
+    def load_logo(self):
+        """
+        Charge en mémoire l'image logo du reobot
+        """
+        if (not self.logo_is_loaded()):
+            self.__logoImg = imageManager.loadImage(self.get_logo_path(), dimX=100, dimY=100)
+            self.__logoTk = imageManager.loadImageTk(self.__logoImg)
 
-        print(f"Les instructions sont les suivantes : ")
-        for s in self.__instr:
-            print(s)
+    def get_logo(self):
+        """
+        Renvoie une instance de l'image du logo pour tkinter.
+        Doit d'abord est chargé via la méthode robotFile.load_logo()
+        """
+        return self.__logoTk

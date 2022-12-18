@@ -16,13 +16,13 @@ def loadImages():
     IMG_MAP_ROCK = loadImage("../res/img/map/rock.png")
     IMG_MAP_AIR = loadImage("../res/img/map/air.png")
 
-def loadImage(path):
+def loadImage(path, dimX=20, dimY=20):
     if (not fileUtils.fileExist(path)):
         print(f"Le fichier \"{path}\" n'existe pas")
         return None
 
     img = Image.open(path)
-    img = img.resize((20,20), Image.ANTIALIAS)
+    img = img.resize((dimX,dimY), Image.ANTIALIAS)
     return img
 
 def loadImagesTk():

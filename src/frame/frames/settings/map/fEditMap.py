@@ -3,7 +3,7 @@ import map.mapManager as mapManager
 from map.mapManager import MAP_LINE_AMOUNT, MAP_COL_AMOUNT, MAP_MAX_ROCK_AMOUNT, MAP_MAX_ROCK_PERCENTAGE
 import image.imageManager as imageManager
 
-import utils.tkUtils as tkUtils
+import utils.tkinter.tkUtils as tkUtils
 
 from tkinter import StringVar
 
