@@ -59,7 +59,7 @@ class RobotParty():
         print(f"Energie actuelle du robot : {self.__energy}")
 
     def print_position(self):
-        print(f"Position actuelle du robot : ({self.__x},{self.__y})")
+        print(f"Position actuelle du robot {self.__id} : ({self.__x},{self.__y})")
 
     def print_detec(self):
         print(f"La distance de repérage des robots est de {self.__detec} cases")
@@ -92,6 +92,10 @@ class RobotParty():
             upslot = map.get(self.__x - 1, self.__y)
             if (upslot == 0):
                 self.__x -= 1
+                robot_x = self.__x
+                robot_y = self.__y
+                map.modify(robot_x+1, robot_y, 0)
+                map.modify(robot_x, robot_y, 2)
                 return True
             elif (upslot == 3):
                 id_mine = check_Id_Mine(self, direction)
@@ -101,14 +105,21 @@ class RobotParty():
                     self.danger()
                 robot_x = self.__x
                 robot_y = self.__y
+                map.modify(robot_x+1, robot_y, 0)
                 map.modify(robot_x, robot_y, 2)
-                remove_Mine(robot_x, robot_y)
+                map.get(robot_x+1, robot_y)
+                map.get(robot_x, robot_y)
+                remove_Mine(self.__x, self.__y)
                 return True
 
         elif (direction == "B") and (self.__x < 20):
             downslot = map.get(self.__x + 1, self.__y)
             if (downslot == 0):
                 self.__x += 1
+                robot_x = self.__x
+                robot_y = self.__y
+                map.modify(robot_x-1, robot_y, 0)
+                map.modify(robot_x, robot_y, 2)
                 return True
             elif (downslot == 3):
                 id_mine = check_Id_Mine(self, direction)
@@ -118,14 +129,19 @@ class RobotParty():
                     self.danger()
                 robot_x = self.__x
                 robot_y = self.__y
+                map.modify(robot_x-1, robot_y, 0)
                 map.modify(robot_x, robot_y, 2)
-                remove_Mine(robot_x, robot_y)
+                remove_Mine(self.__x, self.__y)
                 return True
 
         elif (direction == "G") and (self.__y > 0):
             leftslot = map.get(self.__x, self.__y - 1)
             if (leftslot == 0):
                 self.__y -= 1
+                robot_x = self.__x
+                robot_y = self.__y
+                map.modify(robot_x, robot_y+1, 0)
+                map.modify(robot_x, robot_y, 2)
                 return True
             elif (leftslot == 3):
                 id_mine = check_Id_Mine(self, direction)
@@ -135,7 +151,8 @@ class RobotParty():
                     self.danger()
                 robot_x = self.__x
                 robot_y = self.__y
-                map.modify(self.__x, self.__y, 2)
+                map.modify(robot_x, robot_y+1, 0)
+                map.modify(robot_x, robot_y, 2)
                 remove_Mine(self.__x, self.__y)
                 return True
 
@@ -143,6 +160,10 @@ class RobotParty():
             rightslot = map.get(self.__x, self.__y + 1)
             if (rightslot == 0):
                 self.__y += 1
+                robot_x = self.__x
+                robot_y = self.__y
+                map.modify(robot_x, robot_y-1, 0)
+                map.modify(robot_x, robot_y, 2)
                 return True
             elif (rightslot == 3):
                 id_mine = check_Id_Mine(self, direction)
@@ -152,7 +173,8 @@ class RobotParty():
                     self.danger()
                 robot_x = self.__x
                 robot_y = self.__y
-                map.modify(self.__x, self.__y, 2)
+                map.modify(robot_x, robot_y-1, 0)
+                map.modify(robot_x, robot_y, 2)
                 remove_Mine(self.__x, self.__y)
                 return True
 
@@ -162,15 +184,20 @@ class RobotParty():
         """
         Méthode utilisée uniquement dans PS et FT. Elle effectue un déplacement
         déterministe en diagonale si possible. Retourne True si déplacement fait,
-        False sinon.
+        False sinon. Valeur de retour utilisée dans la méthode moving, afin de
+        faire les déplacements conditionnels de PS ou FT.
         """
         if (direction == "HG") and (self.__x > 0) and (self.__y > 0):
-            upslot = map.get(self.__x - 1, self.__y - 1)
-            if (upslot == 0):
+            upleftslot = map.get(self.__x - 1, self.__y - 1)
+            if (upleftslot == 0):
                 self.__x -= 1
                 self.__y -= 1
+                robot_x = self.__x
+                robot_y = self.__y
+                map.modify(robot_x+1, robot_y+1, 0)
+                map.modify(robot_x, robot_y, 2)
                 return True
-            elif (upslot == 3):
+            elif (upleftslot == 3):
                 id_mine = check_Id_Minebis(self, direction)
                 self.__x -= 1
                 self.__y -= 1
@@ -179,17 +206,22 @@ class RobotParty():
                     self.danger()
                 robot_x = self.__x
                 robot_y = self.__y
+                map.modify(robot_x+1, robot_y+1, 0)
                 map.modify(robot_x, robot_y, 2)
                 remove_Mine(robot_x, robot_y)
                 return True
 
         elif (direction == "BD") and (self.__x < 20) and (self.__y < 30):
-            downslot = map.get(self.__x + 1, self.__y + 1)
-            if (downslot == 0):
+            downrightslot = map.get(self.__x + 1, self.__y + 1)
+            if (downrightslot == 0):
                 self.__x += 1
                 self.__y += 1
+                robot_x = self.__x
+                robot_y = self.__y
+                map.modify(robot_x-1, robot_y-1, 0)
+                map.modify(robot_x, robot_y, 2)
                 return True
-            elif (downslot == 3):
+            elif (downrightslot == 3):
                 id_mine = check_Id_Minebis(self, direction)
                 self.__x += 1
                 self.__y += 1
@@ -198,17 +230,22 @@ class RobotParty():
                     self.danger()
                 robot_x = self.__x
                 robot_y = self.__y
+                map.modify(robot_x-1, robot_y-1, 0)
                 map.modify(robot_x, robot_y, 2)
                 remove_Mine(robot_x, robot_y)
                 return True
 
         elif (direction == "BG") and (self.__x < 20) and (self.__y > 0):
-            leftslot = map.get(self.__x, self.__y - 1)
-            if (leftslot == 0):
+            downleftslot = map.get(self.__x, self.__y - 1)
+            if (downleftslot == 0):
                 self.__x += 1
                 self.__y -= 1
+                robot_x = self.__x
+                robot_y = self.__y
+                map.modify(robot_x-1, robot_y+1, 0)
+                map.modify(robot_x, robot_y, 2)
                 return True
-            elif (leftslot == 3):
+            elif (downleftslot == 3):
                 id_mine = check_Id_Minebis(self, direction)
                 self.__x += 1
                 self.__y -= 1
@@ -217,17 +254,22 @@ class RobotParty():
                     self.danger()
                     robot_x = self.__x
                     robot_y = self.__y
+                map.modify(robot_x-1, robot_y+1, 0)
                 map.modify(robot_x, robot_y, 2)
                 remove_Mine(robot_x, robot_y)
                 return True
 
         elif (direction == "HD") and (self.__x > 0) and (self.__y < 30):
-            rightslot = map.get(self.__x, self.__y + 1)
-            if (rightslot == 0):
+            uprightslot = map.get(self.__x, self.__y + 1)
+            if (uprightslot == 0):
                 self.__x -= 1
                 self.__y += 1
+                robot_x = self.__x
+                robot_y = self.__y
+                map.modify(robot_x+1, robot_y-1, 0)
+                map.modify(robot_x, robot_y, 2)
                 return True
-            elif (rightslot == 3):
+            elif (uprightslot == 3):
                 id_mine = check_Id_Minebis(self, direction)
                 self.__x += 1
                 self.__y += 1
@@ -236,6 +278,7 @@ class RobotParty():
                     self.danger()
                 robot_x = self.__x
                 robot_y = self.__y
+                map.modify(robot_x-1, robot_y-1, 0)
                 map.modify(robot_x, robot_y, 2)
                 remove_Mine(robot_x, robot_y)
                 return True
@@ -265,8 +308,11 @@ class RobotParty():
                 if id_mine != self.__id:
                     self.__energy -= 200
                     self.danger()
-                map.modify(self.__x, self.__y, 2)
-                remove_Mine(self.__x, self.__y)
+                robot_x = self.__x
+                robot_y = self.__y
+                map.modify(robot_x+1, robot_y, 0)
+                map.modify(robot_x, robot_y, 2)
+                remove_Mine(robot_x, robot_y)
 
         elif direction == 'B':
             downslot = map.get(self.__x + 1, self.__y)
@@ -278,8 +324,11 @@ class RobotParty():
                 if id_mine != self.__id:
                     self.__energy -= 200
                     self.danger()
-                map.modify(self.__x, self.__y, 2)
-                remove_Mine(self.__x, self.__y)
+                robot_x = self.__x
+                robot_y = self.__y
+                map.modify(robot_x-1, robot_y, 0)
+                map.modify(robot_x, robot_y, 2)
+                remove_Mine(robot_x, robot_y)
 
         elif direction == 'G':
             leftslot = map.get(self.__x + 1, self.__y)
@@ -291,8 +340,11 @@ class RobotParty():
                 if id_mine != self.__id:
                     self.__energy -= 200
                     self.danger()
-                map.modify(self.__x, self.__y, 2)
-                remove_Mine(self.__x, self.__y)
+                robot_x = self.__x
+                robot_y = self.__y
+                map.modify(robot_x, robot_y+1, 0)
+                map.modify(robot_x, robot_y, 2)
+                remove_Mine(robot_x, robot_y)
 
         elif direction == 'D':
             rightslot = map.get(self.__x + 1, self.__y)
@@ -305,10 +357,11 @@ class RobotParty():
                 if id_mine != self.__id:
                     self.__energy -= 200
                     self.danger()
-                map.modify(self.__x, self.__y, 2)
-                remove_Mine(self.__x, self.__y)
-
-            #COMPLETER IMPORTANT GERER ID POUR LES MINES
+                robot_x = self.__x
+                robot_y = self.__y
+                map.modify(robot_x, robot_y-1, 0)
+                map.modify(robot_x, robot_y, 2)
+                remove_Mine(robot_x, robot_y)
 
     def MI(self, map):
         """
@@ -450,7 +503,7 @@ class RobotParty():
         min_dist = L_distances[0]
         for i in range (1,len(L_distances)):
             if L_distances[i][0] < min_dist[0]:
-                min_dist = L[i][0]
+                min_dist = L_distances[i]
 
         return min_dist
 
@@ -461,8 +514,13 @@ class RobotParty():
         """
         xp = self.__x - robot2.get_x()
         yp = self.__y - robot2.get_y()
+        print(f"Coord : x = {xp}, y = {yp}")
         direction1 = ""
+        direction1bis = "GD" #pour le chemin bis à emprunter pour que le robot se
+        # rapproche dans tous les cas de l'adversaire.
         direction2 = ""
+        direction2bis = "HB" #pour le chemin bis à emprunter pour que le robot se
+        # rapproche dans tous les cas de l'adversaire.
         diagonal = ""
 
         if xp < 0: #Si négatif alors adversaire vers le bas
