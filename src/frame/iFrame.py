@@ -207,3 +207,6 @@ class IFrame():
     def reopenLastFrame(self):
         if (self.previousFrame is not None):
             rootManager.runNewFrame(self.previousFrame)
+
+    def getScreenDimensions(self, master):
+        return (master.winfo_screenwidth(), master.winfo_screenheight())
