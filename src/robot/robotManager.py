@@ -18,7 +18,6 @@ def loadRobotsNames():
     """
     global robotnames
     robotnames = fileUtils.getAllFileInDirectory(ROBOT_FOLDER_PATH)
-    print(f"robotNames : {robotnames}")
 
 def getLoadedRobots():
     """
@@ -77,3 +76,15 @@ def createRobotLogo(name, logoPath):
         logoPath = ROBOT_DEFAULT_LOGO_PATH
 
     shutil.copyfile(logoPath, f"{ROBOT_FOLDER_PATH}{name}/icon.png")
+
+def deleteRobot(name):
+    """
+    Supprime les fichiers associés à un robot
+    """
+    if (name not in robotnames):
+        return
+
+    os.remove(f"{ROBOT_FOLDER_PATH}{name}/icon.png")
+    os.remove(f"{ROBOT_FOLDER_PATH}{name}/instructions.{ROBOT_EXTENSION_NAME}")
+    os.rmdir(f"{ROBOT_FOLDER_PATH}{name}")
+    robotnames.remove(name)

@@ -68,10 +68,6 @@ class FCreateRobot(IFrame):
         description = self.entryDescription.get()
         logoPath = self.entryLogoPath.get()
 
-        print(f"filename: \"{robotName}\"")
-        print(f"description: \"{description}\"")
-        print(f"logopath: \"{logoPath}")
-
         if len(robotName) == 0:
             self.createMessage("Vous n'avez pas donné de nom à votre robot !")
             return

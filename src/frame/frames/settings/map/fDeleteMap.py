@@ -15,7 +15,7 @@ class FDeleteMap(IFrame):
         self.mapNameComboBox = super().createComboBox(list=mapManager.getLoadedMaps())
         self.mapNameComboBox.pack()
 
-        confirmButton = super().createButton(text="Confirmer", cmd=lambda:self.confirmButtonAction())
+        confirmButton = super().createButton(text="Supprimer", cmd=lambda:self.confirmButtonAction())
         confirmButton.pack()
 
         helpButton = super().createButton(text="Aide")

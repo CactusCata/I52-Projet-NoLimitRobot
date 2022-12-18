@@ -142,9 +142,7 @@ class FEditRobot(IFrame):
             self.labelInstructError["text"] = instructionCorrect
             return
 
-        print("test:" + self.labelInstructError["text"])
         if (self.labelInstructError["text"] != ""):
-            print("text has been updated")
             self.labelInstructError["text"] = ""
             
         robotInstructions = robotInstructionText.split('\n')

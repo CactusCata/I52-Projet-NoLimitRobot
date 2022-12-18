@@ -12,11 +12,8 @@ def instructionsAreValide(textInstruct):
     sinon renvoie le message d'erreur
     """
 
-    print(textInstruct)
-
     try:
         lexicalsUnits = instructLexicalAnalyser.analex(textInstruct + '\n')
-        print(lexicalsUnits)
         instructSyntaxAnalyser.axiome(lexicalsUnits)
     except InstructionSyntaxException as error:
         return str(error)
