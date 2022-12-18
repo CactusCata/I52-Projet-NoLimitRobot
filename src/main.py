@@ -8,5 +8,4 @@ if __name__ == "__main__":
     mapManager.loadMapNames()
     robotManager.loadRobotsNames()
 
-
     rootManager.initRoot()

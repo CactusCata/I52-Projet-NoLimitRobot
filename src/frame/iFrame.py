@@ -2,7 +2,7 @@ import frame.rootManager as rootManager
 
 import utils.fileUtils as filsUtils
 
-from tkinter import Button, Label, Text, Scale, Frame, Canvas, Radiobutton, Entry
+from tkinter import Button, Label, Text, Scale, Frame, Canvas, Radiobutton, Entry, messagebox
 from tkinter.ttk import Combobox, Checkbutton
 from PIL import ImageTk
 
@@ -207,6 +207,16 @@ class IFrame():
     def reopenLastFrame(self):
         if (self.previousFrame is not None):
             rootManager.runNewFrame(self.previousFrame)
+
+    def createButtonHelp(self, master=None, msg=""):
+        if (master is None):
+            master = rootManager.getRoot()
+
+        buttonTk = self.createButton(master=master, text="Aide", cmd=lambda: self.askHelp(msg))
+        return buttonTk
+
+    def askHelp(self, msg):
+        messagebox.showinfo(title="Aide", message=msg)
 
     def getScreenDimensions(self, master):
         return (master.winfo_screenwidth(), master.winfo_screenheight())

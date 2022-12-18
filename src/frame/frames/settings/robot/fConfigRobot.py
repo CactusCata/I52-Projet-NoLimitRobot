@@ -24,7 +24,7 @@ class FConfigRobot(IFrame):
         buttonDeleteRobot = super().createButton(text="Supprimer robot", cmd=lambda:rootManager.runNewFrame(FDeleteRobot(self)))
         buttonDeleteRobot.pack()
 
-        buttonHelp = super().createButton(text="Aide")
+        buttonHelp = super().createButtonHelp(msg="Super aide !!!")
         buttonHelp.pack()
 
         buttonBack = super().createButton(text="Retour", cmd=lambda:super(FConfigRobot, self).reopenLastFrame())
