@@ -1,26 +1,57 @@
-from random import randint
-
 class Map:
 
-    def __init__(self, matrixMap):
-        self.matrixMap = matrixMap
+    def __init__(self, matrixMapBasic):
+
+        # La matrice d'ID contient les id:
+        # air: 0
+        # rocher: 1
+        # joueur: 2
+        # mine: 3
+        self.matrixMapID = []
+
+        # La matrice d'instance contient les instances des objets
+        # manipulés si elles en sont:
+        # air: None
+        # rocher: None
+        # joueur: instance de RobotParty
+        # mine: instance de Mine
+        self.matrixMapInstance = []
+
+        self.dimX = len(matrixMapBasic)
+        self.dimY = len(matrixMapBasic[0])
 
         # Initialisation du nombre de rocher
         self.rockAmount = 0
-        for line in self.matrixMap:
-            for col in line:
-                if col == 1:
+        for i in range(self.dimX):
+            lineMatrixID = []
+            lineMatrixData = []
+            for j in range(self.dimY):
+                if matrixMapBasic[i][j] == 1:
                     self.rockAmount += 1
+                    lineMatrixID.append(1)
+                    lineMatrixData.append(None)
+                elif matrixMapBasic[i][j] == 0:
+                    lineMatrixID.append(0)
+                    lineMatrixData.append(None)
+            self.matrixMapID.append(lineMatrixID)
+            self.matrixMapInstance.append(lineMatrixData)
+
+    def getDimX(self):
+        return self.dimX
+
+    def getDimY(self):
+        return self.dimY
 
     def clear(self):
         """
         Remplie la map de vide
         """
-        matrix = []
-        for i in range(len(self.matrixMap)):
-            matrix.append([0] * len(self.matrixMap[0]))
 
-        self.matrixMap = matrix
+        for i in range(self.dimX):
+            for j in range(self.dimY):
+                self.matrixMapID[i][j] = 0
+                self.matrixMapInstance[i][j] = None
+
         self.rockAmount = 0
 
     def isAccessible(self, pos):
@@ -28,7 +59,7 @@ class Map:
         Renvoie vrai si la case demandé est bien dans les dimensions de la map et que la case est accessible.
         Renvoie faux sinon
         """
-        return 0 <= pos[0] < len(self.matrixMap) and 0 <= pos[1] < len(self.matrixMap[1]) and self.get(pos[0], pos[1]) == 0
+        return 0 <= pos[0] < self.dimX and 0 <= pos[1] < self.dimY and self.getID(pos[0], pos[1]) == 0
 
     def getRockAmount(self):
         """
@@ -43,22 +74,22 @@ class Map:
         """
         # Coin inférieur gauche
         if (x > 0 and y < 29):
-            if self.get(x - 1, y + 1) == 0 and self.get(x - 1, y) == 1 and self.get(x, y + 1) == 1:
+            if self.getID(x - 1, y + 1) == 0 and self.getID(x - 1, y) == 1 and self.getID(x, y + 1) == 1:
                 return False
 
         # Coin supérieur gauche
         if (x > 0 and y > 0):
-            if self.get(x - 1, y - 1) == 0 and self.get(x - 1, y) == 1 and self.get(x, y - 1) == 1:
+            if self.getID(x - 1, y - 1) == 0 and self.getID(x - 1, y) == 1 and self.getID(x, y - 1) == 1:
                 return False
 
         # Coin supérieur droit
         if (x < 19 and y > 0):
-            if self.get(x + 1, y - 1) == 0 and self.get(x + 1, y) == 1 and self.get(x, y - 1) == 1:
+            if self.getID(x + 1, y - 1) == 0 and self.getID(x + 1, y) == 1 and self.getID(x, y - 1) == 1:
                 return False
 
         # Coin inférieur droit
         if (x < 19 and y < 29):
-            if self.get(x + 1, y + 1) == 0 and self.get(x + 1, y) == 1 and self.get(x, y + 1) == 1:
+            if self.getID(x + 1, y + 1) == 0 and self.getID(x + 1, y) == 1 and self.getID(x, y + 1) == 1:
                 return False
 
         return True
@@ -68,14 +99,15 @@ class Map:
         Place un bloc d'air si les conditions de canPlaceAir(x,y)
         sont respectées
         """
-        if (self.get(x, y) == 0):
+        if (self.getID(x, y) == 0):
             return False
 
         if not self.canPlaceAir(x, y):
             return False
 
         self.rockAmount -= 1
-        self.matrixMap[x][y] = 0
+        self.matrixMapID[x][y] = 0
+        self.matrixMapInstance[x][y] = None
         return True
 
     def canPlaceRock(self, x, y):
@@ -85,22 +117,22 @@ class Map:
         """
         # Coin inférieur gauche
         if (x > 0 and y < 29):
-            if self.get(x - 1, y + 1) == 1 and self.get(x - 1, y) == 0 and self.get(x, y + 1) == 0:
+            if self.getID(x - 1, y + 1) == 1 and self.getID(x - 1, y) == 0 and self.getID(x, y + 1) == 0:
                 return False
 
         # Coin supérieur gauche
         if (x > 0 and y > 0):
-            if self.get(x - 1, y - 1) == 1 and self.get(x - 1, y) == 0 and self.get(x, y - 1) == 0:
+            if self.getID(x - 1, y - 1) == 1 and self.getID(x - 1, y) == 0 and self.getID(x, y - 1) == 0:
                 return False
 
         # Coin supérieur droit
         if (x < 19 and y > 0):
-            if self.get(x + 1, y - 1) == 1 and self.get(x + 1, y) == 0 and self.get(x, y - 1) == 0:
+            if self.getID(x + 1, y - 1) == 1 and self.getID(x + 1, y) == 0 and self.getID(x, y - 1) == 0:
                 return False
 
         # Coin inférieur droit
         if (x < 19 and y < 29):
-            if self.get(x + 1, y + 1) == 1 and self.get(x + 1, y) == 0 and self.get(x, y + 1) == 0:
+            if self.getID(x + 1, y + 1) == 1 and self.getID(x + 1, y) == 0 and self.getID(x, y + 1) == 0:
                 return False
 
         return True
@@ -110,7 +142,7 @@ class Map:
         Place un bloc de roche si les conditions de canPlaceRock(x,y)
         sont respectées
         """
-        if (self.get(x, y) == 1):
+        if (self.getID(x, y) == 1):
             return False
 
         if not self.canPlaceRock(x, y):
@@ -118,30 +150,28 @@ class Map:
 
 
         self.rockAmount += 1
-        self.matrixMap[x][y] = 1
+        self.matrixMapID[x][y] = 1
+        self.matrixMapInstance[x][y] = None
         return True
-
-    def placeTerreplein(self, x, y):
-        """
-        Place un terreplain en (x,y)
-        """
-        if (self.matrixMap[x][y] == 1):
-            self.rockAmount -= 1
-
-        self.matrixMap[x][y] = 2
 
     def getMatrix(self):
         """
         Renvoie la matrice correspondant à l'état
         de la map
         """
-        return self.matrixMap
+        return self.matrixMapID
 
-    def get(self, x, y):
+    def getID(self, x, y):
         """
-        Renvoie la valeur en (x,y) de la map
+        Renvoie l'ID en (x,y) de la map
         """
-        return self.matrixMap[x][y]
+        return self.matrixMapID[x][y]
+
+    def getData(self, x, y):
+        """
+        Renvoie l'instance de l'objet en (x,y) de la map
+        """
+        return self.matrixMapInstance[x][y]
 
     def modify(self, x, y, type_obj):
         """
@@ -153,4 +183,4 @@ class Map:
         3 est pour les mines (case "libre" pour les déplacements, mais bloquante
         pour les projectiles)
         """
-        self.matrixMap[x][y] = type_obj
+        self.matrixMapID[x][y] = type_obj

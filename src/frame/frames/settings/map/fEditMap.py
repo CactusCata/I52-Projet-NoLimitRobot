@@ -3,7 +3,7 @@ import map.mapManager as mapManager
 from map.mapManager import MAP_LINE_AMOUNT, MAP_COL_AMOUNT, MAP_MAX_ROCK_AMOUNT, MAP_MAX_ROCK_PERCENTAGE
 import image.imageManager as imageManager
 
-import utils.tkinter.tkUtils as tkUtils
+from utils.tkinter.tkPerformer import TkPerformer
 
 from tkinter import StringVar
 
@@ -21,6 +21,8 @@ class FEditMap(IFrame):
         self.map = None
         self.mapName = None
         self.mapDrawer = None
+
+        self.currentMapHasChanged = False
 
     def draw(self):
         root = rootManager.getRoot()
@@ -67,7 +69,7 @@ class FEditMap(IFrame):
         buttonHelp = super().createButton(text="Aide")
         buttonHelp.place(x=1050, y=550)
 
-        buttonReturn = super().createButton(text="Retour", cmd=lambda:super(FEditMap, self).reopenLastFrame())
+        buttonReturn = super().createButton(text="Retour", cmd=lambda:self.tryToReopenLastFrame())
         buttonReturn.place(x=1050, y=600)
 
     def scalebarChangeEvent(self, event):
@@ -88,6 +90,7 @@ class FEditMap(IFrame):
 
             # Proposer de sauvegarder l'état de la map
             self.buttonSaveMap['state'] = "normal"
+            self.currentMapHasChanged = True
         
 
     def updateRockAmountLabel(self):
@@ -117,7 +120,7 @@ class FEditMap(IFrame):
         while (self.map.getRockAmount() < rockAmountNeeded):
             for i in range(MAP_LINE_AMOUNT):
                 for j in range(MAP_COL_AMOUNT):
-                    if self.map.get(i, j) != 1: # Si un rocher n'est pas présent
+                    if self.map.getID(i, j) != 1: # Si un rocher n'est pas présent
                         if uniform(0, 1) * 100 < percentageOfRock: # on essaye d'en placer un
                             if (self.map.placeRock(i, j)):
                                 rocksPlaces.append((i, j))
@@ -161,6 +164,7 @@ class FEditMap(IFrame):
                 img = imageManager.IMG_MAP_AIR_TK
 
         if (img != None): # Si le bloc a changé, alors on supprime l'ancien bloc et on dessine le nouveau
+            self.currentMapHasChanged = True
             self.updateRockAmountLabel()
             self.canvasMap.delete(id)
             self.mapDrawer.drawImage(img, line, col, tag=f"figure:{line},{col}")
@@ -184,6 +188,16 @@ class FEditMap(IFrame):
         """
 
         # Nom de la carte sélectionnée
+        currentMapName = self.comboBoxMapName.get()
+
+        if (self.currentMapHasChanged and self.mapName != currentMapName):
+            returnCode = TkPerformer(rootManager.getRoot(), "Editeur de map", "Voulez-vous sauvegarder les modifications ?").run()
+            if (returnCode == 0):
+                self.saveMap()
+            elif (returnCode == 2):
+                self.comboBoxMapName.current(self.comboBoxMapName.current())
+                return
+
         self.mapName = self.comboBoxMapName.get()
 
         # object map associé
@@ -200,3 +214,15 @@ class FEditMap(IFrame):
         """
         mapManager.saveMap(self.mapName, self.map)
         self.buttonSaveMap['state'] = "disabled"
+        self.currentMapHasChanged = False
+
+    def tryToReopenLastFrame(self):
+
+        if (self.currentMapHasChanged):
+            returnCode = TkPerformer(rootManager.getRoot(), "Editeur de map", "Voulez-vous sauvegarder les modifications ?").run()
+            if (returnCode == 0):
+                self.saveMap()
+            elif (returnCode == 1):
+                return
+
+        super(FEditMap, self).reopenLastFrame()
