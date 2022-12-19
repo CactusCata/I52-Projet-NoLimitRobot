@@ -1,6 +1,7 @@
 import frame.rootManager as rootManager
 
-from frame.iFrame import IFrame
+from frame.iFrame import IFrame, help_activated
+from frame.messagesHelp import HELP_FSETTINGS
 
 from frame.frames.settings.map.fConfigMap import FConfigMap
 from frame.frames.settings.robot.fConfigRobot import FConfigRobot
@@ -23,11 +24,15 @@ class FSettings(IFrame):
         buttonDeleteParty = super().createButton(text="Supprimer une partie", cmd=lambda:rootManager.runNewFrame(FDeleteParty(self)))
         buttonDeleteParty.pack()
 
-        comboBoxFullScreen = super().createCheckButton(text="Plein ecran", callback=lambda:self.toggleFullScreen())
-        comboBoxFullScreen.pack()
+        #comboBoxFullScreen = super().createCheckButton(text="Plein ecran", callback=lambda:self.toggleFullScreen())
+        #comboBoxFullScreen.pack()
 
         comboBoxEnableHelp = super().createCheckButton(text="Activer l'aide", callback=lambda:self.toggleHelp())
         comboBoxEnableHelp.pack()
+
+        if help_activated == True:
+            buttonHelp = super().createButtonHelp(master = root, msg=HELP_FSETTINGS)
+            buttonHelp.pack()
 
         buttonBack = super().createButton(text="Retour", cmd=super(FSettings, self).reopenLastFrame)
         buttonBack.pack()
@@ -37,3 +42,5 @@ class FSettings(IFrame):
 
     def toggleHelp(self):
         print("Help has been toggled")
+        global help_activated
+        help_activated = False

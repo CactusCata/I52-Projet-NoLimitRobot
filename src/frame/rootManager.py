@@ -25,7 +25,7 @@ def initRoot():
 
     # Dimensionne la fenêtre en fonction de l'écran de l'utilisateur
     # et bloque le dimensionnement de la fenêtre
-    dimensions = tkUtils.setupRootGeometry(root, ratio=1)
+    dimensions = tkUtils.setupRootGeometry(root, ratio=0.9)
     tkUtils.lockRootDimensions(root, dimensions)
 
     # Applique quelques propriétés à la fenêtre

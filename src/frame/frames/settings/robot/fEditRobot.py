@@ -3,7 +3,8 @@ import robot.robotManager as robotManager
 import utils.instructionUtils as instructionUtils
 import instruction.instructionAnalyser as instructionAnalyser
 
-from frame.iFrame import IFrame
+from frame.iFrame import IFrame, help_activated
+from frame.messagesHelp import HELP_FEDITROBOT
 from robot.robotFile import RobotFile
 from utils.tkinter.tkPerformer import TkPerformer
 
@@ -67,8 +68,9 @@ class FEditRobot(IFrame):
         self.buttonSave.pack()
 
         # Aide
-        buttonHelp = super().createButton(master=frameRobot, text="Aide")
-        buttonHelp.pack()
+        if help_activated == True:
+            buttonHelp = super().createButtonHelp(master = root, msg=HELP_FEDITROBOT)
+            buttonHelp.pack()
 
         # Retour
         buttonBack = super().createButton(master=frameRobot, text="Retour", cmd=lambda:self.tryToReopenLastFrame())
@@ -128,7 +130,7 @@ class FEditRobot(IFrame):
             for i in range(len(instructions) - 1):
                 self.instructTextBox.insert(float(i + 1), instructions[i] + '\n')
             self.instructTextBox.insert(float(len(instructions)), instructions[len(instructions) - 1])
- 
+
     def saveRobotConfig(self):
         """
         Sauvegarde les changements du robot
@@ -144,7 +146,7 @@ class FEditRobot(IFrame):
 
         if (self.labelInstructError["text"] != ""):
             self.labelInstructError["text"] = ""
-            
+
         robotInstructions = robotInstructionText.split('\n')
         robotManager.updateRobot(robotName, robotDescription, robotInstructions)
         self.buttonSave["state"] = "disabled"
