@@ -2,16 +2,18 @@ import math
 
 class RobotChooser:
 
-    def __init__(self, canvas, robotsFileList=[], xStart=10, yStart=10, xPas=22, yPas=22):
+    def __init__(self, canvas, robotsFileList=[], xStart=10, yStart=10, xPas=22, yPas=22, imageDimension=20):
         self.canvas = canvas
         self.robotsFileList = robotsFileList
+        self.dictIdRobotFile = {}
 
         self.xStart = xStart
         self.yStart = yStart
         self.xPas = xPas
         self.yPas = yPas
+        self.imageDimensions = imageDimension
 
-        self.matrixDim = math.floor(math.sqrt(len(robotsFileList)))
+        self.matrixDim = math.ceil(math.sqrt(len(robotsFileList)))
 
     def drawGrid(self):
         lineSize = self.matrixDim * self.xPas
@@ -31,10 +33,20 @@ class RobotChooser:
             col = 0
             while (col < self.matrixDim) and (line * self.matrixDim + col < len(self.robotsFileList)):
                 robotFile = self.robotsFileList[line * self.matrixDim + col]
-                imgToDraw = robotFile.getLogo()
+                robotFile.load_logo(self.imageDimensions[0], self.imageDimensions[1])
+                robotFile.load_logo_tk()
+                imgToDraw = robotFile.get_logo_tk()
 
-                self.drawImage(imgToDraw, line, col, tag=f"robot:{line * self.matrixDim + col}")
+                id = self.drawImage(imgToDraw, line, col, tag=f"robot:{line * self.matrixDim + col}")
+                self.dictIdRobotFile[id] = robotFile
+                col += 1
+
+            line += 1
                 
 
     def drawImage(self, img, line, col, tag=""):
-        self.canvas.create_image(col*self.xPas + (self.xPas - 1), line*self.yPas + (self.yPas - 1), image=img, tag=(tag,))
+        # Juste
+        return self.canvas.create_image(self.imageDimensions[0] // 2 + self.xStart + col * self.xPas, self.imageDimensions[1] // 2 + self.yStart + line * self.yPas, image=img, tag=(tag,))
+
+    def getRobotFile(self, id):
+        return self.dictIdRobotFile[id]

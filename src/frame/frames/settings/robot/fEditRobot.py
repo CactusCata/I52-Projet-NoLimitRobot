@@ -114,9 +114,10 @@ class FEditRobot(IFrame):
         self.currentRobotFile = RobotFile(robotSelectedName)
 
         # Mise a jour du logo
-        self.currentRobotFile.load_logo()
+        self.currentRobotFile.load_logo(dimX=100, dimY=100)
+        self.currentRobotFile.load_logo_tk()
         self.canvasLogo.delete("all")
-        self.canvasLogo.create_image(50, 50, image=self.currentRobotFile.get_logo())
+        self.canvasLogo.create_image(50, 50, image=self.currentRobotFile.get_logo_tk())
 
         # Suppression du contenu des boite à texte
         self.entryDescription.delete(0,"end")

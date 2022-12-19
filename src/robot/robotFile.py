@@ -50,14 +50,28 @@ class RobotFile():
         Pour charger le logo du robot, il est nécéssaire
         d'executer la méthode robotFile.load_logo()
         """
+        return self.__logoImg != None
+
+    def logo_tk_is_loaded(self):
+        """
+        Renvoie:
+            - True si le logo a bien été chargé
+            - False si le logo n'a pas été chargé
+
+        Pour charger le logo du robot, il est nécéssaire
+        d'executer la méthode robotFile.load_logo()
+        """
         return self.__logoTk != None
 
-    def load_logo(self):
+    def load_logo(self, dimX=100, dimY=100):
         """
         Charge en mémoire l'image logo du reobot
         """
         if (not self.logo_is_loaded()):
-            self.__logoImg = imageManager.loadImage(self.get_logo_path(), dimX=100, dimY=100)
+            self.__logoImg = imageManager.loadImage(self.get_logo_path(), dimX=dimX, dimY=dimY)
+
+    def load_logo_tk(self):
+        if (not self.logo_tk_is_loaded()):
             self.__logoTk = imageManager.loadImageTk(self.__logoImg)
 
     def get_logo(self):
@@ -65,4 +79,7 @@ class RobotFile():
         Renvoie une instance de l'image du logo pour tkinter.
         Doit d'abord est chargé via la méthode robotFile.load_logo()
         """
+        return self.__logoImg
+    
+    def get_logo_tk(self):
         return self.__logoTk

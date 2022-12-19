@@ -1,13 +1,18 @@
 import frame.rootManager as rootManager
 import robot.robotManager as robotManager
+import player.playerManager as playerManager
+import utils.otherUtils as otherUtils
 
 from robot.robotFile import RobotFile
 from robot.robotChooser import RobotChooser
 
 from frame.frames.party.fPPartyConfig import FPPartyConfig
 
+import utils.tkinter.tkUtils as tkUtils
+
 from frame.iFrame import IFrame
 
+MIN_PLAYER_AMOUNT = 2
 MAX_PLAYER_AMOUNT = 6
 
 class FPPlayerConfig(IFrame):
@@ -18,30 +23,45 @@ class FPPlayerConfig(IFrame):
     def draw(self):
 
         robotsNames = robotManager.getLoadedRobots()
-        print(f"Loaded robots: {robotsNames}")
+
+        # Remet à zero la liste des joueurs
+        playerManager.initPlayerList()
 
         robotsFile = []
         for robotName in robotsNames:
             robotsFile.append(RobotFile(robotName))
 
+        frameRobotSelection = super().createFrame()
+        frameRobotSelection.pack(side="left", ipadx=40)
         # Canvas qui contient la liste des robots choisissables
-        self.canvas = super().createCanvas(width=300, height=300)
+        self.canvas = super().createCanvas(master=frameRobotSelection, width=300, height=300)
         self.canvas.pack()
 
-        self.robotChooser = RobotChooser(self.canvas, robotsFile)
+        
+        framePlayerSection = super().createFrame()
+        framePlayerSection.pack(side="right", ipadx=40)
+        # canvas et textes des robots-joueurs
+        self.canvasPlayerList = []
+        self.labelPlayerList = []
+        for i in range(6):
+            currentCanvasPlayer = super().createCanvas(master=framePlayerSection, width=30, height=30)
+            currentCanvasPlayer.pack()
+            self.canvasPlayerList.append(currentCanvasPlayer)
+            currentLabelPlayer = super().createLabel(master=framePlayerSection, text=f"Joueur {i}")
+            currentLabelPlayer.pack()
+            self.labelPlayerList.append(currentLabelPlayer)
+
+        self.robotChooser = RobotChooser(self.canvas, robotsFile, xPas=42, yPas=42, imageDimension=(40,40))
         self.robotChooser.drawGrid()
         self.robotChooser.drawRobots()
 
         self.canvas.bind("<Motion>", lambda event:self.moveMouse(event.x, event.y))
         self.canvas.bind("<Button-1>", lambda event:self.clickEvent(event.x, event.y))
 
-        # Association entre un joueur numero i correspondant
-        # à l'indice dans la liste playersRobot et son robotFile    
-        self.playersRobot = [None] * MAX_PLAYER_AMOUNT
-        self.playerRobotCursor = 0
-
         # id du robot sous le curseur
         self.robotSelectedID = -1
+
+        self.playerRobotCursor = 0
 
         self.buttonConfirmRobot = super().createButton(text="Confirmer robot", cmd=lambda event: self.confirmRobot(event))
         self.buttonConfirmRobot.pack()
@@ -64,21 +84,31 @@ class FPPlayerConfig(IFrame):
         if (self.playerRobotCursor >= MAX_PLAYER_AMOUNT):
             return
 
-        self.playersRobot[self.playerRobotCursor] = robotFile
+        if (len(playerManager.PLAYER_LIST) <= self.playerRobotCursor):
+            playerManager.addPlayer(robotFile)
+        else:
+            playerManager.updatePlayer(robotFile, self.playerRobotCursor)
+
+        player = playerManager.getPlayer(self.playerRobotCursor)
+        logoPlayer = player.getIconTk()
+        currentCanvas = self.canvasPlayerList[self.playerRobotCursor]
+        currentCanvas.create_image(20, 20, image=logoPlayer)
+        currentLabel = self.labelPlayerList[self.playerRobotCursor]
+        currentLabel["text"] = f"Joueur {self.playerRobotCursor + 1} : {player.getRobotFile().get_name()}"
     
     def confirmRobot(self, event):
 
         if (self.playerRobotCursor >= MAX_PLAYER_AMOUNT):
             return
 
-        self.canvas.create_text(20 * self.playerRobotCursor, 280, text=f"player {self.playerRobotCursor + 1}")
-        self.canvas.create_image(20 * self.playerRobotCursor, 250, image=self.playersRobot[self.playerRobotCursor])
+        playerManager.getPlayer(self.playerRobotCursor)
 
         self.playerRobotCursor += 1
         
         if (self.playerRobotCursor >= 3):
             self.buttonNext["state"] = "normal"
 
+        # FAIRE LE BOUTON DE CONFIRMATION ICI  ET TOUT CE QUI SUIT            
 
         
     def moveMouse(self, x, y):
@@ -87,10 +117,17 @@ class FPPlayerConfig(IFrame):
 
         # Ne pas traiter le cas où il n'y a pas d'élément à inspecter
         if (len(ids) == 0):
+            if (self.robotSelectedID != -1):
+                self.canvas.move(self.robotSelectedID, -5, -5)
             self.robotSelectedID = -1
             return
 
         id = ids[0]
+        tag = tkUtils.itemHasTag(self.canvas, id, tkUtils.startWithFunction, "robot")
+
+        if (tag == None):
+            return None
+
         if (id != self.robotSelectedID):
             self.canvas.move(id, 5, 5)
             self.canvas.move(self.robotSelectedID, -5, -5)
