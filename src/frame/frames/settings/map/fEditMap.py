@@ -9,7 +9,8 @@ from tkinter import StringVar
 
 from map.mapDrawer import MapDrawer
 
-from frame.iFrame import IFrame
+from frame.iFrame import IFrame, help_activated
+from frame.messagesHelp import HELP_FEDITMAP
 
 from random import uniform, randint
 
@@ -58,7 +59,7 @@ class FEditMap(IFrame):
 
         # bouton pour regenerer une map avec le pourcentage
         # de rocher de la scalebar
-        self.buttonRegenerateRandomMap = super().createButton(text="Regenerer la map", cmd=lambda:self.scalebarChangeEvent(None)) 
+        self.buttonRegenerateRandomMap = super().createButton(text="Regenerer la map", cmd=lambda:self.scalebarChangeEvent(None))
         self.buttonRegenerateRandomMap.place(x=1050, y=400)
 
         # Bouton de sauvegarde de l'état de la map
@@ -66,8 +67,9 @@ class FEditMap(IFrame):
         self.buttonSaveMap['state'] = "disabled"
         self.buttonSaveMap.place(x=1050, y=500)
 
-        buttonHelp = super().createButton(text="Aide")
-        buttonHelp.place(x=1050, y=550)
+        if help_activated == True:
+            buttonHelp = super().createButtonHelp(master = root, msg=HELP_FEDITMAP)
+            buttonHelp.place(x=1050, y=550)
 
         buttonReturn = super().createButton(text="Retour", cmd=lambda:self.tryToReopenLastFrame())
         buttonReturn.place(x=1050, y=600)

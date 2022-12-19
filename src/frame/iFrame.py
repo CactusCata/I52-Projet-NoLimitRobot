@@ -6,6 +6,8 @@ from tkinter import Button, Label, Text, Scale, Frame, Canvas, Radiobutton, Entr
 from tkinter.ttk import Combobox, Checkbutton
 from PIL import ImageTk
 
+help_activated = True
+
 class IFrame():
 
     def __init__(self, previousFrame=None):
@@ -214,6 +216,22 @@ class IFrame():
 
         buttonTk = self.createButton(master=master, text="Aide", cmd=lambda: self.askHelp(msg))
         return buttonTk
+
+    def modifyButton(self, button, bg = None, fg = "#111111", bd = 4, ab = None, af = None, relief = "flat", overrelief = "sunken"):
+        if bg != None:
+            button["bg"] = bg
+        if fg != None:
+            button["fg"] = fg
+        if bd != None:
+            button["bd"] = bd
+        if ab != None:
+            button["activebackground"] = ab
+        if af != None:
+            button["activeforeground"] = af
+        if relief != None:
+            button["relief"] = relief
+        if overrelief != None:
+            button["overrelief"] = overrelief
 
     def askHelp(self, msg):
         messagebox.showinfo(title="Aide", message=msg)

@@ -1,7 +1,8 @@
 import frame.rootManager as rootManager
 import robot.robotManager as robotManager
 
-from frame.iFrame import IFrame
+from frame.iFrame import IFrame, help_activated
+from frame.messagesHelp import HELP_FDELETEROBOT
 
 from tkinter import messagebox
 
@@ -22,8 +23,9 @@ class FDeleteRobot(IFrame):
         confirmButton = super().createButton(text="Supprimer", cmd=lambda:self.confirmButtonAction())
         confirmButton.pack()
 
-        buttonHelp = super().createButton(text="Aide")
-        buttonHelp.pack()
+        if help_activated == True:
+            buttonHelp = super().createButtonHelp(master = root, msg=HELP_FCREATEROBOT)
+            buttonHelp.pack()
 
         buttonBack = super().createButton(text="Retour", cmd=lambda:super(FDeleteRobot, self).reopenLastFrame())
         buttonBack.pack()

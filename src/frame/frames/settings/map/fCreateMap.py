@@ -3,7 +3,8 @@ import map.mapManager as mapManager
 
 from tkinter import messagebox
 
-from frame.iFrame import IFrame
+from frame.iFrame import IFrame, help_activated
+from frame.messagesHelp import HELP_FCREATEMAP
 
 class FCreateMap(IFrame):
 
@@ -11,6 +12,8 @@ class FCreateMap(IFrame):
         super().__init__(previousFrame)
 
     def draw(self):
+        root = rootManager.getRoot()
+        
         mapNameLabel = super().createLabel(text="Nom de la map:")
         mapNameLabel.pack()
 
@@ -20,8 +23,9 @@ class FCreateMap(IFrame):
         confirmButton = super().createButton(text="Confirmer", cmd=lambda:self.confirmButtonAction())
         confirmButton.pack()
 
-        helpButton = super().createButton(text="Aide")
-        helpButton.pack()
+        if help_activated == True:
+            helpButton = super().createButtonHelp(master = root, msg=HELP_FCREATEMAP)
+            helpButton.pack()
 
         returnButton = super().createButton(text="Retour", cmd=super().reopenLastFrame)
         returnButton.pack()
