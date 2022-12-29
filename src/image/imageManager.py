@@ -22,7 +22,7 @@ def loadImage(path, dimX=20, dimY=20):
         return None
 
     img = Image.open(path)
-    img = img.resize((dimX,dimY), Image.ANTIALIAS)
+    img = img.resize((dimX,dimY))
     return img
 
 def loadImagesTk():

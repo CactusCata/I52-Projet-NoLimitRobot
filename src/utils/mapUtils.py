@@ -51,18 +51,21 @@ def generateEquidistanceRobotsPositions(map, playerAmount):
     pour répartir les robots.
     Les positionnes à des endroits où la case est accessible.
     """
-    
+    print("Appel de generateEquidistanceRobotsPositions(...)")
+
     robotsPositions = []
     mapDimX = map.getDimX()
     mapDimY = map.getDimY()
 
     for i in range(playerAmount):
         alpha = (2 * math.pi * i) / playerAmount
-        robotPosition = (int(math.cos(alpha) * mapDimX * 0.8)), int((math.sin(alpha) * mapDimY * 0.8))
+        robotPosition = (int((1 + math.cos(alpha)) * mapDimX * 0.4), int((1 + math.sin(alpha)) * mapDimY * 0.4))
+        print(f"robot number {i}")
         robotPosition = generateValideRobotPosition(map, robotPosition)
         robotsPositions.append(robotPosition)
 
-    return robotPosition
+    print(f"generateEquidistanceRobotsPositions(...): {robotPosition}")
+    return robotsPositions
 
 def generateValideRobotPosition(map, robotPosition):
     """
@@ -71,18 +74,19 @@ def generateValideRobotPosition(map, robotPosition):
     """
     validposition = None
     j = 0
-    while not hasFoundPossiblePosition:
+    while validposition is None:
         possiblesPositions = generateSquarePositions(j)
         random.shuffle(possiblesPositions)
 
         k = 0
-        while k < len(possiblesPositions) and not hasFoundPossiblePosition:
+        while k < len(possiblesPositions) and validposition is None:
             currentSelectedPosition = possiblesPositions[k]
 
+            print(f"robotPosition = {robotPosition} | currentSelectedPosition = {currentSelectedPosition}")
+
             # Si la case est accessible, on arrête la recherche de case valide
-            if map.isAccessible(robotPosition[0] + currentSelectedPosition[0], robotPosition[1] + currentSelectedPosition):
-                validposition = (robotPosition[0] + currentSelectedPosition[0], robotPosition[1] + currentSelectedPosition)
-                hasFoundPossiblePosition = True
+            if map.isAccessible((robotPosition[0] + currentSelectedPosition[0], robotPosition[1] + currentSelectedPosition[1])):
+                validposition = ((robotPosition[0] + currentSelectedPosition[0], robotPosition[1] + currentSelectedPosition[1]))
             
             k += 1
         
@@ -115,3 +119,103 @@ def generateSquarePositions(n):
         positions.append((n, n))
 
     return positions
+
+def getMinimalFCost(fCostMatrix):
+    """
+    Renvoie un couple (x,y) de coordonnées qui correspond au
+    cout minimal de la matrice
+    """
+    x = 0
+    y = 0
+    while (y < len(fCostMatrix) and fCostMatrix[x][y] != -1):
+        x = 0
+        while (x < len(fCostMatrix[0]) and fCostMatrix[x][y] != 1):
+            x += 1
+        y += 1
+    
+    minCost = fCostMatrix[x][y]
+    minCostX = x
+    minCostY = y
+    while (y < len(fCostMatrix) and fCostMatrix[x][y] != -1):
+        x = 0
+        while (x < len(fCostMatrix[0]) and fCostMatrix[x][y] != 1):
+            if (fCostMatrix[x][y] < minCost):
+                minCost = fCostMatrix[x][y]
+                minCostX = x
+                minCostY = y
+            x += 1
+        y += 1
+
+    return (minCostX, minCostY)
+
+
+def getPath(map, startPos, endPos):
+    """
+    """
+
+    # Contient la liste des cases vertes (pas encore évaluées)
+    open = []
+
+    # Contient la liste des cases rouges (non évaluées)
+    closed = []
+
+    # Nombre de déplacement pour chaque case
+    deplacementCount = [[-1] * map.getDimX()] * map.getDimY()
+
+    gcost = [[-1] * map.getDimX()] * map.getDimY()
+    hcost = [[-1] * map.getDimX()] * map.getDimY()
+    fcost = [[-1] * map.getDimX()] * map.getDimY()
+
+    parentCase = [[-1] * map.getDimX()] * map.getDimY()
+    # La case de départ se caractérise par la valeur None
+    parentCase[startPos[0]][startPos[1]] = None
+
+    addPointTo(open, startPos, endPos, startPos, deplacementCount, gcost, hcost, fcost, -1)
+
+    while True:
+        current = getMinimalFCost(fcost)
+        open.remove(current)
+        closed.append(current)
+
+        if (current == endPos):
+            break
+
+        for neighbour in getNeighbour(map, current):
+
+            if (neighbour in closed):
+                continue
+
+            if neighbour not in open:#ajouter l'autre condition ici
+                gcost[neighbour[0]][neighbour[1]] = mathsUtils.distance_tchebychev(startPos, neighbour)
+                hcost[neighbour[0]][neighbour[1]] = mathsUtils.distance_tchebychev(neighbour, endPos)
+                fcost[neighbour[0]][neighbour[1]] = gcost[neighbour[0]][neighbour[1]] + hcost[neighbour[0]][neighbour[1]]
+                parentCase[neighbour[0]][neighbour[1]] = current
+                if neighbour not in open:
+                    open.append(neighbour)
+
+    parentCasePos = parentCase[endPos[0]][endPos[1]]
+    path = []
+    while parentCasePos != None:
+        path.append(parentCasePos)
+        parentCasePos = parentCase[parentCasePos[0]][parentCasePos[1]]
+
+    path.reverse()
+    return path
+
+def addPointTo(listToAdd, initPos, endPos, pos, deplacementCount, gcost, hcost, fcost, lastNodeDistance):
+    listToAdd.append(pos)
+    gcost[pos[0]][pos[1]] = mathsUtils.distance_tchebychev(initPos, pos)
+    hcost[pos[0]][pos[1]] = mathsUtils.distance_tchebychev(pos, endPos)
+    fcost[pos[0]][pos[1]] = gcost[pos[0]][pos[1]] + hcost[pos[0]][pos[1]]
+    deplacementCount[pos[0]][pos[1]] = lastNodeDistance + 1
+
+
+def getNeighbour(map, pos):
+    validNeighbour = []
+    for i in {-1, 0, 1}:
+        for j in {-1, 0, 1}:
+            if (i != 0 and j != 0):
+                if map.isAccessible(pos[0] + i, pos[1] + j):
+                    validNeighbour.append((pos[0] + i, pos[1] + j))
+    return validNeighbour
+    

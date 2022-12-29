@@ -22,3 +22,4 @@ for i in range(5):
     Robot2.PS(map)
     Robot2.print_position()
     print("=========================MESCOUILLES===================")
+    test = ""

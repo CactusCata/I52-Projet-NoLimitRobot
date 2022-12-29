@@ -17,7 +17,8 @@ class FT(IInstruction):
         """
         Paramètre: robot, map
         """
-        robot = kargs["robot"]
+        player = kargs["player"]
+        robot = player.getRobotParty()
         map = kargs["map"]
 
         super().decreaseRobotEnergy(robot)
@@ -27,9 +28,9 @@ class FT(IInstruction):
         pathsToNextCase = []
         for i in {-1, 0, 1}:
             for j in {-1, 0, 1}:
-                if (i != j):
-                    if map.isAccessible(robot.getX() + i, robot.getY() + j):
-                        pathsToNextCase.append(map.getPath((robot.getX() + i, robot.getY() + j), (nearestRobot.getX(), nearestRobot.getY())))
+                if (i != 0 and j != 0):
+                    if map.isAccessible(robot.get_x() + i, robot.get_y() + j):
+                        pathsToNextCase.append(map.getPath((robot.get_x() + i, robot.get_y() + j), (nearestRobot.get_x(), nearestRobot.get_y())))
 
         farestPath = pathsToNextCase[0]
         for i in range(len(pathsToNextCase)):
@@ -39,4 +40,3 @@ class FT(IInstruction):
         nextCase = farestPath[0]
 
         map.updateRobotPosition(robot, nextCase)
-        robot.move(nextCase)

@@ -1,10 +1,7 @@
 import frame.rootManager as rootManager
 
-import utils.fileUtils as filsUtils
-
 from tkinter import Button, Label, Text, Scale, Frame, Canvas, Radiobutton, Entry, messagebox
 from tkinter.ttk import Combobox, Checkbutton
-from PIL import ImageTk
 
 help_activated = True
 
