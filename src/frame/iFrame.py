@@ -71,7 +71,7 @@ class IFrame():
         if (master is None):
             master = rootManager.getRoot()
 
-        button = Button(master, text=text, command=cmd, bg="#1E1E1E", fg="#ABB2B9", font=("Arial", fontSize))
+        button = Button(master, text=text, command=cmd, bg="#1E1E1E", fg="#ABB2B9", font=("Arial", fontSize), relief="flat", overrelief="sunken", bd = 4)
         self.registerItem(button)
         return button
 
@@ -132,7 +132,6 @@ class IFrame():
         checkButton = Checkbutton(master, text=text, command=callback)
         self.registerItem(checkButton)
         return checkButton
-
 
     def createScalebar(self, master=None, text="", orientation="horizontal", from_=0, to=10, defaultValue=None, length=100, tickInterval=2, resolution=1, fontSize=14, callback=None):
         """
@@ -217,21 +216,11 @@ class IFrame():
         buttonTk = self.createButton(master=master, text="Aide", cmd=lambda: self.askHelp(msg))
         return buttonTk
 
-    def modifyButton(self, button, bg = None, fg = "#111111", bd = 4, ab = None, af = None, relief = "flat", overrelief = "sunken"):
+    def modifyButton(self, button, bg = None, ab = None):
         if bg != None:
             button["bg"] = bg
-        if fg != None:
-            button["fg"] = fg
-        if bd != None:
-            button["bd"] = bd
         if ab != None:
             button["activebackground"] = ab
-        if af != None:
-            button["activeforeground"] = af
-        if relief != None:
-            button["relief"] = relief
-        if overrelief != None:
-            button["overrelief"] = overrelief
 
     def askHelp(self, msg):
         messagebox.showinfo(title="Aide", message=msg)

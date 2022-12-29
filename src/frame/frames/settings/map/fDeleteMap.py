@@ -1,6 +1,8 @@
+import tkinter as tk
+from tkinter import messagebox
+
 import frame.rootManager as rootManager
 import map.mapManager as mapManager
-from tkinter import messagebox
 
 from frame.iFrame import IFrame, help_activated
 from frame.messagesHelp import HELP_FDELETEMAP
@@ -13,8 +15,19 @@ class FDeleteMap(IFrame):
     def draw(self):
         root = rootManager.getRoot()
 
-        mapNameLabel = super().createLabel(text="Nom de la map:")
-        mapNameLabel.pack()
+        if help_activated == True:
+            buttonHelp = super().createButtonHelp(master = root, msg=HELP_FDELETEMAP)
+            super().modifyButton(buttonHelp ,bg = "darkgreen", ab = "green")
+            buttonHelp.pack(anchor = "e", padx = 10, pady = 10)
+
+        labelTitle = super().createLabel(root)
+        labelTitle.pack(side="top")
+
+        frameMainButtons = super().createFrame(root)
+        frameMainButtons.pack(pady=100)
+
+        labelNameMap = super().createLabel(text="Nom de la map:")
+        labelNameMap.pack()
 
         self.mapNameComboBox = super().createComboBox(list=mapManager.getLoadedMaps())
         self.mapNameComboBox.pack()
@@ -22,9 +35,6 @@ class FDeleteMap(IFrame):
         confirmButton = super().createButton(text="Supprimer", cmd=lambda:self.confirmButtonAction())
         confirmButton.pack()
 
-        if help_activated == True:
-            helpButton = super().createButtonHelp(master = root, msg=HELP_FDELETEMAP)
-            helpButton.pack()
 
         returnButton = super().createButton(text="Retour", cmd=lambda:super(FDeleteMap, self).reopenLastFrame())
         returnButton.pack()

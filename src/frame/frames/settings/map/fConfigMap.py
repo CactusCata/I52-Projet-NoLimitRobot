@@ -1,5 +1,6 @@
 import frame.rootManager as rootManager
 
+import tkinter as tk
 from frame.iFrame import IFrame, help_activated
 from frame.messagesHelp import HELP_FCONFIGMAP
 
@@ -15,19 +16,26 @@ class FConfigMap(IFrame):
     def draw(self):
         root = rootManager.getRoot()
 
-        buttonCreateNewMap = super().createButton(text="Créer une map", cmd=lambda: rootManager.runNewFrame(FCreateMap(self)))
-        buttonCreateNewMap.pack()
-
-        buttonEditMap = super().createButton(text="Editer une map", cmd=lambda:rootManager.runNewFrame(FEditMap(self)))
-        buttonEditMap.pack()
-
-        buttonDeleteMap = super().createButton(text="Supprimer une map", cmd=lambda:rootManager.runNewFrame(FDeleteMap(self)))
-        buttonDeleteMap.pack()
-
-
         if help_activated == True:
             buttonHelp = super().createButtonHelp(master = root, msg=HELP_FCONFIGMAP)
-            buttonHelp.pack()
+            super().modifyButton(buttonHelp ,bg = "darkgreen", ab = "green")
+            buttonHelp.pack(anchor = "e", padx = 10, pady = 10)
 
-        buttonReturn = super().createButton(text="Retour", cmd=lambda:super(FConfigMap, self).reopenLastFrame())
-        buttonReturn.pack()
+        labelTitle = super().createLabel(master=root, text="Configuration de la carte", fontSize=30)
+        labelTitle.pack(side="top")
+
+        frameMainButtons = super().createFrame(root)
+        frameMainButtons.pack(pady=100)
+
+        buttonCreateNewMap = super().createButton(master=frameMainButtons, text="Créer une map", cmd=lambda: rootManager.runNewFrame(FCreateMap(self)))
+        buttonCreateNewMap.pack(pady = 15, fill=tk.X)
+
+        buttonEditMap = super().createButton(master=frameMainButtons, text="Editer une map", cmd=lambda:rootManager.runNewFrame(FEditMap(self)))
+        buttonEditMap.pack(pady = 15, fill=tk.X)
+
+        buttonDeleteMap = super().createButton(master=frameMainButtons, text="Supprimer une map", cmd=lambda:rootManager.runNewFrame(FDeleteMap(self)))
+        buttonDeleteMap.pack(pady = 15, fill=tk.X)
+
+        buttonBack = super().createButton(text="Retour", cmd=super(FConfigMap, self).reopenLastFrame)
+        super().modifyButton(buttonBack ,bg = "darkred", ab = "red")
+        buttonBack.pack(side="bottom", anchor="w", padx=10, pady=10)

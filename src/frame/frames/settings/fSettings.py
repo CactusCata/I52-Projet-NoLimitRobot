@@ -1,5 +1,7 @@
-import frame.rootManager as rootManager
 
+import tkinter as tk
+
+import frame.rootManager as rootManager
 from frame.iFrame import IFrame, help_activated
 from frame.messagesHelp import HELP_FSETTINGS
 
@@ -15,27 +17,41 @@ class FSettings(IFrame):
     def draw(self):
         root = rootManager.getRoot()
 
-        buttonConfigMap = super().createButton(text="Configuration des maps", cmd=lambda:rootManager.runNewFrame(FConfigMap(self)))
-        buttonConfigMap.pack()
+        if help_activated == True:
+            buttonHelp = super().createButtonHelp(master = root, msg=HELP_FSETTINGS)
+            super().modifyButton(buttonHelp ,bg = "darkgreen", ab = "green")
+            buttonHelp.pack(anchor = "e", padx = 10, pady = 10)
 
-        buttonConfigRobot = super().createButton(text="Configuration des robots", cmd=lambda:rootManager.runNewFrame(FConfigRobot(self)))
-        buttonConfigRobot.pack()
+        frameTitle = super().createFrame(root)
+        frameTitle.pack(side="top")
 
-        buttonDeleteParty = super().createButton(text="Supprimer une partie", cmd=lambda:rootManager.runNewFrame(FDeleteParty(self)))
-        buttonDeleteParty.pack()
+        frameMainButtons = super().createFrame(root)
+        frameMainButtons.pack(pady=100)
+
+        labelTitle = super().createLabel(master=frameTitle, text="Options", fontSize=30)
+        labelTitle.pack()
+
+
+        buttonConfigMap = super().createButton(master=frameMainButtons, text="Configuration des maps", cmd=lambda:rootManager.runNewFrame(FConfigMap(self)))
+        buttonConfigMap.pack(pady = 15, fill=tk.X)
+
+        buttonConfigRobot = super().createButton(master=frameMainButtons, text="Configuration des robots", cmd=lambda:rootManager.runNewFrame(FConfigRobot(self)))
+        buttonConfigRobot.pack(pady = 15, fill=tk.X)
+
+        buttonDeleteParty = super().createButton(master=frameMainButtons, text="Supprimer une partie", cmd=lambda:rootManager.runNewFrame(FDeleteParty(self)))
+        buttonDeleteParty.pack(pady = 15, fill=tk.X)
 
         #comboBoxFullScreen = super().createCheckButton(text="Plein ecran", callback=lambda:self.toggleFullScreen())
         #comboBoxFullScreen.pack()
 
-        comboBoxEnableHelp = super().createCheckButton(text="Activer l'aide", callback=lambda:self.toggleHelp())
-        comboBoxEnableHelp.pack()
+        comboBoxEnableHelp = super().createCheckButton(master=frameMainButtons, text="Activer l'aide", callback=lambda:self.toggleHelp())
+        #comboBoxEnableHelp["bd"] = 4
+        comboBoxEnableHelp.pack(pady = 30, fill=tk.X)
 
-        if help_activated == True:
-            buttonHelp = super().createButtonHelp(master = root, msg=HELP_FSETTINGS)
-            buttonHelp.pack()
 
         buttonBack = super().createButton(text="Retour", cmd=super(FSettings, self).reopenLastFrame)
-        buttonBack.pack()
+        super().modifyButton(buttonBack ,bg = "darkred", ab = "red")
+        buttonBack.pack(side="bottom", anchor="w", padx=10, pady=10)
 
     def toggleFullScreen(self):
         print("Fullscreen is toggled")
