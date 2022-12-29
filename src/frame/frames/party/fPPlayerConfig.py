@@ -20,6 +20,8 @@ class FPPlayerConfig(IFrame):
     def __init__(self, previousFrame):
         super().__init__(previousFrame)
 
+        self.selectedRobot = False
+
     def draw(self):
 
         robotsNames = robotManager.getLoadedRobots()
@@ -63,12 +65,20 @@ class FPPlayerConfig(IFrame):
 
         self.playerRobotCursor = 0
 
-        self.buttonConfirmRobot = super().createButton(text="Confirmer robot", cmd=lambda event: self.confirmRobot(event))
+        self.buttonConfirmRobot = super().createButton(text="Confirmer robot", cmd=lambda: self.confirmRobot())
         self.buttonConfirmRobot.pack()
 
         self.buttonNext = super().createButton(text="Suivant", cmd=lambda: rootManager.runNewFrame(FPPartyConfig(self)))
         self.buttonNext["state"] = "disabled"
         self.buttonNext.pack()
+
+        # Aide
+        buttonHelp = super().createButtonHelp(msg="aide")
+        buttonHelp.pack()
+
+        # Retour
+        buttonBack = super().createButton(text="Retour", cmd=lambda:super(FPPlayerConfig, self).reopenLastFrame())
+        buttonBack.pack()
 
     def clickEvent(self, x, y):
         id = self.robotSelectedID
@@ -95,11 +105,17 @@ class FPPlayerConfig(IFrame):
         currentCanvas.create_image(20, 20, image=logoPlayer)
         currentLabel = self.labelPlayerList[self.playerRobotCursor]
         currentLabel["text"] = f"Joueur {self.playerRobotCursor + 1} : {player.getRobotFile().get_name()}"
+        self.selectedRobot = True
     
-    def confirmRobot(self, event):
+    def confirmRobot(self):
 
         if (self.playerRobotCursor >= MAX_PLAYER_AMOUNT):
             return
+
+        if not self.selectedRobot:
+            return
+
+        self.labelPlayerList[self.playerRobotCursor]["fg"] = "#00FF00"
 
         playerManager.getPlayer(self.playerRobotCursor)
 
@@ -108,7 +124,7 @@ class FPPlayerConfig(IFrame):
         if (self.playerRobotCursor >= 3):
             self.buttonNext["state"] = "normal"
 
-        # FAIRE LE BOUTON DE CONFIRMATION ICI  ET TOUT CE QUI SUIT            
+        self.selectedRobot = False
 
         
     def moveMouse(self, x, y):

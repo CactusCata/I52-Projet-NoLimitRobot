@@ -14,7 +14,8 @@ class IN(IInstruction):
         """
         Paramètre: robot, map
         """
-        robot = kargs["robot"]
+        player = kargs["player"]
+        robot = player.getRobotParty()
 
         super().decreaseRobotEnergy(robot)
         robot.vanish()

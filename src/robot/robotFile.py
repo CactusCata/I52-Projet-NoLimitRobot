@@ -4,7 +4,7 @@ import image.imageManager as imageManager
 class RobotFile():
     """
     Cette classe contient les informations d'un robot
-    stockés sous forme de fichier dans config/robots/{nom_robot}/instructions.rbt
+    stockées sous forme de fichier dans config/robots/{nom_robot}/instructions.rbt
     Elle permet également de récuperer le chemin du logo du robot
     ainsi que la possibilité de la charger pour tkinter.
     """
@@ -12,10 +12,16 @@ class RobotFile():
     def __init__(self, name):
         self.__name = name
         self.__desc = robotUtils.get_desc_from_name(name)
-        self.__instr = robotUtils.get_instr_from_name(name)
+        instructions = robotUtils.get_instr_from_name(name)
+        self.__dangerInstruction = instructions[0]
+        self.__instr = instructions[1:]
+        print(self.__instr)
         self.__logoPath = robotUtils.get_logo_path_from_name(name)
         self.__logoImg = None
         self.__logoTk = None
+
+    def get_danger_instruction(self):
+        return self.__dangerInstruction
 
     def get_name(self):
         """
@@ -67,8 +73,7 @@ class RobotFile():
         """
         Charge en mémoire l'image logo du reobot
         """
-        if (not self.logo_is_loaded()):
-            self.__logoImg = imageManager.loadImage(self.get_logo_path(), dimX=dimX, dimY=dimY)
+        self.__logoImg = imageManager.loadImage(self.get_logo_path(), dimX=dimX, dimY=dimY)
 
     def load_logo_tk(self):
         if (not self.logo_tk_is_loaded()):

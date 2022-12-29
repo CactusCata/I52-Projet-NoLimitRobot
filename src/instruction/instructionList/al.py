@@ -19,7 +19,8 @@ class AL(IInstruction):
         """
         Paramètre: robot, map
         """
-        robot = kargs["robot"]
+        player = kargs["player"]
+        robot = player.getRobotParty()
         map = kargs["map"]
 
         super().decreaseRobotEnergy(robot)
@@ -27,10 +28,15 @@ class AL(IInstruction):
         possiblesMoves = []
 
         for i in {-1, 1}:
-            if map.isAccessible(robot, (robot.getX() + i, robot.getY())): possiblesMoves.append((robot.getX() + i, robot.getY()))
-            if map.isAccessible(robot, (robot.getX(), robot.getY() + i)): possiblesMoves.append((robot.getX(), robot.getY() + i))
+            if map.isAccessible((robot.get_x() + i, robot.get_y())): possiblesMoves.append((robot.get_x() + i, robot.get_y()))
+            if map.isAccessible((robot.get_x(), robot.get_y() + i)): possiblesMoves.append((robot.get_x(), robot.get_y() + i))
 
-        choosedMove = possiblesMoves[random.randint(0, len(possiblesMoves) - 1)]
+        if (len(possiblesMoves) == 0):
+            print(map.getID(robot.get_x() + 1, robot.get_y()))
+            print(map.getID(robot.get_x() - 1, robot.get_y()))
+            print(map.getID(robot.get_x(), robot.get_y() + 1))
+            print(map.getID(robot.get_x(), robot.get_y() - 1))
+
+        choosedMove = random.choice(possiblesMoves)
 
         map.updateRobotPosition(robot, choosedMove)
-        robot.move(choosedMove)

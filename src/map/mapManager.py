@@ -65,7 +65,7 @@ def saveMap(mapName, map):
     """
     file = open(f"{MAP_FOLDER_PATH}{mapName}.{MAP_EXTENSION_NAME}", "w")
 
-    mapMatrix = map.getMatrix()
+    mapMatrix = map.serializeMatrixID()
     file.write(json.dumps(mapMatrix))
     file.close()
 

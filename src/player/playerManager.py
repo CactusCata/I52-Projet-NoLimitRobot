@@ -15,11 +15,11 @@ def initPlayerList():
     otherUtils.shuffleColorList()
 
 def addPlayer(robotFile):
-    player = Player(robotFile, otherUtils.getColorFromNumber(len(PLAYER_LIST)))
+    player = Player(robotFile, otherUtils.getColorFromNumber(len(PLAYER_LIST)), len(PLAYER_LIST))
     PLAYER_LIST.append(player)
 
 def updatePlayer(robotFile, index):
-    player = Player(robotFile, otherUtils.getColorFromNumber(len(PLAYER_LIST) - 1))
+    player = Player(robotFile, otherUtils.getColorFromNumber(len(PLAYER_LIST) - 1), len(PLAYER_LIST) - 1)
     PLAYER_LIST[index] = player
 
 def getPlayer(n):

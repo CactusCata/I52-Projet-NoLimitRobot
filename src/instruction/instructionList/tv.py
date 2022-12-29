@@ -15,11 +15,12 @@ class TV(IInstruction):
         """
         Paramètre: robot, map
         """
-        robot = kargs["robot"]
+        player = kargs["player"]
+        robot = player.getRobotParty()
         map = kargs["map"]
 
         super().decreaseRobotEnergy(robot)
 
         possiblesDirection = ['H', 'B']
-        selectedDirection = possiblesDirection[random.randint(0, len(possiblesDirection) - 1)]
+        selectedDirection = random.choice(possiblesDirection)
         map.robotShoot(robot, selectedDirection)

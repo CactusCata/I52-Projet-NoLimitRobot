@@ -17,23 +17,24 @@ class DD(IInstruction):
         """
         Paramètre: robot, map, direction
         """
-        robot = kargs["robot"]
-        direction = kargs["direction"]
+        player = kargs["player"]
+        robot = player.getRobotParty()
+        command = kargs["cmd"]
+        direction = command.split(" ")[1]
         map = kargs["map"]
 
         super().decreaseRobotEnergy(robot)
 
         targetCase = (-1, -1)
-        if (direction == 'H'): targetCase = (robot.getX(), robot.getY() - 1)
-        elif (direction == 'B'): targetCase = (robot.getX(), robot.getY() + 1)
-        elif (direction == 'G'): targetCase = (robot.getX() - 1, robot.getY())
-        elif (direction == 'D'): targetCase = (robot.getX() + 1, robot.getY())
+        if (direction == 'H'): targetCase = (robot.get_x(), robot.get_y() - 1)
+        elif (direction == 'B'): targetCase = (robot.get_x(), robot.get_y() + 1)
+        elif (direction == 'G'): targetCase = (robot.get_x() - 1, robot.get_y())
+        elif (direction == 'D'): targetCase = (robot.get_x() + 1, robot.get_y())
 
         if (not map.isAccessible(targetCase)):
             return False
 
         map.updateRobotPosition(robot, targetCase)
-        robot.move(targetCase)
 
 
 

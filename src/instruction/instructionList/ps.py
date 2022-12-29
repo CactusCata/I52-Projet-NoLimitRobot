@@ -14,7 +14,8 @@ class PS(IInstruction):
         """
         Paramètre: robot, map
         """
-        robot = kargs["robot"]
+        player = kargs["player"]
+        robot = player.getRobotParty()
         map = kargs["map"]
 
         super().decreaseRobotEnergy(robot)
@@ -23,4 +24,3 @@ class PS(IInstruction):
         nextCase = nearestRobotPath[0]
 
         map.updateRobotPosition(robot, nextCase)
-        robot.move(nextCase)

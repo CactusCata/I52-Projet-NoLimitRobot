@@ -16,10 +16,12 @@ class TT(IInstruction):
         """
         Paramètre: robot, map, instructionName1, instructionName2
         """
-        robot = kargs["robot"]
+        player = kargs["player"]
+        robot = player.getRobotParty()
         map = kargs["map"]
-        instructionName1 = kargs["instructionName1"]
-        instructionName2 = kargs["instructionName2"]
+        command = kargs["cmd"]
+        instructionName1 = command.split(" ")[1]
+        instructionName2 = command.split(" ")[2]
 
         if "utils.instructionUtils" not in sys.modules:
             from utils.instructionUtils import INSTRUCTION_LIST
@@ -29,6 +31,6 @@ class TT(IInstruction):
         nearestRobotPath = map.getNearestRobotPath(map, robot)
         
         if (len(nearestRobotPath) <= 4):
-            INSTRUCTION_LIST[instructionName1].make(robot=robot, map=map)
+            INSTRUCTION_LIST[instructionName1].make(robot=robot, map=map, cmd=instructionName1)
         else:
-            INSTRUCTION_LIST[instructionName2].make(robot=robot, map=map)
+            INSTRUCTION_LIST[instructionName2].make(robot=robot, map=map, cmd=instructionName1)

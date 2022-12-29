@@ -1,5 +1,7 @@
 from instruction.instructionList.iInstruction import IInstruction
 
+from map.mine import Mine
+
 import random
 
 class MI(IInstruction):
@@ -15,7 +17,8 @@ class MI(IInstruction):
         """
         Paramètre: robot, map
         """
-        robot = kargs["robot"]
+        player = kargs["player"]
+        robot = player.getRobotParty()
         map = kargs["map"]
 
         super().decreaseRobotEnergy(robot)
@@ -23,9 +26,10 @@ class MI(IInstruction):
         minesPosition = []
 
         for i in {-1, 1}:
-            if map.isAccessible(robot, (robot.getX() + i, robot.getY())): minesPosition.append((robot.getX() + i, robot.getY()))
-            if map.isAccessible(robot, (robot.getX(), robot.getY() + i)): minesPosition.append((robot.getX(), robot.getY() + i))
+            if map.isAccessible((robot.get_x() + i, robot.get_y())): minesPosition.append((robot.get_x() + i, robot.get_y()))
+            if map.isAccessible((robot.get_x(), robot.get_y() + i)): minesPosition.append((robot.get_x(), robot.get_y() + i))
 
         choosedMinePosition = minesPosition[random.randint(0, len(minesPosition) - 1)]
+        mine = Mine(choosedMinePosition[0], choosedMinePosition[1], self.damage, player.getID())
 
-        map.placeMine(choosedMinePosition)
+        map.placeMine(mine)

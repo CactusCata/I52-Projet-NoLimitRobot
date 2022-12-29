@@ -1,6 +1,6 @@
 import frame.rootManager as rootManager
 import map.mapManager as mapManager
-from map.mapManager import MAP_LINE_AMOUNT, MAP_COL_AMOUNT, MAP_MAX_ROCK_AMOUNT, MAP_MAX_ROCK_PERCENTAGE
+from map.mapManager import MAP_MAX_ROCK_AMOUNT
 import image.imageManager as imageManager
 
 from utils.tkinter.tkPerformer import TkPerformer
@@ -117,19 +117,19 @@ class FEditMap(IFrame):
 
         # On rempli bien la map de rocher, même plus que ce qu'il n'en faut parfois
         # pour éviter que le bas de la carte n'ai pas de rocher
-        rockAmountNeeded = int((percentageOfRock / 100) * MAP_COL_AMOUNT * MAP_LINE_AMOUNT)
+        rockAmountNeeded = int((percentageOfRock / 100) * self.map.getDimX() * self.map.getDimY())
         rocksPlaces = []
         while (self.map.getRockAmount() < rockAmountNeeded):
-            for i in range(MAP_LINE_AMOUNT):
-                for j in range(MAP_COL_AMOUNT):
-                    if self.map.getID(i, j) != 1: # Si un rocher n'est pas présent
+            for x in range(self.map.getDimX()):
+                for y in range(self.map.getDimY()):
+                    if self.map.getID(x, y) != 1: # Si un rocher n'est pas présent
                         if uniform(0, 1) * 100 < percentageOfRock: # on essaye d'en placer un
-                            if (self.map.placeRock(i, j)):
-                                rocksPlaces.append((i, j))
+                            if (self.map.placeRock(x, y)):
+                                rocksPlaces.append((x, y))
                         else: # il y aura une case d'air, mais on doit vérifier si l'air peut légalement être là, si ce n'est pas le cas, on ajoute un bloc de roche
-                            if (not self.map.canPlaceAir(i, j)):
-                                self.map.placeRock(i, j)
-                                rocksPlaces.append((i, j))
+                            if (not self.map.canPlaceAir(x, y)):
+                                self.map.placeRock(x, y)
+                                rocksPlaces.append((x, y))
 
         # On supprime les rochers superflu s'il y en a
         n = len(rocksPlaces) - 1
@@ -154,22 +154,22 @@ class FEditMap(IFrame):
         if (itemCoordinates == None):
             return
 
-        line = itemCoordinates[0]
-        col = itemCoordinates[1]
+        x = itemCoordinates[0]
+        y = itemCoordinates[1]
 
         img = None
-        if (self.stringVarRadioButton.get() == "ROCK" and self.map.getMatrix()[line][col] != 1):
-            if self.map.placeRock(line, col):
+        if (self.stringVarRadioButton.get() == "ROCK" and self.map.getID(x, y) != 1):
+            if self.map.placeRock(x, y):
                 img = imageManager.IMG_MAP_ROCK_TK
-        elif (self.stringVarRadioButton.get() == "AIR" and self.map.getMatrix()[line][col] != 0):
-            if (self.map.placeAir(line, col)):
+        elif (self.stringVarRadioButton.get() == "AIR" and self.map.getData(x, y) != 0):
+            if (self.map.placeAir(x, y)):
                 img = imageManager.IMG_MAP_AIR_TK
 
         if (img != None): # Si le bloc a changé, alors on supprime l'ancien bloc et on dessine le nouveau
             self.currentMapHasChanged = True
             self.updateRockAmountLabel()
             self.canvasMap.delete(id)
-            self.mapDrawer.drawImage(img, line, col, tag=f"figure:{line},{col}")
+            self.mapDrawer.drawImage(img, x, y, tag=f"figure:{x},{y}")
 
             # Mise à jour de l'état du bouton en fonction de la quantité de rocher
             if (self.map.getRockAmount() > MAP_MAX_ROCK_AMOUNT):

@@ -1,3 +1,10 @@
+import utils.mapUtils as mapUtils
+
+AIR_ID = 0
+ROCK_ID = 1
+PLAYER_ID = 2
+MINE_ID = 3
+
 class Map:
 
     def __init__(self, matrixMapBasic):
@@ -17,15 +24,15 @@ class Map:
         # mine: instance de Mine
         self.matrixMapInstance = []
 
-        self.dimX = len(matrixMapBasic)
-        self.dimY = len(matrixMapBasic[0])
+        self.dimY = len(matrixMapBasic)
+        self.dimX = len(matrixMapBasic[0])
 
         # Initialisation du nombre de rocher
         self.rockAmount = 0
-        for i in range(self.dimX):
+        for i in range(self.dimY):
             lineMatrixID = []
             lineMatrixData = []
-            for j in range(self.dimY):
+            for j in range(self.dimX):
                 if matrixMapBasic[i][j] == 1:
                     self.rockAmount += 1
                     lineMatrixID.append(1)
@@ -37,20 +44,25 @@ class Map:
             self.matrixMapInstance.append(lineMatrixData)
 
     def getDimX(self):
+        """
+        Renvoie la largeur de la carte
+        """
         return self.dimX
 
     def getDimY(self):
+        """
+        Renvoie la hauteur de la carte
+        """
         return self.dimY
 
     def clear(self):
         """
-        Remplie la map de vide
+        Remplie la map de bloc d'air
         """
 
-        for i in range(self.dimX):
-            for j in range(self.dimY):
-                self.matrixMapID[i][j] = 0
-                self.matrixMapInstance[i][j] = None
+        for x in range(self.dimX):
+            for y in range(self.dimY):
+                self.modify(x, y, AIR_ID, None)
 
         self.rockAmount = 0
 
@@ -59,7 +71,7 @@ class Map:
         Renvoie vrai si la case demandé est bien dans les dimensions de la map et que la case est accessible.
         Renvoie faux sinon
         """
-        return 0 <= pos[0] < self.dimX and 0 <= pos[1] < self.dimY and self.getID(pos[0], pos[1]) == 0
+        return 0 <= pos[0] < self.dimX and 0 <= pos[1] < self.dimY and (self.getID(pos[0], pos[1]) == AIR_ID or self.getID(pos[0], pos[1]) == MINE_ID)
 
     def getRockAmount(self):
         """
@@ -73,23 +85,23 @@ class Map:
         Sinon renvoie faux
         """
         # Coin inférieur gauche
-        if (x > 0 and y < 29):
-            if self.getID(x - 1, y + 1) == 0 and self.getID(x - 1, y) == 1 and self.getID(x, y + 1) == 1:
+        if (y > 0 and x < 29):
+            if self.getID(x, y - 1) == ROCK_ID and self.getID(x + 1, y) == ROCK_ID and self.getID(x + 1, y - 1) == AIR_ID:
                 return False
 
         # Coin supérieur gauche
-        if (x > 0 and y > 0):
-            if self.getID(x - 1, y - 1) == 0 and self.getID(x - 1, y) == 1 and self.getID(x, y - 1) == 1:
+        if (y < 19 and x < 29):
+            if self.getID(x + 1, y) == ROCK_ID and self.getID(x, y + 1) == ROCK_ID and self.getID(x + 1, y + 1) == AIR_ID:
                 return False
 
         # Coin supérieur droit
-        if (x < 19 and y > 0):
-            if self.getID(x + 1, y - 1) == 0 and self.getID(x + 1, y) == 1 and self.getID(x, y - 1) == 1:
+        if (y < 19 and x > 0):
+            if self.getID(x - 1, y) == ROCK_ID and self.getID(x, y + 1) == ROCK_ID and self.getID(x - 1, y + 1) == AIR_ID:
                 return False
 
         # Coin inférieur droit
-        if (x < 19 and y < 29):
-            if self.getID(x + 1, y + 1) == 0 and self.getID(x + 1, y) == 1 and self.getID(x, y + 1) == 1:
+        if (y > 0 and x > 0):
+            if self.getID(x - 1, y) == ROCK_ID and self.getID(x, y - 1) == ROCK_ID and self.getID(x - 1, y - 1) == AIR_ID:
                 return False
 
         return True
@@ -106,8 +118,7 @@ class Map:
             return False
 
         self.rockAmount -= 1
-        self.matrixMapID[x][y] = 0
-        self.matrixMapInstance[x][y] = None
+        self.modify(x, y, AIR_ID, None)
         return True
 
     def canPlaceRock(self, x, y):
@@ -116,23 +127,23 @@ class Map:
         Sinon renvoie faux
         """
         # Coin inférieur gauche
-        if (x > 0 and y < 29):
-            if self.getID(x - 1, y + 1) == 1 and self.getID(x - 1, y) == 0 and self.getID(x, y + 1) == 0:
+        if (y > 0 and x < 29):
+            if self.getID(x + 1, y) == AIR_ID and self.getID(x, y - 1) == AIR_ID and self.getID(x + 1, y - 1) == ROCK_ID:
                 return False
 
         # Coin supérieur gauche
-        if (x > 0 and y > 0):
-            if self.getID(x - 1, y - 1) == 1 and self.getID(x - 1, y) == 0 and self.getID(x, y - 1) == 0:
+        if (y < 19 and x < 29):
+            if self.getID(x + 1, y) == AIR_ID and self.getID(x, y + 1) == AIR_ID and self.getID(x + 1, y + 1) == ROCK_ID:
                 return False
 
         # Coin supérieur droit
-        if (x < 19 and y > 0):
-            if self.getID(x + 1, y - 1) == 1 and self.getID(x + 1, y) == 0 and self.getID(x, y - 1) == 0:
+        if (y < 19 and x > 0):
+            if self.getID(x - 1, y) == AIR_ID and self.getID(x, y + 1) == AIR_ID and self.getID(x - 1, y + 1) == ROCK_ID:
                 return False
 
         # Coin inférieur droit
-        if (x < 19 and y < 29):
-            if self.getID(x + 1, y + 1) == 1 and self.getID(x + 1, y) == 0 and self.getID(x, y + 1) == 0:
+        if (y > 0 and x > 0):
+            if self.getID(x - 1, y) == AIR_ID and self.getID(x, y - 1) == AIR_ID and self.getID(x - 1, y - 1) == ROCK_ID:
                 return False
 
         return True
@@ -150,14 +161,14 @@ class Map:
 
 
         self.rockAmount += 1
-        self.matrixMapID[x][y] = 1
-        self.matrixMapInstance[x][y] = None
+        self.modify(x, y, ROCK_ID, None)
         return True
 
-    def getMatrix(self):
+    def serializeMatrixID(self):
         """
-        Renvoie la matrice correspondant à l'état
-        de la map
+        Return the matrix of ids.
+        Do not use this function if you want to travel
+        with (x, y) coords, only for serialization.
         """
         return self.matrixMapID
 
@@ -165,15 +176,15 @@ class Map:
         """
         Renvoie l'ID en (x,y) de la map
         """
-        return self.matrixMapID[x][y]
+        return self.matrixMapID[y][x]
 
     def getData(self, x, y):
         """
         Renvoie l'instance de l'objet en (x,y) de la map
         """
-        return self.matrixMapInstance[x][y]
+        return self.matrixMapInstance[y][x]
 
-    def modify(self, x, y, type_obj):
+    def modify(self, x, y, id_object, object):
         """
         Modifie une case de la carte afin de la mettre à jour.
         type_obj est le type de l'entité que l'on va mettre à jour sur la case.
@@ -183,4 +194,127 @@ class Map:
         3 est pour les mines (case "libre" pour les déplacements, mais bloquante
         pour les projectiles)
         """
-        self.matrixMapID[x][y] = type_obj
+        self.matrixMapID[y][x] = id_object
+        self.matrixMapInstance[y][x] = object
+
+
+    def getNearestRobot(self, robot):
+        """
+        Renvoie un couple:
+        - instance de robot qui se trouve être le plus proche
+        - le path de notre robot jusqu'au robot le plus proche
+        """
+        startX = robot.get_x()
+        startY = robot.get_y()
+
+        endX = -1
+        endY = -1
+
+        n = max(max(robot.get_x(), self.getDimX() - robot.get_x()), max(robot.get_y(), self.getDimY() - robot.get_y()))
+        robotHasBeenFound = False
+        i = 1
+
+        while i < n and not robotHasBeenFound:
+            positions = mapUtils.generateSquarePositions(i)
+            j = 0
+            while j < len(positions) and not robotHasBeenFound:
+                pos = positions[j]
+                if (0 <= pos[0] < self.getDimX() and 0 <= pos[1] < self.getDimY() and self.getID(pos[0], pos[1]) == PLAYER_ID):
+                    robotHasBeenFound = True
+                    robotTarget = self.getData(pos[0], pos[1])
+                    endX = robotTarget.get_x()
+                    endY = robotTarget.get_y()
+
+                j += 1
+            
+            i += 1
+
+        path = mapUtils.getPath(self, (startX, startY), (endX, endY))
+        return (self.getData(endX, endY), path)
+
+    def placeMine(self, mine):
+        """
+        Place une mine à la position attendue
+        """
+        x = mine.get_x()
+        y = mine.get_y()
+        self.modify(x, y, MINE_ID, mine)
+
+    def robotShoot(self, robot, selectedDirection, damage):
+        """
+        Tire dans la direction Nord (N), Sud (S), Est (E), Ouest (O).
+        Si un robot est sur le chemin, alors on applique le dégats.
+        Si un mur est sur le chemin, le mur bloque la balle.
+        La balle passe à travers l'air et les mines.
+        """
+        x = robot.get_x()
+        y = robot.get_y()
+
+        directionVect = [0, 0]
+        if selectedDirection == "N":
+            directionVect[0] += -1
+        elif selectedDirection == "S":
+            directionVect[0] += 1
+        elif selectedDirection == "E":
+            directionVect[1] += 1
+        elif selectedDirection == "O":
+            directionVect[1] += -1
+        else:
+            print(f"map.robotShoot(...): direction \"{selectedDirection}\" is unknowed")
+
+        x += directionVect[0]
+        y += directionVect[1]
+        while self.getID(x, y) == AIR_ID or self.getID(x, y) == MINE_ID:
+            x += directionVect[0]
+            y += directionVect[1]
+
+        if self.getID(x, y) == PLAYER_ID:
+            robot = self.getData(x, y)
+            robot.decreaseEnergy(damage)
+
+    def updateRobotPosition(self, robot, position):
+        """
+        Permet de mettre à jour la position d'un robotParty sur la carte.
+        Si une mine est présente sur la position du déplacement, alors
+        elle explose causant des dégats au robot et active l'instruction
+        de danger pour le robot
+        """
+        x = position[0]
+        y = position[1]
+        if self.getID(x, y) == MINE_ID:
+            mine = self.getData(x, y)
+            robot.decreaseEnery(mine.get_damage())
+            robot.enable_danger_instruction()
+
+        self.modify(robot.get_x(), robot.get_y(), AIR_ID, None)
+        robot.move(position)
+        
+        self.modify(x, y, PLAYER_ID, robot)
+
+    def copyMapID(self):
+        """
+        Renvoie une copie de la matrice des id
+        """
+        matrix = []
+        for i in range(self.dimX):
+            line = []
+            for j in range(self.dimY):
+                line.append(self.getID(i, j))
+            matrix.append(line)
+        return matrix
+
+    def copyMapInstance(self):
+        """
+        Renvoie une copie de la matrice des instances
+        """
+        matrix = []
+        for i in range(self.dimX):
+            line = []
+            for j in range(self.dimY):
+                res = self.getData(i, j)
+                if (res == None):
+                    line.append(None)
+                else:
+                    line.append(res.copy())
+            matrix.append(line)
+        return matrix
