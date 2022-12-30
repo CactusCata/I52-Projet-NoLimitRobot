@@ -39,3 +39,10 @@ def itemHasTag(canvas, itemID, patternFunction, pattern):
         return None
     else:
         return tags[i]
+
+def ratioWidth(ratio, root):
+    return int(ratio * root.winfo_screenwidth())
+
+def ratioHeight(ratio, root):
+    return int(ratio * root.winfo_screenheight())
+
