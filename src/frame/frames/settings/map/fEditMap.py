@@ -4,6 +4,7 @@ from map.mapManager import MAP_MAX_ROCK_AMOUNT
 import image.imageManager as imageManager
 
 from utils.tkinter.tkPerformer import TkPerformer
+import utils.tkinter.tkUtils as tkUtils
 
 from tkinter import StringVar
 
@@ -91,7 +92,7 @@ class FEditMap(IFrame):
             # Proposer de sauvegarder l'état de la map
             self.buttonSaveMap['state'] = "normal"
             self.currentMapHasChanged = True
-        
+
 
     def updateRockAmountLabel(self):
         """
