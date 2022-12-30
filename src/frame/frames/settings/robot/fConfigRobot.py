@@ -1,6 +1,6 @@
 import frame.rootManager as rootManager
 
-from frame.iFrame import IFrame, help_activated
+from frame.iFrame import IFrame
 from frame.messagesHelp import HELP_FCONFIGROBOT
 
 from frame.frames.settings.robot.fCreateRobot import FCreateRobot
@@ -10,7 +10,7 @@ from frame.frames.settings.robot.fDeleteRobot import FDeleteRobot
 class FConfigRobot(IFrame):
 
     def __init__(self, previousFrame):
-        super().__init__(previousFrame)
+        super().__init__(previousFrame, HELP_FCONFIGROBOT)
 
     def draw(self):
         root = rootManager.getRoot()
@@ -25,9 +25,7 @@ class FConfigRobot(IFrame):
         buttonDeleteRobot = super().createButton(text="Supprimer robot", cmd=lambda:rootManager.runNewFrame(FDeleteRobot(self)))
         buttonDeleteRobot.pack()
 
-        if help_activated == True:
-            buttonHelp = super().createButtonHelp(master = root, msg=HELP_FCONFIGROBOT)
-            buttonHelp.pack()
+        super().createButtonHelp()
 
         buttonBack = super().createButton(text="Retour", cmd=lambda:super(FConfigRobot, self).reopenLastFrame())
         buttonBack.pack()

@@ -4,7 +4,9 @@ import tkinter as tk
 import frame.rootManager as rootManager
 import utils.tkinter.tkUtils as tkUtils
 
-from frame.iFrame import IFrame, help_activated
+import param.paramManager as paramManager
+
+from frame.iFrame import IFrame
 from frame.messagesHelp import HELP_FMAIN
 
 from frame.frames.party.fPlay import FPlay
@@ -13,7 +15,7 @@ from frame.frames.settings.fSettings import FSettings
 class FMain(IFrame):
 
     def __init__(self):
-        super().__init__()
+        super().__init__(None, HELP_FMAIN)
 
     def draw(self):
         root = rootManager.getRoot()
@@ -21,10 +23,7 @@ class FMain(IFrame):
 
         #frameHelp = super().createFrame(root)
         #frameHelp.pack(side = "top", anchor = "e", padx = 10, pady = 10)
-        if help_activated == True :
-            buttonHelp = super().createButtonHelp(master = root, msg=HELP_FMAIN)
-            super().modifyButton(buttonHelp ,bg = "darkgreen", ab = "green")
-            buttonHelp.pack(anchor = "e", padx = 10, pady = 10)
+        super().createButtonHelp()
 
         label = super().createLabel(master = root, text=rootManager.GAME_NAME, fontSize = 50)
         label["fg"] = "lightblue"

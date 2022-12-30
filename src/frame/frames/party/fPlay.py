@@ -1,6 +1,6 @@
 import frame.rootManager as rootManager
 
-from frame.iFrame import IFrame, help_activated
+from frame.iFrame import IFrame
 from frame.messagesHelp import HELP_FPLAY
 
 from frame.frames.party.fPPlayerConfig import FPPlayerConfig
@@ -9,7 +9,7 @@ from frame.frames.party.fLoadParty import FLoadParty
 class FPlay(IFrame):
 
     def __init__(self, previousFrame):
-        super().__init__(previousFrame)
+        super().__init__(previousFrame, HELP_FPLAY)
 
     def draw(self):
         root = rootManager.getRoot()
@@ -20,9 +20,7 @@ class FPlay(IFrame):
         b2 = super().createButton(text="Charger partie", cmd=lambda:rootManager.runNewFrame(FLoadParty(self)))
         b2.pack()
 
-        if help_activated == True:
-            b3 = super().createButtonHelp(master = root, msg=HELP_FPLAY)
-            b3.pack()
+        super().createButtonHelp()
 
         b4 = super().createButton(text="Retour", cmd=lambda:super(FPlay, self).reopenLastFrame())
         b4.pack()

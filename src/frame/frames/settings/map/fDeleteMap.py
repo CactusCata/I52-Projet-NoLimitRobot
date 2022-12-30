@@ -4,21 +4,18 @@ from tkinter import messagebox
 import frame.rootManager as rootManager
 import map.mapManager as mapManager
 
-from frame.iFrame import IFrame, help_activated
+from frame.iFrame import IFrame
 from frame.messagesHelp import HELP_FDELETEMAP
 
 class FDeleteMap(IFrame):
 
     def __init__(self, previousFrame):
-        super().__init__(previousFrame)
+        super().__init__(previousFrame, HELP_FDELETEMAP)
 
     def draw(self):
         root = rootManager.getRoot()
 
-        if help_activated == True:
-            buttonHelp = super().createButtonHelp(master = root, msg=HELP_FDELETEMAP)
-            super().modifyButton(buttonHelp ,bg = "darkgreen", ab = "green")
-            buttonHelp.pack(anchor = "e", padx = 10, pady = 10)
+        super().createButtonHelp()
 
         labelTitle = super().createLabel(root)
         labelTitle.pack(side="top")

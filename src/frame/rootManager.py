@@ -3,7 +3,7 @@ from tkinter import Tk, PhotoImage
 from frame.frames.fMain import FMain
 
 import utils.tkinter.tkUtils as tkUtils
-import utils.fileUtils as fileUtils
+import param.paramManager as paramManager
 import image.imageManager as imageManager
 
 GAME_NAME = "No Limit Robot"
@@ -20,13 +20,9 @@ def initRoot():
 
     # Crée la fenêtre
     root = Tk()
+    paramManager.PARAM.applyFullScreenState(root)
 
     imageManager.loadImagesTk()
-
-    # Dimensionne la fenêtre en fonction de l'écran de l'utilisateur
-    # et bloque le dimensionnement de la fenêtre
-    dimensions = tkUtils.setupRootGeometry(root, ratio=0.9)
-    tkUtils.lockRootDimensions(root, dimensions)
 
     # Applique quelques propriétés à la fenêtre
     root.title(GAME_NAME)
@@ -40,7 +36,6 @@ def initRoot():
     runNewFrame(FMain())
 
     root.mainloop()
-
 
 def getRoot():
     """

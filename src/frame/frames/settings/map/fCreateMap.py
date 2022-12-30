@@ -5,21 +5,18 @@ import frame.rootManager as rootManager
 import map.mapManager as mapManager
 
 
-from frame.iFrame import IFrame, help_activated
+from frame.iFrame import IFrame
 from frame.messagesHelp import HELP_FCREATEMAP
 
 class FCreateMap(IFrame):
 
     def __init__(self, previousFrame):
-        super().__init__(previousFrame)
+        super().__init__(previousFrame, HELP_FCREATEMAP)
 
     def draw(self):
         root = rootManager.getRoot()
 
-        if help_activated == True:
-            buttonHelp = super().createButtonHelp(master = root, msg=HELP_FCREATEMAP)
-            super().modifyButton(buttonHelp ,bg = "darkgreen", ab = "green")
-            buttonHelp.pack(anchor = "e", padx = 10, pady = 10)
+        super().createButtonHelp()
 
         labelTitle = super().createLabel(master=root, text="Création de la carte", fontSize=30)
         labelTitle.pack(side="top")

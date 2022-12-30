@@ -1,15 +1,18 @@
 import frame.rootManager as rootManager
 
-from tkinter import Button, Label, Text, Scale, Frame, Canvas, Radiobutton, Entry, messagebox
-from tkinter.ttk import Combobox, Checkbutton
+from tkinter import Button, Label, Text, Scale, Frame, Canvas, Radiobutton, Entry, messagebox, IntVar
+from tkinter.ttk import Combobox, Checkbutton, Style
 
-help_activated = True
+import param.paramManager as paramManager
+
+styleCheckButton = None
 
 class IFrame():
 
-    def __init__(self, previousFrame=None):
+    def __init__(self, previousFrame=None, helpMessage="Not help here"):
         self.items = []
         self.previousFrame = previousFrame
+        self.helpMessage = helpMessage
 
     def createFrame(self, master=None):
         """
@@ -122,11 +125,17 @@ class IFrame():
         self.registerItem(entryBox)
         return entryBox
 
-    def createCheckButton(self, master=None, text="", callback=None):
+
+    def createCheckButton(self, master=None, text="", variable=None, callback=None, fontSize=14):
         if (master is None):
             master = rootManager.getRoot()
 
-        checkButton = Checkbutton(master, text=text, command=callback)
+        global styleCheckButton
+        if (styleCheckButton is None):
+            styleCheckButton = Style()
+            styleCheckButton.configure("Custom.TCheckbutton", background="#1E1E1E", foreground="#ABB2B9")
+
+        checkButton = Checkbutton(master, text=text, variable=variable, command=callback, style="Custom.TCheckbutton", onvalue=1, offvalue=0)
         self.registerItem(checkButton)
         return checkButton
 
@@ -206,12 +215,12 @@ class IFrame():
         if (self.previousFrame is not None):
             rootManager.runNewFrame(self.previousFrame)
 
-    def createButtonHelp(self, master=None, msg=""):
-        if (master is None):
+    def createButtonHelp(self):
+        if paramManager.PARAM.isNeedHelp():
             master = rootManager.getRoot()
-
-        buttonTk = self.createButton(master=master, text="Aide", cmd=lambda: self.askHelp(msg))
-        return buttonTk
+            buttonTk = self.createButton(master=master, text="Aide", cmd=lambda: self.askHelp())
+            self.modifyButton(buttonTk, bg = "darkgreen", ab = "green")
+            buttonTk.pack(anchor = "e", padx = 10, pady = 10, fill="y")
 
     def modifyButton(self, button, bg = None, ab = None):
         if bg != None:
@@ -219,8 +228,8 @@ class IFrame():
         if ab != None:
             button["activebackground"] = ab
 
-    def askHelp(self, msg):
-        messagebox.showinfo(title="Aide", message=msg)
+    def askHelp(self):
+        messagebox.showinfo(title="Aide", message=self.helpMessage)
 
     def getScreenDimensions(self, master):
         return (master.winfo_screenwidth(), master.winfo_screenheight())

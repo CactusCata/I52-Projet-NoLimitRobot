@@ -1,7 +1,7 @@
 import frame.rootManager as rootManager
 
 import tkinter as tk
-from frame.iFrame import IFrame, help_activated
+from frame.iFrame import IFrame
 from frame.messagesHelp import HELP_FCONFIGMAP
 
 from frame.frames.settings.map.fCreateMap import FCreateMap
@@ -11,15 +11,12 @@ from frame.frames.settings.map.fDeleteMap import FDeleteMap
 class FConfigMap(IFrame):
 
     def __init__(self, previousFrame):
-        super().__init__(previousFrame)
+        super().__init__(previousFrame, HELP_FCONFIGMAP)
 
     def draw(self):
         root = rootManager.getRoot()
 
-        if help_activated == True:
-            buttonHelp = super().createButtonHelp(master = root, msg=HELP_FCONFIGMAP)
-            super().modifyButton(buttonHelp ,bg = "darkgreen", ab = "green")
-            buttonHelp.pack(anchor = "e", padx = 10, pady = 10)
+        super().createButtonHelp()
 
         labelTitle = super().createLabel(master=root, text="Configuration de la carte", fontSize=30)
         labelTitle.pack(side="top")

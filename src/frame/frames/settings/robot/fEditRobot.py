@@ -3,7 +3,7 @@ import robot.robotManager as robotManager
 import utils.instructionUtils as instructionUtils
 import instruction.instructionAnalyser as instructionAnalyser
 
-from frame.iFrame import IFrame, help_activated
+from frame.iFrame import IFrame
 from frame.messagesHelp import HELP_FEDITROBOT
 from robot.robotFile import RobotFile
 from utils.tkinter.tkPerformer import TkPerformer
@@ -13,7 +13,7 @@ from tkinter import Scrollbar
 class FEditRobot(IFrame):
 
     def __init__(self, previousFrame):
-        super().__init__(previousFrame)
+        super().__init__(previousFrame, HELP_FEDITROBOT)
 
         self.currentRobotFile = None
         self.currentRobotHasChanged = False
@@ -68,9 +68,7 @@ class FEditRobot(IFrame):
         self.buttonSave.pack()
 
         # Aide
-        if help_activated == True:
-            buttonHelp = super().createButtonHelp(master = root, msg=HELP_FEDITROBOT)
-            buttonHelp.pack()
+        super().createButtonHelp()
 
         # Retour
         buttonBack = super().createButton(master=frameRobot, text="Retour", cmd=lambda:self.tryToReopenLastFrame())

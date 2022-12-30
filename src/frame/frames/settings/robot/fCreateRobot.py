@@ -4,7 +4,7 @@ import frame.rootManager as rootManager
 from frame.frames.settings.robot.fEditRobot import FEditRobot
 import robot.robotManager as robotManager
 
-from frame.iFrame import IFrame, help_activated
+from frame.iFrame import IFrame
 from frame.messagesHelp import HELP_FCREATEROBOT
 
 from tkinter import END
@@ -12,7 +12,7 @@ from tkinter import END
 class FCreateRobot(IFrame):
 
     def __init__(self, previousFrame):
-        super().__init__(previousFrame)
+        super().__init__(previousFrame, HELP_FCREATEROBOT)
 
     def draw(self):
         root = rootManager.getRoot()
@@ -42,9 +42,7 @@ class FCreateRobot(IFrame):
         buttonConfirm.pack()
 
         # Aide
-        if help_activated == True:
-            buttonHelp = super().createButtonHelp(master = root, msg=HELP_FCREATEROBOT)
-            buttonHelp.pack()
+        super().createButtonHelp()
 
         # Retour
         buttonBack = super().createButton(text="Retour", cmd=lambda:super(FCreateRobot, self).reopenLastFrame())

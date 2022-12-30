@@ -2,8 +2,11 @@
 import tkinter as tk
 
 import frame.rootManager as rootManager
-from frame.iFrame import IFrame, help_activated
+from frame.iFrame import IFrame
 from frame.messagesHelp import HELP_FSETTINGS
+import param.paramManager as paramManager
+
+import time
 
 from frame.frames.settings.map.fConfigMap import FConfigMap
 from frame.frames.settings.robot.fConfigRobot import FConfigRobot
@@ -12,15 +15,15 @@ from frame.frames.settings.party.fDeleteParty import FDeleteParty
 class FSettings(IFrame):
 
     def __init__(self, previousFrame):
-        super().__init__(previousFrame)
+        super().__init__(previousFrame, HELP_FSETTINGS)
+
+        self.fullScreenTickedVar = None
+        self.needHelpTickedVar = None
 
     def draw(self):
         root = rootManager.getRoot()
 
-        if help_activated == True:
-            buttonHelp = super().createButtonHelp(master = root, msg=HELP_FSETTINGS)
-            super().modifyButton(buttonHelp ,bg = "darkgreen", ab = "green")
-            buttonHelp.pack(anchor = "e", padx = 10, pady = 10)
+        super().createButtonHelp()
 
         frameTitle = super().createFrame(root)
         frameTitle.pack(side="top")
@@ -41,22 +44,29 @@ class FSettings(IFrame):
         buttonDeleteParty = super().createButton(master=frameMainButtons, text="Supprimer une partie", cmd=lambda:rootManager.runNewFrame(FDeleteParty(self)))
         buttonDeleteParty.pack(pady = 15, fill=tk.X)
 
-        #comboBoxFullScreen = super().createCheckButton(text="Plein ecran", callback=lambda:self.toggleFullScreen())
-        #comboBoxFullScreen.pack()
+        self.fullScreenTickedVar = tk.IntVar(value=int(paramManager.PARAM.getFullScreenState()))
+        comboBoxFullScreen = super().createCheckButton(master=frameMainButtons, text="Plein ecran", variable=self.fullScreenTickedVar, callback=lambda:self.toggleFullScreen())
+            #comboBoxFullScreen["state"] = "selected"
+        comboBoxFullScreen.pack(pady = 15, fill=tk.X)
 
-        comboBoxEnableHelp = super().createCheckButton(master=frameMainButtons, text="Activer l'aide", callback=lambda:self.toggleHelp())
+        self.needHelpTickedVar = tk.IntVar(value=int(paramManager.PARAM.isNeedHelp()))
+        comboBoxEnableHelp = super().createCheckButton(master=frameMainButtons, text="Activer l'aide", variable=self.needHelpTickedVar, callback=lambda:self.toggleHelp())
         #comboBoxEnableHelp["bd"] = 4
         comboBoxEnableHelp.pack(pady = 30, fill=tk.X)
 
 
-        buttonBack = super().createButton(text="Retour", cmd=super(FSettings, self).reopenLastFrame)
+        # Retour
+        buttonBack = super().createButton(text="Retour", cmd=lambda:super(FSettings, self).reopenLastFrame())
         super().modifyButton(buttonBack ,bg = "darkred", ab = "red")
         buttonBack.pack(side="bottom", anchor="w", padx=10, pady=10)
 
+    def updateWidgetsPlacement(self):
+        super().clearFrame()
+        self.draw()
+
     def toggleFullScreen(self):
-        print("Fullscreen is toggled")
+        paramManager.PARAM.toggleFullScreen(rootManager.getRoot())
+        self.updateWidgetsPlacement()
 
     def toggleHelp(self):
-        print("Help has been toggled")
-        global help_activated
-        help_activated = False
+        paramManager.PARAM.toggleHelp()

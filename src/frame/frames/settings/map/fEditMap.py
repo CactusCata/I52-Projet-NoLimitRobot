@@ -9,7 +9,7 @@ from tkinter import StringVar
 
 from map.mapDrawer import MapDrawer
 
-from frame.iFrame import IFrame, help_activated
+from frame.iFrame import IFrame
 from frame.messagesHelp import HELP_FEDITMAP
 
 from random import uniform, randint
@@ -17,7 +17,7 @@ from random import uniform, randint
 class FEditMap(IFrame):
 
     def __init__(self, previousFrame):
-        super().__init__(previousFrame)
+        super().__init__(previousFrame, HELP_FEDITMAP)
 
         self.map = None
         self.mapName = None
@@ -67,9 +67,7 @@ class FEditMap(IFrame):
         self.buttonSaveMap['state'] = "disabled"
         self.buttonSaveMap.place(x=1050, y=500)
 
-        if help_activated == True:
-            buttonHelp = super().createButtonHelp(master = root, msg=HELP_FEDITMAP)
-            buttonHelp.place(x=1050, y=550)
+        super().createButtonHelp()
 
         buttonReturn = super().createButton(text="Retour", cmd=lambda:self.tryToReopenLastFrame())
         buttonReturn.place(x=1050, y=600)
