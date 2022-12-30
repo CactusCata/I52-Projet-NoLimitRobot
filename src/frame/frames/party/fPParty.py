@@ -13,7 +13,7 @@ MS_BETWEEN_TWO_ROBOT_ACTION = 200
 class FPParty(IFrame):
 
     def __init__(self, previousFrame, map):
-        super().__init__(previousFrame)
+        super().__init__(previousFrame, "AIDE")
 
         self.map = map
         self.root = rootManager.getRoot()
@@ -22,6 +22,8 @@ class FPParty(IFrame):
         self.lastTaskID = -1
 
     def draw(self):
+
+        super().createButtonHelp()
 
         framePlayersStats = super().createFrame()
         framePlayersStats.pack(side="left")

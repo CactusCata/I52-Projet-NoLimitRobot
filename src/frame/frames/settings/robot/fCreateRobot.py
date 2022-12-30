@@ -17,6 +17,9 @@ class FCreateRobot(IFrame):
     def draw(self):
         root = rootManager.getRoot()
 
+        # Aide
+        super().createButtonHelp()
+
         # Nom du robot
         textName = super().createLabel(text="Nom du robot:")
         textName.pack()
@@ -40,9 +43,6 @@ class FCreateRobot(IFrame):
         # Confirmer
         buttonConfirm = super().createButton(text="Editer le robot", cmd=lambda:self.followingFrame())
         buttonConfirm.pack()
-
-        # Aide
-        super().createButtonHelp()
 
         # Retour
         buttonBack = super().createButton(text="Retour", cmd=lambda:super(FCreateRobot, self).reopenLastFrame())

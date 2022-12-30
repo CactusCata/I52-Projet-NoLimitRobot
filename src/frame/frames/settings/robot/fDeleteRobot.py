@@ -9,10 +9,12 @@ from tkinter import messagebox
 class FDeleteRobot(IFrame):
 
     def __init__(self, previousFrame):
-        super().__init__(previousFrame, HELP_FCREATEROBOT)
+        super().__init__(previousFrame, "AIDE")
 
     def draw(self):
         root = rootManager.getRoot()
+
+        super().createButtonHelp()
 
         # Nom du robot
         textName = super().createLabel(text="Nom du robot:")
@@ -22,8 +24,6 @@ class FDeleteRobot(IFrame):
 
         confirmButton = super().createButton(text="Supprimer", cmd=lambda:self.confirmButtonAction())
         confirmButton.pack()
-
-        super().createButtonHelp()
 
         buttonBack = super().createButton(text="Retour", cmd=lambda:super(FDeleteRobot, self).reopenLastFrame())
         buttonBack.pack()

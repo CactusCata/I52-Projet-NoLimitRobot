@@ -23,13 +23,15 @@ class FPMapConfig(IFrame):
     """
 
     def __init__(self, previousFrame):
-        super().__init__(previousFrame)
+        super().__init__(previousFrame, "AIDE")
 
         self.scalebarMinSpreadDistance = None
         self.map = None
 
     def draw(self):
         root = rootManager.getRoot()
+
+        super().createButtonHelp()
 
         frameLeft = super().createFrame()
         frameLeft.pack(side="left", ipadx=50)
@@ -64,10 +66,6 @@ class FPMapConfig(IFrame):
         # Confirmer
         buttonConfirm = super().createButton(master=frameLeftBot, text="Voir la partie", cmd=lambda:self.followingFrame())
         buttonConfirm.pack()
-
-        # Aide
-        buttonHelp = super().createButtonHelp(master=frameLeftBot, msg="aide")
-        buttonHelp.pack()
 
         # Retour
         buttonBack = super().createButton(master=frameLeftBot, text="Retour", cmd=lambda:super(FPMapConfig, self).reopenLastFrame())

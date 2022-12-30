@@ -21,6 +21,8 @@ class FEditRobot(IFrame):
     def draw(self):
         root = rootManager.getRoot()
 
+        super().createButtonHelp()
+
         frameRobot = super().createFrame()
         frameRobot.pack(side="left", ipadx=int(0.1 * root.winfo_width()))
 
@@ -66,9 +68,6 @@ class FEditRobot(IFrame):
         self.buttonSave = super().createButton(master=frameRobot, text="Sauvegarder", cmd=lambda:self.saveRobotConfig())
         self.buttonSave["state"] = "disabled"
         self.buttonSave.pack()
-
-        # Aide
-        super().createButtonHelp()
 
         # Retour
         buttonBack = super().createButton(master=frameRobot, text="Retour", cmd=lambda:self.tryToReopenLastFrame())

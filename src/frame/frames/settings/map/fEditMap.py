@@ -28,6 +28,8 @@ class FEditMap(IFrame):
     def draw(self):
         root = rootManager.getRoot()
 
+        super().createButtonHelp()
+
         # Choix de la map
         labelMapName = super().createLabel(text="Choisir la map:")
         labelMapName.place(x=10, y=10)
@@ -66,8 +68,6 @@ class FEditMap(IFrame):
         self.buttonSaveMap = super().createButton(text="Sauvegarder", cmd=lambda:self.saveMap())
         self.buttonSaveMap['state'] = "disabled"
         self.buttonSaveMap.place(x=1050, y=500)
-
-        super().createButtonHelp()
 
         buttonReturn = super().createButton(text="Retour", cmd=lambda:self.tryToReopenLastFrame())
         buttonReturn.place(x=1050, y=600)

@@ -15,6 +15,7 @@ class FConfigRobot(IFrame):
     def draw(self):
         root = rootManager.getRoot()
 
+        super().createButtonHelp()
 
         buttonCreateRobot = super().createButton(text="Créer robot", cmd=lambda:rootManager.runNewFrame(FCreateRobot(self)))
         buttonCreateRobot.pack()
@@ -24,8 +25,6 @@ class FConfigRobot(IFrame):
 
         buttonDeleteRobot = super().createButton(text="Supprimer robot", cmd=lambda:rootManager.runNewFrame(FDeleteRobot(self)))
         buttonDeleteRobot.pack()
-
-        super().createButtonHelp()
 
         buttonBack = super().createButton(text="Retour", cmd=lambda:super(FConfigRobot, self).reopenLastFrame())
         buttonBack.pack()

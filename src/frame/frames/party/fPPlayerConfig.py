@@ -18,13 +18,15 @@ MAX_PLAYER_AMOUNT = 6
 class FPPlayerConfig(IFrame):
 
     def __init__(self, previousFrame):
-        super().__init__(previousFrame)
+        super().__init__(previousFrame, "AIDE")
 
         self.selectedRobot = False
 
     def draw(self):
 
         robotsNames = robotManager.getLoadedRobots()
+
+        super().createButtonHelp()
 
         # Remet à zero la liste des joueurs
         playerManager.initPlayerList()
@@ -71,10 +73,6 @@ class FPPlayerConfig(IFrame):
         self.buttonNext = super().createButton(text="Suivant", cmd=lambda: rootManager.runNewFrame(FPPartyConfig(self)))
         self.buttonNext["state"] = "disabled"
         self.buttonNext.pack()
-
-        # Aide
-        buttonHelp = super().createButtonHelp(msg="aide")
-        buttonHelp.pack()
 
         # Retour
         buttonBack = super().createButton(text="Retour", cmd=lambda:super(FPPlayerConfig, self).reopenLastFrame())
