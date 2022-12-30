@@ -1,4 +1,7 @@
+import tkinter as tk
+
 import frame.rootManager as rootManager
+import utils.tkinter.tkUtils as tkUtils
 
 from frame.iFrame import IFrame
 from frame.messagesHelp import HELP_FCONFIGROBOT
@@ -17,14 +20,21 @@ class FConfigRobot(IFrame):
 
         super().createButtonHelp()
 
-        buttonCreateRobot = super().createButton(text="Créer robot", cmd=lambda:rootManager.runNewFrame(FCreateRobot(self)))
-        buttonCreateRobot.pack()
+        labelTitle = super().createLabel(master=root, text="Configuration des robots", fontSize=30)
+        labelTitle.pack(side="top")
 
-        buttonEditRobot = super().createButton(text="Editer robot", cmd=lambda:rootManager.runNewFrame(FEditRobot(self)))
-        buttonEditRobot.pack()
+        frameMainButtons = super().createFrame(root)
+        frameMainButtons.pack(pady=tkUtils.ratioHeight(0.1, root))
 
-        buttonDeleteRobot = super().createButton(text="Supprimer robot", cmd=lambda:rootManager.runNewFrame(FDeleteRobot(self)))
-        buttonDeleteRobot.pack()
+        buttonCreateRobot = super().createButton(master=frameMainButtons, text="Créer robot", cmd=lambda:rootManager.runNewFrame(FCreateRobot(self)))
+        buttonCreateRobot.pack(pady = tkUtils.ratioHeight(0.02, root), fill=tk.X)
+
+        buttonEditRobot = super().createButton(master=frameMainButtons,text="Editer robot", cmd=lambda:rootManager.runNewFrame(FEditRobot(self)))
+        buttonEditRobot.pack(pady = tkUtils.ratioHeight(0.02, root), fill=tk.X)
+
+        buttonDeleteRobot = super().createButton(master=frameMainButtons,text="Supprimer robot", cmd=lambda:rootManager.runNewFrame(FDeleteRobot(self)))
+        buttonDeleteRobot.pack(pady = tkUtils.ratioHeight(0.02, root), fill=tk.X)
 
         buttonBack = super().createButton(text="Retour", cmd=lambda:super(FConfigRobot, self).reopenLastFrame())
-        buttonBack.pack()
+        super().modifyButton(buttonBack ,bg = "darkred", ab = "red")
+        buttonBack.pack(side="bottom", anchor="w", padx=10, pady=10)

@@ -46,4 +46,6 @@ apprendre plus sur ces dites instructions."
 
 HELP_FDELETEROBOT = "Choisissez le nom de lu robot que vous voulez supprimer puis confirmez votre choix"
 
+HELP_FDELETEPARTY = "/!\ WORK IN PROGRESS"
+
 HELP_FPLAY = "Lancez une nouvelle partie, ou bien chargez une nouvelle partie (:I)"

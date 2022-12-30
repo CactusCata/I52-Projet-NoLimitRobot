@@ -39,19 +39,17 @@ class FSettings(IFrame):
         buttonConfigMap.pack(pady=tkUtils.ratioHeight(0.01, root), fill=tk.X)
 
         buttonConfigRobot = super().createButton(master=frameMainButtons, text="Configuration des robots", cmd=lambda:rootManager.runNewFrame(FConfigRobot(self)))
-        buttonConfigRobot.pack(pady = tkUtils.ratioHeight(0.01, root), fill=tk.X)
+        buttonConfigRobot.pack(pady=tkUtils.ratioHeight(0.01, root), fill=tk.X)
 
         buttonDeleteParty = super().createButton(master=frameMainButtons, text="Supprimer une partie", cmd=lambda:rootManager.runNewFrame(FDeleteParty(self)))
-        buttonDeleteParty.pack(pady = tkUtils.ratioHeight(0.01, root), fill=tk.X)
+        buttonDeleteParty.pack(pady=tkUtils.ratioHeight(0.01, root), fill=tk.X)
 
         self.fullScreenTickedVar = tk.IntVar(value=int(paramManager.PARAM.getFullScreenState()))
         comboBoxFullScreen = super().createCheckButton(master=frameMainButtons, text="Plein ecran", variable=self.fullScreenTickedVar, callback=lambda:self.toggleFullScreen())
-            #comboBoxFullScreen["state"] = "selected"
         comboBoxFullScreen.pack(pady = tkUtils.ratioHeight(0.01, root), fill=tk.X)
 
         self.needHelpTickedVar = tk.IntVar(value=int(paramManager.PARAM.isNeedHelp()))
         comboBoxEnableHelp = super().createCheckButton(master=frameMainButtons, text="Activer l'aide", variable=self.needHelpTickedVar, callback=lambda:self.toggleHelp())
-        #comboBoxEnableHelp["bd"] = 4
         comboBoxEnableHelp.pack(pady = tkUtils.ratioHeight(0.02, root), fill=tk.X)
 
 
