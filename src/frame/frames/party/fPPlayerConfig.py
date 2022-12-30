@@ -119,7 +119,7 @@ class FPPlayerConfig(IFrame):
 
         self.playerRobotCursor += 1
         
-        if (self.playerRobotCursor >= 3):
+        if (self.playerRobotCursor >= MIN_PLAYER_AMOUNT):
             self.buttonNext["state"] = "normal"
 
         self.selectedRobot = False

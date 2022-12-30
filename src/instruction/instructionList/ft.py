@@ -1,5 +1,7 @@
 from instruction.instructionList.iInstruction import IInstruction
 
+import utils.mapUtils as mapUtils
+
 class FT(IInstruction):
     """
     Déplace le robot courant d'une case dans la direction opposée au robot le
@@ -23,20 +25,27 @@ class FT(IInstruction):
 
         super().decreaseRobotEnergy(robot)
 
-        nearestRobot = map.getNearestRobot(robot)
+        print(f"Current robot pos: {robot.get_x()}, {robot.get_y()}")
+        nearestRobot = map.getNearestRobot(robot)[0]
+        print(f"nearest robot pos: {nearestRobot.get_x()}, {nearestRobot.get_y()}")
+
 
         pathsToNextCase = []
-        for i in {-1, 0, 1}:
-            for j in {-1, 0, 1}:
-                if (i != 0 and j != 0):
-                    if map.isAccessible(robot.get_x() + i, robot.get_y() + j):
-                        pathsToNextCase.append(map.getPath((robot.get_x() + i, robot.get_y() + j), (nearestRobot.get_x(), nearestRobot.get_y())))
+        neighboors = mapUtils.getNeighbour(map, (robot.get_x(), robot.get_y()))
+        for neighboor in neighboors:
+            print(f"({neighboor[0]}, {neighboor[1]}) --> ({nearestRobot.get_x()}, {nearestRobot.get_y()}) = ")
+            path = mapUtils.getPath(map, neighboor, (nearestRobot.get_x(), nearestRobot.get_y()))
+            print(path)
+            pathsToNextCase.append((neighboor, path))
 
-        farestPath = pathsToNextCase[0]
+        print(pathsToNextCase)
+        farestPathData = pathsToNextCase[0]
         for i in range(len(pathsToNextCase)):
-            if len(farestPath) > len(pathsToNextCase[i]):
-                farestPath = pathsToNextCase[i]
+            if len(farestPathData[1]) < len(pathsToNextCase[i][1]) and len(pathsToNextCase[i][1]) != 0:
+                farestPathData = pathsToNextCase[i]
 
-        nextCase = farestPath[0]
+        print(f"Selected path is : {farestPathData[1]}")
+
+        nextCase = (farestPathData[0][0], farestPathData[0][1])
 
         map.updateRobotPosition(robot, nextCase)

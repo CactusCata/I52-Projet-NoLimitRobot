@@ -8,7 +8,7 @@ def getRandomValideRobotPosition(map):
     Renvoie une position aléatoire valide sur la map
     """
     position = (random.randint(0, map.getDimX() - 1), random.randint(0, map.getDimY() - 1))
-    while (not map.isAccessible(position[0], position[1])):
+    while (not map.isAccessible(position)):
         position = (random.randint(0, map.getDimX() - 1), random.randint(0, map.getDimY() - 1))
 
     return position
@@ -51,7 +51,6 @@ def generateEquidistanceRobotsPositions(map, playerAmount):
     pour répartir les robots.
     Les positionnes à des endroits où la case est accessible.
     """
-    print("Appel de generateEquidistanceRobotsPositions(...)")
 
     robotsPositions = []
     mapDimX = map.getDimX()
@@ -60,11 +59,9 @@ def generateEquidistanceRobotsPositions(map, playerAmount):
     for i in range(playerAmount):
         alpha = (2 * math.pi * i) / playerAmount
         robotPosition = (int((1 + math.cos(alpha)) * mapDimX * 0.4), int((1 + math.sin(alpha)) * mapDimY * 0.4))
-        print(f"robot number {i}")
         robotPosition = generateValideRobotPosition(map, robotPosition)
         robotsPositions.append(robotPosition)
 
-    print(f"generateEquidistanceRobotsPositions(...): {robotPosition}")
     return robotsPositions
 
 def generateValideRobotPosition(map, robotPosition):
@@ -81,8 +78,6 @@ def generateValideRobotPosition(map, robotPosition):
         k = 0
         while k < len(possiblesPositions) and validposition is None:
             currentSelectedPosition = possiblesPositions[k]
-
-            print(f"robotPosition = {robotPosition} | currentSelectedPosition = {currentSelectedPosition}")
 
             # Si la case est accessible, on arrête la recherche de case valide
             if map.isAccessible((robotPosition[0] + currentSelectedPosition[0], robotPosition[1] + currentSelectedPosition[1])):
@@ -125,33 +120,35 @@ def getMinimalFCost(fCostMatrix):
     Renvoie un couple (x,y) de coordonnées qui correspond au
     cout minimal de la matrice
     """
-    x = 0
-    y = 0
-    while (y < len(fCostMatrix) and fCostMatrix[x][y] != -1):
-        x = 0
-        while (x < len(fCostMatrix[0]) and fCostMatrix[x][y] != 1):
-            x += 1
-        y += 1
-    
-    minCost = fCostMatrix[x][y]
-    minCostX = x
-    minCostY = y
-    while (y < len(fCostMatrix) and fCostMatrix[x][y] != -1):
-        x = 0
-        while (x < len(fCostMatrix[0]) and fCostMatrix[x][y] != 1):
-            if (fCostMatrix[x][y] < minCost):
-                minCost = fCostMatrix[x][y]
+    minCost = 10000
+    minCostX = 0
+    minCostY = 0
+    for x in range(len(fCostMatrix)):
+        for y in range(len(fCostMatrix[0])):
+            current = fCostMatrix[x][y]
+            if (current != -1 and current < minCost):
+                minCost = current
                 minCostX = x
                 minCostY = y
-            x += 1
-        y += 1
 
     return (minCostX, minCostY)
 
+def generateRobotEndPos(map, endPos):
+    endPosNeighbour = getNeighbour(map, endPos)
+    if len(endPosNeighbour) == 0:
+        return None
+
+    return random.choice(endPosNeighbour)
 
 def getPath(map, startPos, endPos):
     """
     """
+
+    if (not map.isAccessible(endPos)):
+        endPos = generateRobotEndPos(map, endPos)
+
+    if endPos == None:
+        return []
 
     # Contient la liste des cases vertes (pas encore évaluées)
     open = []
@@ -160,21 +157,29 @@ def getPath(map, startPos, endPos):
     closed = []
 
     # Nombre de déplacement pour chaque case
-    deplacementCount = [[-1] * map.getDimX()] * map.getDimY()
+    deplacementCount = []
+    gcost = []
+    hcost = []
+    fcost = []
+    parentCase = []
+    for i in range(map.getDimX()):
+        deplacementCount.append([-1] * map.getDimY())
+        gcost.append([-1] * map.getDimY())
+        hcost.append([-1] * map.getDimY())
+        fcost.append([-1] * map.getDimY())
+        parentCase.append([-1] * map.getDimY())
 
-    gcost = [[-1] * map.getDimX()] * map.getDimY()
-    hcost = [[-1] * map.getDimX()] * map.getDimY()
-    fcost = [[-1] * map.getDimX()] * map.getDimY()
-
-    parentCase = [[-1] * map.getDimX()] * map.getDimY()
     # La case de départ se caractérise par la valeur None
     parentCase[startPos[0]][startPos[1]] = None
 
-    addPointTo(open, startPos, endPos, startPos, deplacementCount, gcost, hcost, fcost, -1)
+    addPointTo(open, startPos, endPos, startPos, deplacementCount, gcost, hcost, fcost, None)
 
     while True:
         current = getMinimalFCost(fcost)
         open.remove(current)
+        gcost[current[0]][current[1]] = -1
+        hcost[current[0]][current[1]] = -1
+        fcost[current[0]][current[1]] = -1
         closed.append(current)
 
         if (current == endPos):
@@ -186,15 +191,11 @@ def getPath(map, startPos, endPos):
                 continue
 
             if neighbour not in open:#ajouter l'autre condition ici
-                gcost[neighbour[0]][neighbour[1]] = mathsUtils.distance_tchebychev(startPos, neighbour)
-                hcost[neighbour[0]][neighbour[1]] = mathsUtils.distance_tchebychev(neighbour, endPos)
-                fcost[neighbour[0]][neighbour[1]] = gcost[neighbour[0]][neighbour[1]] + hcost[neighbour[0]][neighbour[1]]
+                addPointTo(open, startPos, endPos, neighbour, deplacementCount, gcost, hcost, fcost, deplacementCount[current[0]][current[1]])
                 parentCase[neighbour[0]][neighbour[1]] = current
-                if neighbour not in open:
-                    open.append(neighbour)
 
     parentCasePos = parentCase[endPos[0]][endPos[1]]
-    path = []
+    path = [endPos]
     while parentCasePos != None:
         path.append(parentCasePos)
         parentCasePos = parentCase[parentCasePos[0]][parentCasePos[1]]
@@ -203,10 +204,13 @@ def getPath(map, startPos, endPos):
     return path
 
 def addPointTo(listToAdd, initPos, endPos, pos, deplacementCount, gcost, hcost, fcost, lastNodeDistance):
-    listToAdd.append(pos)
-    gcost[pos[0]][pos[1]] = mathsUtils.distance_tchebychev(initPos, pos)
-    hcost[pos[0]][pos[1]] = mathsUtils.distance_tchebychev(pos, endPos)
+    if pos not in listToAdd:
+        listToAdd.append(pos)
+    gcost[pos[0]][pos[1]] = mathsUtils.distance_chareyre(initPos, pos)
+    hcost[pos[0]][pos[1]] = mathsUtils.distance_chareyre(pos, endPos)
     fcost[pos[0]][pos[1]] = gcost[pos[0]][pos[1]] + hcost[pos[0]][pos[1]]
+    if lastNodeDistance == None:
+        lastNodeDistance = -1
     deplacementCount[pos[0]][pos[1]] = lastNodeDistance + 1
 
 
@@ -214,8 +218,8 @@ def getNeighbour(map, pos):
     validNeighbour = []
     for i in {-1, 0, 1}:
         for j in {-1, 0, 1}:
-            if (i != 0 and j != 0):
-                if map.isAccessible(pos[0] + i, pos[1] + j):
+            if (i != 0 or j != 0):
+                if map.isAccessible((pos[0] + i, pos[1] + j)):
                     validNeighbour.append((pos[0] + i, pos[1] + j))
     return validNeighbour
     

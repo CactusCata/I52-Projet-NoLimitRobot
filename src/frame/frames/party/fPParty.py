@@ -2,6 +2,7 @@ import frame.rootManager as rootManager
 import game.gameManager as gameManager
 import player.playerManager as playerManager
 import utils.otherUtils as otherUtils
+import utils.mapUtils as mapUtils
 from time import time
 
 from map.mapDrawer import MapDrawer
@@ -44,6 +45,9 @@ class FPParty(IFrame):
             canvasPlayerHealth.create_rectangle(5, 5, 95, 25, fill=otherUtils.convertHealthPercentToColor(100))
             canvasPlayerHealth.pack()
             self.playersHealthBar.append(canvasPlayerHealth)
+
+        path = mapUtils.getPath(self.map, (1, 0), (1, 12))
+        print(path)
 
         # Map
         self.canvasMap = super().createCanvas(width=700, height=500)

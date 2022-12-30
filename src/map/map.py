@@ -220,10 +220,11 @@ class Map:
             while j < len(positions) and not robotHasBeenFound:
                 pos = positions[j]
                 if (0 <= pos[0] < self.getDimX() and 0 <= pos[1] < self.getDimY() and self.getID(pos[0], pos[1]) == PLAYER_ID):
-                    robotHasBeenFound = True
                     robotTarget = self.getData(pos[0], pos[1])
-                    endX = robotTarget.get_x()
-                    endY = robotTarget.get_y()
+                    if (robotTarget != robot):
+                        robotHasBeenFound = True
+                        endX = robotTarget.get_x()
+                        endY = robotTarget.get_y()
 
                 j += 1
             
