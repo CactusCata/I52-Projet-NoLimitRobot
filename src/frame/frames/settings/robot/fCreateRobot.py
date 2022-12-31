@@ -7,7 +7,9 @@ import robot.robotManager as robotManager
 from frame.iFrame import IFrame
 from frame.messagesHelp import HELP_FCREATEROBOT
 
+import tkinter as tk
 from tkinter import END
+import utils.tkinter.tkUtils as tkUtils
 
 class FCreateRobot(IFrame):
 
@@ -19,34 +21,64 @@ class FCreateRobot(IFrame):
 
         # Aide
         super().createButtonHelp()
+        #
+
+        frameMain = super().createFrame(root)
+        frameMain.pack()
 
         # Nom du robot
-        textName = super().createLabel(text="Nom du robot:")
-        textName.pack()
-        self.entryName = super().createEntry(width=15)
-        self.entryName.pack()
+        frameNameRobot = super().createFrame(frameMain)
+        frameNameRobot.pack(pady = tkUtils.ratioHeight(0.04, root), fill=tk.X)
+        textName = super().createLabel(master=frameNameRobot, text="Nom du robot:")
+        textName.pack(side="left")
+        self.entryName = super().createEntry(master=frameNameRobot, width=15)
+        self.entryName.pack(fill=tk.X)
+        #
 
         # Description
-        textDescription = super().createLabel(text="Description (Optionnelle):")
-        textDescription.pack()
-        self.entryDescription = super().createEntry(width=50)
-        self.entryDescription.pack()
+        frameDescription = super().createFrame(frameMain)
+        frameDescription.pack(pady = tkUtils.ratioHeight(0.04, root), fill=tk.X)
+        textDescription = super().createLabel(master=frameDescription, text="Description (Optionnelle):")
+        textDescription.pack(side="left")
+        self.entryDescription = super().createEntry(master=frameDescription, width=tkUtils.ratioWidth(0.04, root))
+        self.entryDescription.pack(fill=tk.X)
+        #
 
         # Logo
-        logoLabel = super().createLabel(text="Logo (Optionnel):")
-        logoLabel.pack()
-        logoButtonChooseLogoPath = super().createButton(text="Sélectionnez votre Logo", cmd=lambda:self.selectLogoPath())
-        logoButtonChooseLogoPath.pack()
-        self.entryLogoPath = super().createEntry(width=40)
-        self.entryLogoPath.pack()
+        frameLogoSelected = super().createFrame(frameMain)
+        frameLogoSelected.pack(pady = tkUtils.ratioHeight(0.04, root), fill=tk.X)
+        logoLabelOptionnal = super().createLabel(master=frameLogoSelected, text="Logo (Optionnel):")
+        logoLabelOptionnal.pack(side="left")
+        logoButtonChooseLogoPath = super().createButton(master=frameLogoSelected, text="Sélectionnez votre Logo", cmd=lambda:self.selectLogoPath())
+        logoButtonChooseLogoPath.pack(fill=tk.X)
+
+        frameLogoPath = super().createFrame(frameMain)
+        frameLogoPath.pack(fill=tk.X)
+        logoLabelPath = super().createLabel(master=frameLogoPath, text="Chemin absolu de votre logo:")
+        logoLabelPath.pack(side="left")
+        self.entryLogoPath = super().createEntry(master=frameLogoPath, width=tkUtils.ratioWidth(0.04, root))
+        self.entryLogoPath.pack(fill=tk.X)
+        #
 
         # Confirmer
-        buttonConfirm = super().createButton(text="Editer le robot", cmd=lambda:self.followingFrame())
-        buttonConfirm.pack()
+        frameConfirm = super().createFrame(frameMain)
+        frameConfirm.pack(side="right", padx=10, pady=40, fill=tk.X)
+        buttonConfirm = super().createButton(master=frameConfirm, text="CONFIRMER ROBOT", cmd=lambda:self.followingFrame())
+        buttonConfirm["bg"] = "darkblue"
+        buttonConfirm["fg"] = "white"
+        buttonConfirm["bd"] = tkUtils.ratioWidth(0.01, root)
+        buttonConfirm["width"] = tkUtils.ratioWidth(0.06, root)
+        buttonConfirm["height"] = tkUtils.ratioHeight(0.001, root)
+        buttonConfirm["activebackground"] = "blue"
+        buttonConfirm["activeforeground"] = "lightgrey"
+        buttonConfirm.pack(fill = tk.X)
+        #
 
         # Retour
         buttonBack = super().createButton(text="Retour", cmd=lambda:super(FCreateRobot, self).reopenLastFrame())
-        buttonBack.pack()
+        super().modifyButton(buttonBack ,bg = "darkred", ab = "red")
+        buttonBack.pack(side="bottom", anchor="w", padx=10, pady=10)
+        #
 
     def selectLogoPath(self):
         """

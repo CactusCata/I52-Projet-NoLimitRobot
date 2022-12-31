@@ -8,7 +8,9 @@ from frame.messagesHelp import HELP_FEDITROBOT
 from robot.robotFile import RobotFile
 from utils.tkinter.tkPerformer import TkPerformer
 
+import tkinter as tk
 from tkinter import Scrollbar
+import utils.tkinter.tkUtils as tkUtils
 
 class FEditRobot(IFrame):
 

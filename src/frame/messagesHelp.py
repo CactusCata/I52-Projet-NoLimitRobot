@@ -49,3 +49,5 @@ HELP_FDELETEROBOT = "Choisissez le nom de lu robot que vous voulez supprimer pui
 HELP_FDELETEPARTY = "/!\ WORK IN PROGRESS"
 
 HELP_FPLAY = "Lancez une nouvelle partie, ou bien chargez une nouvelle partie (:I)"
+
+HELP_FLOADPARTY = "/!\ WORK IN PROGRESS"

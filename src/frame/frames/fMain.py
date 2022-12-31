@@ -30,20 +30,22 @@ class FMain(IFrame):
         label.pack(side = "top", anchor = "n")
 
         frameMainButtons = super().createFrame(root)
-        frameMainButtons.pack(pady = 100)
+        frameMainButtons.pack(pady = tkUtils.ratioHeight(0.15, root))
 
         frameExit = super().createFrame(root)
         frameExit.pack(side = "bottom", anchor = "e", padx = 10, pady = 10)
 
         buttonPlay = super().createButton(master = frameMainButtons ,text="Jouer", cmd=lambda:rootManager.runNewFrame(FPlay(self)), fontSize=18)
         #super().modifyButton(buttonPlay ,bg = "#0000DD", ab = "#0000FF")
-        buttonPlay.pack(pady = 15, fill=tk.X)
+        buttonPlay.pack(pady = tkUtils.ratioHeight(0.01, root), fill=tk.X)
 
         buttonOptions = super().createButton(master = frameMainButtons, text="Options", cmd=lambda:rootManager.runNewFrame(FSettings(self)), fontSize=18)
         #super().modifyButton(buttonOptions ,bg = "#AA3300", ab = "orange")
-        buttonOptions.pack(pady = 15, fill=tk.X)
+        buttonOptions.pack(pady = tkUtils.ratioHeight(0.01, root), fill=tk.X)
 
 
         buttonQuit = super().createButton(master = frameExit, text="Quitter", cmd=lambda:rootManager.destroyRoot(), fontSize=18)
         super().modifyButton(buttonQuit ,bg = "darkred", ab = "red")
+        buttonQuit["width"] = tkUtils.ratioWidth(0.015, root)
+        buttonQuit["height"] = tkUtils.ratioHeight(0.0035, root)
         buttonQuit.pack()

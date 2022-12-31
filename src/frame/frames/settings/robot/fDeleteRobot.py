@@ -4,29 +4,40 @@ import robot.robotManager as robotManager
 from frame.iFrame import IFrame
 from frame.messagesHelp import HELP_FDELETEROBOT
 
+
+import tkinter as tk
 from tkinter import messagebox
+import utils.tkinter.tkUtils as tkUtils
 
 class FDeleteRobot(IFrame):
 
     def __init__(self, previousFrame):
-        super().__init__(previousFrame, "AIDE")
+        super().__init__(previousFrame, HELP_FDELETEROBOT)
 
     def draw(self):
         root = rootManager.getRoot()
 
         super().createButtonHelp()
 
-        # Nom du robot
-        textName = super().createLabel(text="Nom du robot:")
-        textName.pack()
-        self.comboboxName = super().createComboBox(list=robotManager.getLoadedRobots())
-        self.comboboxName.pack()
+        labelTitle = super().createLabel(master=root, text="Suppression de robot", fontSize=30)
+        labelTitle.pack(side="top")
 
-        confirmButton = super().createButton(text="Supprimer", cmd=lambda:self.confirmButtonAction())
-        confirmButton.pack()
+        frameMain = super().createFrame(root)
+        frameMain.pack(pady=tkUtils.ratioHeight(0.04, root))
+
+        # Nom du robot
+        textName = super().createLabel(master=frameMain, text="Nom du robot:")
+        textName.pack(anchor="n")
+
+        self.comboboxName = super().createComboBox(list=robotManager.getLoadedRobots())
+        self.comboboxName.pack(anchor="n")
+
+        buttonConfirm = super().createButton(text="Supprimer", cmd=lambda:self.confirmButtonAction())
+        buttonConfirm.pack(pady=tkUtils.ratioHeight(0.01, root))
 
         buttonBack = super().createButton(text="Retour", cmd=lambda:super(FDeleteRobot, self).reopenLastFrame())
-        buttonBack.pack()
+        super().modifyButton(buttonBack ,bg = "darkred", ab = "red")
+        buttonBack.pack(side="bottom", anchor="w", padx=10, pady=10)
 
     def confirmButtonAction(self):
         selectedRobotName = self.comboboxName.get()
