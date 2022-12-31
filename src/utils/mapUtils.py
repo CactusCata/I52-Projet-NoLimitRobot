@@ -176,6 +176,8 @@ def getPath(map, startPos, endPos):
 
     while True:
         current = getMinimalFCost(fcost)
+        if (current not in open):
+            return []
         open.remove(current)
         gcost[current[0]][current[1]] = -1
         hcost[current[0]][current[1]] = -1

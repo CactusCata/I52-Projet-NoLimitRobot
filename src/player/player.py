@@ -7,15 +7,19 @@ class Player:
 
     def __init__(self, robotFile, color, id):
 
-        robotFile.load_logo(dimX=20, dimY=20)
-        robotBloc = robotFile.get_logo()
+        robotFile.load_bloc()
+        robotBloc = robotFile.get_bloc()
         robotBlocColored = imageUtils.applyColor(robotBloc, color)
         self.robotBlocTk = imageManager.loadImageTk(robotBlocColored)
 
-        robotFile.load_logo(dimX=50, dimY=50)
-        robotIcon = robotFile.get_logo()
+        robotFile.load_icon()
+        robotIcon = robotFile.get_icon()
         robotIconColored = imageUtils.applyColor(robotIcon, color)
         self.robotIconTk = imageManager.loadImageTk(robotIconColored)
+
+        mineBloc = imageManager.IMG_MAP_MINE
+        mineBlocColored = imageUtils.applyColor(mineBloc, color)
+        self.mineBlockTk = imageManager.loadImageTk(mineBlocColored)
 
         self.robotFile = robotFile
         self.id = id
@@ -55,6 +59,9 @@ class Player:
 
     def getRobotIconTk(self):
         return self.robotIconTk
+
+    def getMineBlocTk(self):
+        return self.mineBlockTk
 
     def getRobotFile(self):
         return self.robotFile

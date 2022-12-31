@@ -280,8 +280,11 @@ class Map:
         y = position[1]
         if self.getID(x, y) == MINE_ID:
             mine = self.getData(x, y)
-            robot.decreaseEnery(mine.get_damage())
-            robot.enable_danger_instruction()
+            playerHasPutThisMineID = mine.get_playerId()
+            player = playerManager.PLAYER_LIST[playerHasPutThisMineID]
+            if (player.getRobotParty() != robot):
+                robot.decreaseEnery(mine.get_damage())
+                robot.enable_danger_instruction()
 
         self.modify(robot.get_x(), robot.get_y(), AIR_ID, None)
         robot.move(position)

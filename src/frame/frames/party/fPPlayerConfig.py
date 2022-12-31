@@ -55,7 +55,7 @@ class FPPlayerConfig(IFrame):
             currentLabelPlayer.pack()
             self.labelPlayerList.append(currentLabelPlayer)
 
-        self.robotChooser = RobotChooser(self.canvas, robotsFile, xPas=52, yPas=52, imageDimension=(50,50))
+        self.robotChooser = RobotChooser(self.canvas, robotsFile)
         self.robotChooser.drawGrid()
         self.robotChooser.drawRobots()
 

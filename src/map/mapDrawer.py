@@ -1,19 +1,19 @@
-from map.mapManager import MAP_LINE_AMOUNT, MAP_COL_AMOUNT
+import player.playerManager as playerManager
 
 import image.imageManager as imageManager
 import utils.tkinter.tkUtils as tkUtils
 
 class MapDrawer:
 
-    def __init__(self, canvas, map, players=[], xStart=10, yStart=10, xPas=22, yPas=22):
+    def __init__(self, canvas, map, players=[], xStart=10, yStart=10):
         self.canvas = canvas
         self.map = map
         self.players = players
 
         self.xStart = xStart
         self.yStart = yStart
-        self.xPas = xPas
-        self.yPas = yPas
+        self.xPas = imageManager.MAP_BLOC_DIMENSIONS[0] + 2
+        self.yPas = imageManager.MAP_BLOC_DIMENSIONS[1] + 2
 
         self.robotsDrawID = []
 
@@ -33,7 +33,6 @@ class MapDrawer:
         for x in range(self.map.getDimX()):
             for y in range(self.map.getDimY()):
                 caseValue = self.map.getID(x, y)
-                #coords = (self.xStart + (col * self.xPas), self.yStart + (line * self.yPas))
 
                 imgToDraw = None
                 if (caseValue == 1):
@@ -43,12 +42,21 @@ class MapDrawer:
 
                 if (imgToDraw != None):
                     self.drawImage(imgToDraw, x, y, tag=f"figure:{x},{y}")
-                #self.canvas.create_image(coords[0] + 10, coords[1] + 10, image=imgToDraw, tag=(f"figure:{line},{col}",))
-               
+
     def drawRobot(self):
         for player in self.players:
             robotParty = player.getRobotParty()
             self.drawImage(player.getRobotBlocTk(), robotParty.get_x(), robotParty.get_y())
+
+    def drawMine(self):
+        for x in range(self.map.getDimX()):
+            for y in range(self.map.getDimY()):
+                if (self.map.getID(x, y) == 3):
+                    mine = self.map.getData(x, y)
+                    playerID = mine.get_playerId()
+                    player = playerManager.PLAYER_LIST[playerID]
+                    mineBlockTk = player.getMineBlocTk()
+                    self.drawImage(mineBlockTk, x, y)
 
 
     def drawImage(self, img, col, line, tag=""):

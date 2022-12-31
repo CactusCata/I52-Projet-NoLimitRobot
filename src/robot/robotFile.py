@@ -1,5 +1,6 @@
 import utils.robotUtils as robotUtils
 import image.imageManager as imageManager
+import player.playerManager as playerManager
 
 class RobotFile():
     """
@@ -15,10 +16,12 @@ class RobotFile():
         instructions = robotUtils.get_instr_from_name(name)
         self.__dangerInstruction = instructions[0]
         self.__instr = instructions[1:]
-        print(self.__instr)
         self.__logoPath = robotUtils.get_logo_path_from_name(name)
-        self.__logoImg = None
-        self.__logoTk = None
+        self.__icon = None
+        self.__iconTk = None
+        self.__bloc = None
+        self.__blocTk = None
+
 
     def get_danger_instruction(self):
         return self.__dangerInstruction
@@ -47,44 +50,91 @@ class RobotFile():
         """
         return self.__logoPath
 
-    def logo_is_loaded(self):
-        """
-        Renvoie:
-            - True si le logo a bien été chargé
-            - False si le logo n'a pas été chargé
 
-        Pour charger le logo du robot, il est nécéssaire
-        d'executer la méthode robotFile.load_logo()
-        """
-        return self.__logoImg != None
-
-    def logo_tk_is_loaded(self):
-        """
-        Renvoie:
-            - True si le logo a bien été chargé
-            - False si le logo n'a pas été chargé
-
-        Pour charger le logo du robot, il est nécéssaire
-        d'executer la méthode robotFile.load_logo()
-        """
-        return self.__logoTk != None
-
-    def load_logo(self, dimX=100, dimY=100):
+    def load_icon(self):
         """
         Charge en mémoire l'image logo du reobot
         """
-        self.__logoImg = imageManager.loadImage(self.get_logo_path(), dimX=dimX, dimY=dimY)
+        self.__icon = imageManager.loadImage(self.get_logo_path(), playerManager.PLAYER_ICON_DIMENSIONS)
 
-    def load_logo_tk(self):
-        if (not self.logo_tk_is_loaded()):
-            self.__logoTk = imageManager.loadImageTk(self.__logoImg)
 
-    def get_logo(self):
+    def icon_is_loaded(self):
+        """
+        Renvoie:
+            - True si l'icon a bien été chargée
+            - False si l'icon n'a pas été chargée
+
+        Pour charger l'icon du robot, il est nécéssaire
+        d'executer la méthode robotFile.load_icon()
+        """
+        return self.__icon != None
+
+    def load_icon_tk(self):
+        if (not self.icon_tk_is_loaded()):
+            self.__iconTk = imageManager.loadImageTk(self.__icon)
+
+    def icon_tk_is_loaded(self):
+        """
+        Renvoie:
+            - True si l'icon a bien été chargée
+            - False si l'icon n'a pas été chargée
+
+        Pour charger l'icon du robot, il est nécéssaire
+        d'executer la méthode robotFile.load_icon_tk()
+        """
+        return self.__iconTk != None
+
+
+    def get_icon(self):
         """
         Renvoie une instance de l'image du logo pour tkinter.
         Doit d'abord est chargé via la méthode robotFile.load_logo()
         """
-        return self.__logoImg
+        return self.__icon
     
-    def get_logo_tk(self):
-        return self.__logoTk
+    def get_icon_tk(self):
+        return self.__iconTk
+
+    def load_bloc(self):
+        """
+        Charge en mémoire l'image logo du reobot
+        """
+        self.__bloc = imageManager.loadImage(self.get_logo_path(), imageManager.MAP_BLOC_DIMENSIONS)
+
+
+    def bloc_is_loaded(self):
+        """
+        Renvoie:
+            - True si l'bloc a bien été chargée
+            - False si l'bloc n'a pas été chargée
+
+        Pour charger l'bloc du robot, il est nécéssaire
+        d'executer la méthode robotFile.load_bloc()
+        """
+        return self.__bloc != None
+
+    def load_bloc_tk(self):
+        if (not self.bloc_tk_is_loaded()):
+            self.__blocTk = imageManager.loadImageTk(self.__bloc)
+
+    def bloc_tk_is_loaded(self):
+        """
+        Renvoie:
+            - True si l'bloc a bien été chargée
+            - False si l'bloc n'a pas été chargée
+
+        Pour charger l'bloc du robot, il est nécéssaire
+        d'executer la méthode robotFile.load_bloc_tk()
+        """
+        return self.__blocTk != None
+
+
+    def get_bloc(self):
+        """
+        Renvoie une instance de l'image du logo pour tkinter.
+        Doit d'abord est chargé via la méthode robotFile.load_logo()
+        """
+        return self.__bloc
+    
+    def get_bloc_tk(self):
+        return self.__blocTk

@@ -2,6 +2,8 @@ import utils.otherUtils as otherUtils
 
 from player.player import Player
 
+PLAYER_ICON_DIMENSIONS = (40, 40)
+
 PLAYER_LIST = []
 
 def initPlayerList():

@@ -1,17 +1,17 @@
 import math
+import player.playerManager as playerManager
 
 class RobotChooser:
 
-    def __init__(self, canvas, robotsFileList=[], xStart=10, yStart=10, xPas=22, yPas=22, imageDimension=20):
+    def __init__(self, canvas, robotsFileList=[], xStart=10, yStart=10):
         self.canvas = canvas
         self.robotsFileList = robotsFileList
         self.dictIdRobotFile = {}
 
         self.xStart = xStart
         self.yStart = yStart
-        self.xPas = xPas
-        self.yPas = yPas
-        self.imageDimensions = imageDimension
+        self.xPas = playerManager.PLAYER_ICON_DIMENSIONS[0] + 2
+        self.yPas = playerManager.PLAYER_ICON_DIMENSIONS[1] + 2
 
         self.matrixDim = math.ceil(math.sqrt(len(robotsFileList)))
 
@@ -33,9 +33,9 @@ class RobotChooser:
             col = 0
             while (col < self.matrixDim) and (line * self.matrixDim + col < len(self.robotsFileList)):
                 robotFile = self.robotsFileList[line * self.matrixDim + col]
-                robotFile.load_logo(self.imageDimensions[0], self.imageDimensions[1])
-                robotFile.load_logo_tk()
-                imgToDraw = robotFile.get_logo_tk()
+                robotFile.load_icon()
+                robotFile.load_icon_tk()
+                imgToDraw = robotFile.get_icon_tk()
 
                 id = self.drawImage(imgToDraw, line, col, tag=f"robot:{line * self.matrixDim + col}")
                 self.dictIdRobotFile[id] = robotFile
@@ -46,7 +46,7 @@ class RobotChooser:
 
     def drawImage(self, img, line, col, tag=""):
         # Juste
-        return self.canvas.create_image(self.imageDimensions[0] // 2 + self.xStart + col * self.xPas, self.imageDimensions[1] // 2 + self.yStart + line * self.yPas, image=img, tag=(tag,))
+        return self.canvas.create_image(playerManager.PLAYER_ICON_DIMENSIONS[0] // 2 + self.xStart + col * self.xPas, playerManager.PLAYER_ICON_DIMENSIONS[1] // 2 + self.yStart + line * self.yPas, image=img, tag=(tag,))
 
     def getRobotFile(self, id):
         return self.dictIdRobotFile[id]

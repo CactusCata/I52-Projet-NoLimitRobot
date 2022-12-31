@@ -4,6 +4,8 @@ import player.playerManager as playerManager
 import utils.otherUtils as otherUtils
 import utils.mapUtils as mapUtils
 from time import time
+from image.imageManager import MAP_BLOC_DIMENSIONS
+from player.playerManager import PLAYER_ICON_DIMENSIONS
 
 from map.mapDrawer import MapDrawer
 from frame.iFrame import IFrame
@@ -36,8 +38,8 @@ class FPParty(IFrame):
             labelPlayerName = super().createLabel(master=playerFrame, text=player.getRobotFile().get_name())
             labelPlayerName.pack()
             
-            canvasPlayerIcon = super().createCanvas(master=playerFrame, width=50, height=50)
-            canvasPlayerIcon.create_image(26, 26, image=player.getRobotIconTk())
+            canvasPlayerIcon = super().createCanvas(master=playerFrame, width=PLAYER_ICON_DIMENSIONS[0], height=PLAYER_ICON_DIMENSIONS[1])
+            canvasPlayerIcon.create_image((PLAYER_ICON_DIMENSIONS[0] // 2) + 1, (PLAYER_ICON_DIMENSIONS[1] // 2) + 1, image=player.getRobotIconTk())
             canvasPlayerIcon.pack()
 
             canvasPlayerHealth = super().createCanvas(master=playerFrame, width=100, height=30)
@@ -46,8 +48,10 @@ class FPParty(IFrame):
             canvasPlayerHealth.pack()
             self.playersHealthBar.append(canvasPlayerHealth)
 
-        path = mapUtils.getPath(self.map, (1, 0), (1, 12))
-        print(path)
+        # Retour
+        buttonBack = super().createButton(text="Retour", cmd=lambda:self.tryReopenLastFrame())
+        buttonBack.pack()
+
 
         # Map
         self.canvasMap = super().createCanvas(width=700, height=500)
@@ -57,6 +61,7 @@ class FPParty(IFrame):
         self.mapDrawer.drawMap()
         self.mapDrawer.drawGrid()
         self.mapDrawer.drawRobot()
+        self.mapDrawer.drawMine()
         self.game = Game(map=self.map)
 
         self.lastTaskID = self.root.after(MS_BETWEEN_TWO_ROBOT_ACTION, self.nextPartyStep)
@@ -84,8 +89,13 @@ class FPParty(IFrame):
         self.mapDrawer.drawMap()
         self.mapDrawer.drawGrid()
         self.mapDrawer.drawRobot()
+        self.mapDrawer.drawMine()
 
         totalTime = int((time() - start) * 1000)
         timeToWait = max(0, MS_BETWEEN_TWO_ROBOT_ACTION - totalTime)
 
         self.lastTaskID = self.root.after(timeToWait, self.nextPartyStep)
+
+    def tryReopenLastFrame(self):
+        self.root.after_cancel(self.lastTaskID)
+        super(FPParty, self).reopenLastFrame()
