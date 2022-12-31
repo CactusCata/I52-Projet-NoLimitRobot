@@ -21,6 +21,7 @@ class PS(IInstruction):
         super().decreaseRobotEnergy(robot)
 
         nearestRobotPath = map.getNearestRobot(robot)[1]
+        print(f"PS: nearestRobotPath: {nearestRobotPath}")
         if len(nearestRobotPath) > 1:
             nextCase = nearestRobotPath[1]
             map.updateRobotPosition(robot, nextCase)

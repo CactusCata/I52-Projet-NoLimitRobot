@@ -1,4 +1,5 @@
 import utils.mapUtils as mapUtils
+import player.playerManager as playerManager
 
 AIR_ID = 0
 ROCK_ID = 1
@@ -207,31 +208,26 @@ class Map:
         startX = robot.get_x()
         startY = robot.get_y()
 
-        endX = -1
-        endY = -1
-
-        n = max(max(robot.get_x(), self.getDimX() - robot.get_x()), max(robot.get_y(), self.getDimY() - robot.get_y()))
-        robotHasBeenFound = False
-        i = 1
-
-        while i < n and not robotHasBeenFound:
-            positions = mapUtils.generateSquarePositions(i)
-            j = 0
-            while j < len(positions) and not robotHasBeenFound:
-                pos = positions[j]
-                if (0 <= pos[0] < self.getDimX() and 0 <= pos[1] < self.getDimY() and self.getID(pos[0], pos[1]) == PLAYER_ID):
-                    robotTarget = self.getData(pos[0], pos[1])
-                    if (robotTarget != robot):
-                        robotHasBeenFound = True
-                        endX = robotTarget.get_x()
-                        endY = robotTarget.get_y()
-
-                j += 1
-            
+        i = 0
+        nearestRobot = None
+        nearestRobotPath = None
+        while i < len(playerManager.PLAYER_LIST) and nearestRobot is None:
+            playerRobot = playerManager.PLAYER_LIST[i].getRobotParty()
+            if playerRobot != robot:
+                nearestRobot = playerRobot
+                nearestRobotPath = mapUtils.getPath(self, (startX, startY), (playerRobot.get_x(), playerRobot.get_y()))
             i += 1
 
-        path = mapUtils.getPath(self, (startX, startY), (endX, endY))
-        return (self.getData(endX, endY), path)
+
+        for player in playerManager.PLAYER_LIST:
+            playerRobot = player.getRobotParty()
+            if (playerRobot != robot):
+                currentPath = mapUtils.getPath(self, (startX, startY), (playerRobot.get_x(), playerRobot.get_y()))
+                if (len(currentPath) < len(nearestRobotPath)):
+                    nearestRobot = playerRobot
+                    nearestRobotPath = currentPath
+
+        return (nearestRobot, nearestRobotPath)
 
     def placeMine(self, mine):
         """

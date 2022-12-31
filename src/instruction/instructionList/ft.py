@@ -30,22 +30,16 @@ class FT(IInstruction):
         print(f"nearest robot pos: {nearestRobot.get_x()}, {nearestRobot.get_y()}")
 
 
-        pathsToNextCase = []
         neighboors = mapUtils.getNeighbour(map, (robot.get_x(), robot.get_y()))
+
+        farestPathLength = -1
+        bestCase = (-1, -1)
         for neighboor in neighboors:
-            print(f"({neighboor[0]}, {neighboor[1]}) --> ({nearestRobot.get_x()}, {nearestRobot.get_y()}) = ")
             path = mapUtils.getPath(map, neighboor, (nearestRobot.get_x(), nearestRobot.get_y()))
-            print(path)
-            pathsToNextCase.append((neighboor, path))
+            pathLength = len(path)
+            if pathLength > farestPathLength:
+                farestPathLength = pathLength
+                bestCase = neighboor
 
-        print(pathsToNextCase)
-        farestPathData = pathsToNextCase[0]
-        for i in range(len(pathsToNextCase)):
-            if len(farestPathData[1]) < len(pathsToNextCase[i][1]) and len(pathsToNextCase[i][1]) != 0:
-                farestPathData = pathsToNextCase[i]
 
-        print(f"Selected path is : {farestPathData[1]}")
-
-        nextCase = (farestPathData[0][0], farestPathData[0][1])
-
-        map.updateRobotPosition(robot, nextCase)
+        map.updateRobotPosition(robot, bestCase)

@@ -6,10 +6,17 @@ from robot.robotParty import RobotParty
 class Player:
 
     def __init__(self, robotFile, color, id):
+
         robotFile.load_logo(dimX=20, dimY=20)
+        robotBloc = robotFile.get_logo()
+        robotBlocColored = imageUtils.applyColor(robotBloc, color)
+        self.robotBlocTk = imageManager.loadImageTk(robotBlocColored)
+
+        robotFile.load_logo(dimX=50, dimY=50)
         robotIcon = robotFile.get_logo()
         robotIconColored = imageUtils.applyColor(robotIcon, color)
-        self.iconTk = imageManager.loadImageTk(robotIconColored)
+        self.robotIconTk = imageManager.loadImageTk(robotIconColored)
+
         self.robotFile = robotFile
         self.id = id
         self.robotParty = RobotParty(-1, -1)
@@ -43,8 +50,11 @@ class Player:
     def getID(self):
         return self.id
 
-    def getIconTk(self):
-        return self.iconTk
+    def getRobotBlocTk(self):
+        return self.robotBlocTk
+
+    def getRobotIconTk(self):
+        return self.robotIconTk
 
     def getRobotFile(self):
         return self.robotFile

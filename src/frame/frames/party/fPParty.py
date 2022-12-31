@@ -37,7 +37,7 @@ class FPParty(IFrame):
             labelPlayerName.pack()
             
             canvasPlayerIcon = super().createCanvas(master=playerFrame, width=50, height=50)
-            canvasPlayerIcon.create_image(10, 10, image=player.getIconTk())
+            canvasPlayerIcon.create_image(26, 26, image=player.getRobotIconTk())
             canvasPlayerIcon.pack()
 
             canvasPlayerHealth = super().createCanvas(master=playerFrame, width=100, height=30)

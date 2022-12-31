@@ -48,7 +48,7 @@ class MapDrawer:
     def drawRobot(self):
         for player in self.players:
             robotParty = player.getRobotParty()
-            self.drawImage(player.getIconTk(), robotParty.get_x(), robotParty.get_y())
+            self.drawImage(player.getRobotBlocTk(), robotParty.get_x(), robotParty.get_y())
 
 
     def drawImage(self, img, col, line, tag=""):

@@ -48,14 +48,14 @@ class FPPlayerConfig(IFrame):
         self.canvasPlayerList = []
         self.labelPlayerList = []
         for i in range(6):
-            currentCanvasPlayer = super().createCanvas(master=framePlayerSection, width=30, height=30)
+            currentCanvasPlayer = super().createCanvas(master=framePlayerSection, width=50, height=50)
             currentCanvasPlayer.pack()
             self.canvasPlayerList.append(currentCanvasPlayer)
             currentLabelPlayer = super().createLabel(master=framePlayerSection, text=f"Joueur {i}")
             currentLabelPlayer.pack()
             self.labelPlayerList.append(currentLabelPlayer)
 
-        self.robotChooser = RobotChooser(self.canvas, robotsFile, xPas=42, yPas=42, imageDimension=(40,40))
+        self.robotChooser = RobotChooser(self.canvas, robotsFile, xPas=52, yPas=52, imageDimension=(50,50))
         self.robotChooser.drawGrid()
         self.robotChooser.drawRobots()
 
@@ -98,9 +98,9 @@ class FPPlayerConfig(IFrame):
             playerManager.updatePlayer(robotFile, self.playerRobotCursor)
 
         player = playerManager.getPlayer(self.playerRobotCursor)
-        logoPlayer = player.getIconTk()
+        logoPlayer = player.getRobotIconTk()
         currentCanvas = self.canvasPlayerList[self.playerRobotCursor]
-        currentCanvas.create_image(20, 20, image=logoPlayer)
+        currentCanvas.create_image(26, 26, image=logoPlayer)
         currentLabel = self.labelPlayerList[self.playerRobotCursor]
         currentLabel["text"] = f"Joueur {self.playerRobotCursor + 1} : {player.getRobotFile().get_name()}"
         self.selectedRobot = True
