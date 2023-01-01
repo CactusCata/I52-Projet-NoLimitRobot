@@ -5,6 +5,7 @@ from time import time
 from player.playerManager import PLAYER_ICON_DIMENSIONS
 import utils.tkinter.tkUtils as tkUtils
 
+from frame.messagesHelp import HELP_FPPARTY
 from map.mapDrawer import MapDrawer
 from frame.iFrame import IFrame
 from game.game import Game
@@ -14,7 +15,7 @@ DEFAULT_MS_BETWEEN_TWO_ROBOT_ACTION = 200
 class FPParty(IFrame):
 
     def __init__(self, previousFrame, map):
-        super().__init__(previousFrame, "AIDE")
+        super().__init__(previousFrame, HELP_FPPARTY)
 
         self.map = map
         self.root = rootManager.getRoot()
@@ -38,7 +39,7 @@ class FPParty(IFrame):
 
             labelPlayerName = super().createLabel(master=playerFrame, text=player.getRobotFile().get_name())
             labelPlayerName.pack()
-            
+
             canvasPlayerIcon = super().createCanvas(master=playerFrame, width=PLAYER_ICON_DIMENSIONS[0], height=PLAYER_ICON_DIMENSIONS[1])
             canvasPlayerIcon.create_image((PLAYER_ICON_DIMENSIONS[0] // 2) + 1, (PLAYER_ICON_DIMENSIONS[1] // 2) + 1, image=player.getRobotIconTk())
             canvasPlayerIcon.pack()
@@ -111,7 +112,7 @@ class FPParty(IFrame):
     def tryReopenLastFrame(self):
         for player in playerManager.PLAYER_LIST:
             player.getRobotParty().reset_energy()
-        
+
         self.map.removeData()
         self.root.after_cancel(self.lastTaskID)
         super(FPParty, self).reopenLastFrame()

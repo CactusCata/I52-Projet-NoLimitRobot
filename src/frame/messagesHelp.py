@@ -65,4 +65,14 @@ une instruction de test et pour cela utilisera cette dite distance de détection
 d'instructions"
 
 HELP_FPMAPCONFIG = "Choisissez la carte dans lequel vous souhaitez faire votre partie, puis passez \
-à la suite. Vous aurez un visuel à droite de votre écran afin de voir à quoi ressemble la carte selectionnée."
+à la suite. Vous aurez un visuel à droite de votre écran afin de voir à quoi ressemble la carte selectionnée.\n \
+Sur ce visuel vous apercevrez un grand point d'interrogation si vous avez choisis le \"spread robots\"\
+(positionnement aléatoire des robots), ou plusieurs points d'interrogations si vous avez choisis \"equidistance\"\
+(positionnement des robots à une distance égale entre eux, donc sur les points d'interrogations)"
+
+HELP_FPPARTY = "Vous voici enfin en partie ! Sur votre écran s'affiche un ensemble d'informations. Tout \
+d'abord, vous avez la carte du jeu, avec vos robots se combattant dessus. Vous avez aussi à gauche de la carte \
+vos robots en jeu avec leur niveau d'énergie. Bien-sûr si celui-ci est vide, cela voudra dire que votre robot \
+sera déchargé. Enfin, sur la droite de la carte, vous rencontrerez un modificateur de vitesse de jeu, vous laissant \
+le choix de changer la vitesse du jeu à tout moment. Si la molette de la barre de moletage est mise tout en haut, \
+alors votre jeu sera mis en pause."

@@ -2,6 +2,7 @@ import frame.rootManager as rootManager
 import map.mapManager as mapManager
 import player.playerManager as playerManager
 
+from frame.messagesHelp import HELP_FPMAPCONFIG
 from map.mapDrawer import MapDrawer
 import utils.mapUtils as mapUtils
 
@@ -22,7 +23,7 @@ class FPMapConfig(IFrame):
     """
 
     def __init__(self, previousFrame):
-        super().__init__(previousFrame, "AIDE")
+        super().__init__(previousFrame, HELP_FPMAPCONFIG)
 
         self.scalebarMinSpreadDistance = None
         self.labelScalebar = None
@@ -124,7 +125,7 @@ class FPMapConfig(IFrame):
 
         self.mapDrawer.stopDrawIPs()
         rootManager.runNewFrame(FPParty(self, self.map))
-        
+
 
     def updateRadioButton(self):
         """
