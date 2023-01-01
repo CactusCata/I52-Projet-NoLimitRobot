@@ -89,12 +89,6 @@ class RobotParty():
     def unvanish(self):
         self.__vanished = False
 
-    def enable_danger_instruction(self):
-        self.__onDangerInstruction = True
-
-    def disable_danger_instruction(self):
-        self.__onDangerInstruction = False
-
     def print_id(self):
         print(f"Identifiant du robot : {self.__id}")
 

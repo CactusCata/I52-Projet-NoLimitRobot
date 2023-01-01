@@ -23,4 +23,4 @@ class TV(IInstruction):
 
         possiblesDirection = ['H', 'B']
         selectedDirection = random.choice(possiblesDirection)
-        map.robotShoot(robot, selectedDirection)
+        map.robotShoot(robot, selectedDirection, self.damage)

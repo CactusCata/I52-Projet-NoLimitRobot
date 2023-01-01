@@ -5,6 +5,8 @@ from time import time
 from player.playerManager import PLAYER_ICON_DIMENSIONS
 import utils.tkinter.tkUtils as tkUtils
 
+from frame.frames.party.fPEndParty import FPEndParty
+
 from map.mapDrawer import MapDrawer
 from frame.iFrame import IFrame
 from game.game import Game
@@ -69,16 +71,23 @@ class FPParty(IFrame):
         self.scalebarSpeedGame = super().createScalebar(master=frameGameSpeed, orientation="vertical", from_=0, to=500, defaultValue=300, length=500, tickInterval=10, callback= lambda event: self.speedGameChanged())
         self.scalebarSpeedGame.pack(side="top")
 
+        # Continuer
+        self.buttonContinue = super().createButton(text="Continuer", cmd=lambda:self.goToTheNextFrame())
+        self.buttonContinue["state"] = "disabled"
+        self.buttonContinue.pack()
+
         # Retour
         buttonBack = super().createButton(text="Retour", cmd=lambda:self.tryReopenLastFrame())
         buttonBack.pack(side="bottom")
 
         self.lastTaskID = self.root.after(self.speedGame, self.nextPartyStep)
 
+    def goToTheNextFrame(self):
+        rootManager.runNewFrame(FPEndParty(self, self.game.getWinner()))
 
     def nextPartyStep(self):
         if (self.game.isEnded()):
-            print("THE GAME IS ENDED")
+            self.buttonContinue["state"] = "normal"
             return
 
         if (self.gameIsStopped):

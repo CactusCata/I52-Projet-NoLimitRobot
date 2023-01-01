@@ -257,27 +257,38 @@ class Map:
         x = robot.get_x()
         y = robot.get_y()
 
+        playerID = 0
+        for i in range(len(playerManager.PLAYER_LIST)):
+            player = playerManager.PLAYER_LIST[i]
+            if player.getRobotParty() == robot:
+                playerID = i
+                break
+
         directionVect = [0, 0]
-        if selectedDirection == "N":
-            directionVect[0] += -1
-        elif selectedDirection == "S":
-            directionVect[0] += 1
-        elif selectedDirection == "E":
-            directionVect[1] += 1
-        elif selectedDirection == "O":
+        if selectedDirection == "H":
             directionVect[1] += -1
+        elif selectedDirection == "B":
+            directionVect[1] += 1
+        elif selectedDirection == "D":
+            directionVect[0] += 1
+        elif selectedDirection == "G":
+            directionVect[0] += -1
         else:
             print(f"map.robotShoot(...): direction \"{selectedDirection}\" is unknowed")
 
         x += directionVect[0]
         y += directionVect[1]
-        while self.getID(x, y) == AIR_ID or self.getID(x, y) == MINE_ID:
+        while (0 < x < self.getDimX() - 1) and (0 < y < self.getDimY() - 1) and (self.getID(x, y) == AIR_ID or self.getID(x, y) == MINE_ID):
+            if (self.getID(x, y) == MINE_ID):
+                mine = self.getData(x, y)
+                if mine.get_playerId() != playerID:
+                    self.modify(x, y, AIR_ID, None)
             x += directionVect[0]
             y += directionVect[1]
 
         if self.getID(x, y) == PLAYER_ID:
             robot = self.getData(x, y)
-            robot.decreaseEnergy(damage)
+            robot.decreaseEnery(damage)
 
     def updateRobotPosition(self, robot, position):
         """
@@ -286,15 +297,24 @@ class Map:
         elle explose causant des dégats au robot et active l'instruction
         de danger pour le robot
         """
+
+        playerID = 0
+        for i in range(len(playerManager.PLAYER_LIST)):
+            player = playerManager.PLAYER_LIST[i]
+            if player.getRobotParty() == robot:
+                playerID = i
+                break
+        playerMoved = playerManager.PLAYER_LIST[playerID]
+
         x = position[0]
         y = position[1]
         if self.getID(x, y) == MINE_ID:
             mine = self.getData(x, y)
             playerHasPutThisMineID = mine.get_playerId()
-            player = playerManager.PLAYER_LIST[playerHasPutThisMineID]
-            if (player.getRobotParty() != robot):
+            playerHasPutThisMine = playerManager.PLAYER_LIST[playerHasPutThisMineID]
+            if (playerHasPutThisMine.getRobotParty() != robot):
                 robot.decreaseEnery(mine.get_damage())
-                robot.enable_danger_instruction()
+                playerMoved.enable_danger_instruction()
 
         self.modify(robot.get_x(), robot.get_y(), AIR_ID, None)
         robot.move(position)

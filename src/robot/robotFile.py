@@ -38,6 +38,9 @@ class RobotFile():
         """
         return self.__desc
 
+    def enable_danger_instruction(self, index):
+        self.__instr[index] = self.__dangerInstruction
+
     def get_instr(self):
         """
         Renvoie la liste des instructions du robot
