@@ -30,20 +30,18 @@ class Player:
         Renvoie la prochaine instruction du robot associé au joueur
         et passe à l'instruction d'après
         """
-        instruction = ""
-        if (self.robotParty.dangerInstructionIsEnabled()):
-            instruction = self.robotFile.get_danger_instruction()
-            self.robotParty.disable_danger_instruction()
-        else:
-            instructions = self.robotFile.get_instr()
-            instruction = instructions[self.robotParty.get_instruction_number()]
-            self.robotParty.update_instruction_cursor((self.robotParty.get_instruction_number() + 1) % len(instructions))
+
+        instructions = self.robotFile.get_instr()
+        instruction = instructions[self.robotParty.get_instruction_number()]
+        self.robotParty.update_instruction_cursor((self.robotParty.get_instruction_number() + 1) % len(instructions))
         
         return instruction
 
     def spawnRobot(self, x, y):
         self.robotParty.move((x, y))
 
+    def enable_danger_instruction(self):
+        self.robotFile.enable_danger_instruction(self.robotParty.get_instruction_number())
 
     def getRobotParty(self):
         return self.robotParty

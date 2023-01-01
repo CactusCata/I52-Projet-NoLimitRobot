@@ -27,4 +27,4 @@ class TH(IInstruction):
 
         possiblesDirection = ['G', 'D']
         selectedDirection = random.choice(possiblesDirection)
-        map.robotShoot(robot, selectedDirection)
+        map.robotShoot(robot, selectedDirection, self.damage)

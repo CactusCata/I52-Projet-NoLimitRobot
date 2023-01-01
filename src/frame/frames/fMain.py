@@ -14,8 +14,8 @@ from frame.frames.settings.fSettings import FSettings
 
 class FMain(IFrame):
 
-    def __init__(self):
-        super().__init__(None, HELP_FMAIN)
+    def __init__(self, previousFrame=None):
+        super().__init__(previousFrame, HELP_FMAIN)
 
     def draw(self):
         root = rootManager.getRoot()

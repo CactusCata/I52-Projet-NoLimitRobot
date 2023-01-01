@@ -11,12 +11,14 @@ GAME_NAME = "No Limit Robot"
 root = None
 currentFrame = None
 
+mainFrame = None
+
 def initRoot():
     """
     Initialise l'instance de la fenêtre.
     Permet une accessibilité simple depuis toute les frames.
     """
-    global root
+    global root, mainFrame
 
     # Crée la fenêtre
     root = Tk()
@@ -33,7 +35,8 @@ def initRoot():
     root.protocol("WM_DELETE_WINDOW", destroyRoot)
 
     # Lance le menu principal
-    runNewFrame(FMain())
+    mainFrame = FMain()
+    runNewFrame(mainFrame)
 
     root.mainloop()
 
