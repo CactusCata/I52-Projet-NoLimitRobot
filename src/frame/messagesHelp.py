@@ -51,3 +51,8 @@ HELP_FDELETEPARTY = "/!\ WORK IN PROGRESS"
 HELP_FPLAY = "Lancez une nouvelle partie, ou bien chargez une nouvelle partie (:I)"
 
 HELP_FLOADPARTY = "/!\ WORK IN PROGRESS"
+
+HELP_FPPLAYERCONFIG = "Dans ce menu vous devez choisir les robots pour chaque joueur. Ainsi vous \
+devez choisir un des robots disponibles, puis confirmer celui-ci pour l'assigner à un joueur. \
+Vous ne pouvez cliquer sur suivant uniquement si le nombre de joueur jouant (joueur possédant un robot) \
+est compris entre 2 et 6."

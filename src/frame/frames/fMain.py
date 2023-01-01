@@ -21,8 +21,6 @@ class FMain(IFrame):
         root = rootManager.getRoot()
         dimensions = super().getScreenDimensions(root)
 
-        #frameHelp = super().createFrame(root)
-        #frameHelp.pack(side = "top", anchor = "e", padx = 10, pady = 10)
         super().createButtonHelp()
 
         label = super().createLabel(master = root, text=rootManager.GAME_NAME, fontSize = 50)
@@ -36,11 +34,9 @@ class FMain(IFrame):
         frameExit.pack(side = "bottom", anchor = "e", padx = 10, pady = 10)
 
         buttonPlay = super().createButton(master = frameMainButtons ,text="Jouer", cmd=lambda:rootManager.runNewFrame(FPlay(self)), fontSize=18)
-        #super().modifyButton(buttonPlay ,bg = "#0000DD", ab = "#0000FF")
         buttonPlay.pack(pady = tkUtils.ratioHeight(0.01, root), fill=tk.X)
 
         buttonOptions = super().createButton(master = frameMainButtons, text="Options", cmd=lambda:rootManager.runNewFrame(FSettings(self)), fontSize=18)
-        #super().modifyButton(buttonOptions ,bg = "#AA3300", ab = "orange")
         buttonOptions.pack(pady = tkUtils.ratioHeight(0.01, root), fill=tk.X)
 
 

@@ -7,6 +7,7 @@ from robot.robotFile import RobotFile
 from robot.robotChooser import RobotChooser
 
 from frame.frames.party.fPPartyConfig import FPPartyConfig
+from frame.messagesHelp import HELP_FPPLAYERCONFIG
 
 import utils.tkinter.tkUtils as tkUtils
 
@@ -18,12 +19,13 @@ MAX_PLAYER_AMOUNT = 6
 class FPPlayerConfig(IFrame):
 
     def __init__(self, previousFrame):
-        super().__init__(previousFrame, "AIDE")
+        super().__init__(previousFrame, HELP_FPPLAYERCONFIG)
 
         self.selectedRobot = False
 
     def draw(self):
 
+        root = rootManager.getRoot()
         robotsNames = robotManager.getLoadedRobots()
 
         super().createButtonHelp()
@@ -35,13 +37,22 @@ class FPPlayerConfig(IFrame):
         for robotName in robotsNames:
             robotsFile.append(RobotFile(robotName))
 
+        # Retour
+        buttonBack = super().createButton(text="Retour", cmd=lambda:super(FPPlayerConfig, self).reopenLastFrame())
+        super().modifyButton(buttonBack ,bg = "darkred", ab = "red")
+        buttonBack.pack(side="bottom", anchor="w", padx=10, pady=10)
+
+        self.buttonNext = super().createButton(text="Suivant", cmd=lambda: rootManager.runNewFrame(FPPartyConfig(self)))
+        self.buttonNext["state"] = "disabled"
+        self.buttonNext.pack(side="bottom", anchor="se", pady=10, padx=10)
+
         frameRobotSelection = super().createFrame()
-        frameRobotSelection.pack(side="left", ipadx=40)
+        frameRobotSelection.pack(side="left", ipadx=tkUtils.ratioWidth(0.04, root))
         # Canvas qui contient la liste des robots choisissables
-        self.canvas = super().createCanvas(master=frameRobotSelection, width=300, height=300)
+        self.canvas = super().createCanvas(master=frameRobotSelection, width=tkUtils.ratioWidth(0.4, root), height=tkUtils.ratioHeight(0.4, root))
         self.canvas.pack()
 
-        
+
         framePlayerSection = super().createFrame()
         framePlayerSection.pack(side="right", ipadx=40)
         # canvas et textes des robots-joueurs
@@ -70,18 +81,12 @@ class FPPlayerConfig(IFrame):
         self.buttonConfirmRobot = super().createButton(text="Confirmer robot", cmd=lambda: self.confirmRobot())
         self.buttonConfirmRobot.pack()
 
-        self.buttonNext = super().createButton(text="Suivant", cmd=lambda: rootManager.runNewFrame(FPPartyConfig(self)))
-        self.buttonNext["state"] = "disabled"
-        self.buttonNext.pack()
 
-        # Retour
-        buttonBack = super().createButton(text="Retour", cmd=lambda:super(FPPlayerConfig, self).reopenLastFrame())
-        buttonBack.pack()
 
     def clickEvent(self, x, y):
         id = self.robotSelectedID
         if (id == -1):
-            return 
+            return
 
         robotFile = self.robotChooser.getRobotFile(id)
 
@@ -104,7 +109,7 @@ class FPPlayerConfig(IFrame):
         currentLabel = self.labelPlayerList[self.playerRobotCursor]
         currentLabel["text"] = f"Joueur {self.playerRobotCursor + 1} : {player.getRobotFile().get_name()}"
         self.selectedRobot = True
-    
+
     def confirmRobot(self):
 
         if (self.playerRobotCursor >= MAX_PLAYER_AMOUNT):
@@ -118,15 +123,15 @@ class FPPlayerConfig(IFrame):
         playerManager.getPlayer(self.playerRobotCursor)
 
         self.playerRobotCursor += 1
-        
+
         if (self.playerRobotCursor >= MIN_PLAYER_AMOUNT):
             self.buttonNext["state"] = "normal"
 
         self.selectedRobot = False
 
-        
+
     def moveMouse(self, x, y):
-        
+
         ids = self.canvas.find_withtag("current")
 
         # Ne pas traiter le cas où il n'y a pas d'élément à inspecter
