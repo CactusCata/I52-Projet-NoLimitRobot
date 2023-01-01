@@ -32,10 +32,7 @@ class AL(IInstruction):
             if map.isAccessible((robot.get_x(), robot.get_y() + i)): possiblesMoves.append((robot.get_x(), robot.get_y() + i))
 
         if (len(possiblesMoves) == 0):
-            print(map.getID(robot.get_x() + 1, robot.get_y()))
-            print(map.getID(robot.get_x() - 1, robot.get_y()))
-            print(map.getID(robot.get_x(), robot.get_y() + 1))
-            print(map.getID(robot.get_x(), robot.get_y() - 1))
+            return
 
         choosedMove = random.choice(possiblesMoves)
 
