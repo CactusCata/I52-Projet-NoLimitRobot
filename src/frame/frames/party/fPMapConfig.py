@@ -5,7 +5,6 @@ import player.playerManager as playerManager
 from map.mapDrawer import MapDrawer
 import utils.mapUtils as mapUtils
 
-from frame.messagesHelp import HELP_FPMAPCONFIG
 from frame.iFrame import IFrame
 from frame.frames.party.fPParty import FPParty
 
@@ -23,7 +22,7 @@ class FPMapConfig(IFrame):
     """
 
     def __init__(self, previousFrame):
-        super().__init__(previousFrame, HELP_FPMAPCONFIG)
+        super().__init__(previousFrame, "AIDE")
 
         self.scalebarMinSpreadDistance = None
         self.labelScalebar = None
@@ -125,7 +124,7 @@ class FPMapConfig(IFrame):
 
         self.mapDrawer.stopDrawIPs()
         rootManager.runNewFrame(FPParty(self, self.map))
-
+        
 
     def updateRadioButton(self):
         """
@@ -142,6 +141,11 @@ class FPMapConfig(IFrame):
                 self.mapDrawer.startDrawIPs(self.robotsPosition)
 
         elif (self.stringVarRadioButton.get() == "SPREAD_ROBOTS" and self.scalebarMinSpreadDistance == None):
-            self.scalebarMinSpreadDistance = super().createScalebar(master=self.frameLeftTop, text="Distance minimale entre chaque robot",
-                from_=1, to=5, defaultValue=2, tickInterval=1, resolution=1, length=400)
+            self.labelScalebar = super().createLabel(master=self.frameLeftTop, text="Distance minimale entre chaque robot")
+            self.labelScalebar["wraplength"] = int(0.1 * rootManager.getRoot().winfo_width())
+            self.labelScalebar.pack()
+            self.scalebarMinSpreadDistance = super().createScalebar(master=self.frameLeftTop, orientation="vertical",
+                from_=1, to=5, defaultValue=2, tickInterval=1, resolution=1, length=200)
             self.scalebarMinSpreadDistance.pack()
+            if (self.mapDrawer != None):
+                self.mapDrawer.startDrawBigIP()
