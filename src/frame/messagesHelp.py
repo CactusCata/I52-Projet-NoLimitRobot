@@ -56,3 +56,13 @@ HELP_FPPLAYERCONFIG = "Dans ce menu vous devez choisir les robots pour chaque jo
 devez choisir un des robots disponibles, puis confirmer celui-ci pour l'assigner à un joueur. \
 Vous ne pouvez cliquer sur suivant uniquement si le nombre de joueur jouant (joueur possédant un robot) \
 est compris entre 2 et 6."
+
+HELP_FPPARTYCONFIG = "Sur ce menu vous pouvez modifier quelques options de la partie. Cela vous permet \
+ainsi de diversifier votre expérience de jeu.\n\n\n\nVous pouvez donc modifier l'énergie des robots \
+, énergie des robots étant leur points de vie ainsi que leur points d'actions pour effectuer leurs \
+instructions, et de modifier la distance de détection des robots.\n\nUn robot peut utiliser \
+une instruction de test et pour cela utilisera cette dite distance de détection pour faire des choix \
+d'instructions"
+
+HELP_FPMAPCONFIG = "Choisissez la carte dans lequel vous souhaitez faire votre partie, puis passez \
+à la suite. Vous aurez un visuel à droite de votre écran afin de voir à quoi ressemble la carte selectionnée."

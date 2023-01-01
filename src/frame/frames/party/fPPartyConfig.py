@@ -1,6 +1,7 @@
 import frame.rootManager as rootManager
 import game.gameManager as gameManager
 
+from frame.messagesHelp import HELP_FPPARTYCONFIG
 from frame.iFrame import IFrame
 from frame.frames.party.fPMapConfig import FPMapConfig
 
@@ -14,7 +15,7 @@ class FPPartyConfig(IFrame):
     """
 
     def __init__(self, previousFrame):
-        super().__init__(previousFrame, "AIDE")
+        super().__init__(previousFrame, HELP_FPPARTYCONFIG)
 
     def draw(self):
         root = rootManager.getRoot()
@@ -30,7 +31,7 @@ class FPPartyConfig(IFrame):
         # Confirmer
         buttonConfirm = super().createButton(text="Configuration de la map", cmd=lambda:self.followingFrame())
         buttonConfirm.pack()
-        
+
         # Retour
         buttonBack = super().createButton(text="Retour", cmd=lambda:super(FPPartyConfig, self).reopenLastFrame())
         buttonBack.pack()
