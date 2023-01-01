@@ -30,7 +30,7 @@ class TT(IInstruction):
 
         nearestRobotPath = map.getNearestRobotPath(map, robot)
         
-        if (len(nearestRobotPath) <= 4):
+        if (len(nearestRobotPath) <= robot.get_distance_detect()):
             INSTRUCTION_LIST[instructionName1].make(robot=robot, map=map, cmd=instructionName1)
         else:
             INSTRUCTION_LIST[instructionName2].make(robot=robot, map=map, cmd=instructionName1)

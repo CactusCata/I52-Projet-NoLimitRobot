@@ -40,7 +40,7 @@ class FCreateMap(IFrame):
         buttonBack.pack(side="bottom", anchor="w", padx=10, pady=10)
 
     def confirmButtonAction(self):
-        wantedMapName = self.mapNameTextBox.get("1.0", "end").rstrip()
+        wantedMapName = self.textboxNameMap.get("1.0", "end").rstrip()
 
         if wantedMapName in mapManager.getLoadedMaps():
             messagebox.showerror(title="Erreur", message="Ce nom de map existe déjà !")

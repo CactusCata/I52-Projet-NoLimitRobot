@@ -1,17 +1,15 @@
 import frame.rootManager as rootManager
-import game.gameManager as gameManager
 import player.playerManager as playerManager
 import utils.otherUtils as otherUtils
-import utils.mapUtils as mapUtils
 from time import time
-from image.imageManager import MAP_BLOC_DIMENSIONS
 from player.playerManager import PLAYER_ICON_DIMENSIONS
+import utils.tkinter.tkUtils as tkUtils
 
 from map.mapDrawer import MapDrawer
 from frame.iFrame import IFrame
 from game.game import Game
 
-MS_BETWEEN_TWO_ROBOT_ACTION = 200
+DEFAULT_MS_BETWEEN_TWO_ROBOT_ACTION = 200
 
 class FPParty(IFrame):
 
@@ -24,12 +22,15 @@ class FPParty(IFrame):
         self.playersHealthBar = []
         self.lastTaskID = -1
 
+        self.speedGame = DEFAULT_MS_BETWEEN_TWO_ROBOT_ACTION
+        self.gameIsStopped = False
+
     def draw(self):
 
         super().createButtonHelp()
 
         framePlayersStats = super().createFrame()
-        framePlayersStats.pack(side="left")
+        framePlayersStats.pack(side="left", padx=tkUtils.ratioWidth(0.01, self.root))
 
         for player in playerManager.PLAYER_LIST:
             playerFrame = super().createFrame(master=framePlayersStats)
@@ -48,14 +49,10 @@ class FPParty(IFrame):
             canvasPlayerHealth.pack()
             self.playersHealthBar.append(canvasPlayerHealth)
 
-        # Retour
-        buttonBack = super().createButton(text="Retour", cmd=lambda:self.tryReopenLastFrame())
-        buttonBack.pack()
-
 
         # Map
         self.canvasMap = super().createCanvas(width=700, height=500)
-        self.canvasMap.pack()
+        self.canvasMap.pack(side="left", padx=tkUtils.ratioWidth(0.01, self.root))
         self.mapDrawer = MapDrawer(self.canvasMap, self.map, playerManager.PLAYER_LIST)
         self.mapDrawer.clear()
         self.mapDrawer.drawMap()
@@ -64,12 +61,27 @@ class FPParty(IFrame):
         self.mapDrawer.drawMine()
         self.game = Game(map=self.map)
 
-        self.lastTaskID = self.root.after(MS_BETWEEN_TWO_ROBOT_ACTION, self.nextPartyStep)
+        # game speed
+        frameGameSpeed = super().createFrame()
+        frameGameSpeed.pack(side="left", padx=tkUtils.ratioWidth(0.01, self.root))
+        labelGameSpeed = super().createLabel(master=frameGameSpeed, text="Vitesse du jeu")
+        labelGameSpeed.pack(side="top")
+        self.scalebarSpeedGame = super().createScalebar(master=frameGameSpeed, orientation="vertical", from_=0, to=500, defaultValue=300, length=500, tickInterval=10, callback= lambda event: self.speedGameChanged())
+        self.scalebarSpeedGame.pack(side="top")
+
+        # Retour
+        buttonBack = super().createButton(text="Retour", cmd=lambda:self.tryReopenLastFrame())
+        buttonBack.pack(side="bottom")
+
+        self.lastTaskID = self.root.after(self.speedGame, self.nextPartyStep)
 
 
     def nextPartyStep(self):
         if (self.game.isEnded()):
             print("THE GAME IS ENDED")
+            return
+
+        if (self.gameIsStopped):
             return
 
         start = time()
@@ -92,10 +104,25 @@ class FPParty(IFrame):
         self.mapDrawer.drawMine()
 
         totalTime = int((time() - start) * 1000)
-        timeToWait = max(0, MS_BETWEEN_TWO_ROBOT_ACTION - totalTime)
+        timeToWait = max(0, self.speedGame - totalTime)
 
         self.lastTaskID = self.root.after(timeToWait, self.nextPartyStep)
 
     def tryReopenLastFrame(self):
+        for player in playerManager.PLAYER_LIST:
+            player.getRobotParty().reset_energy()
+        
+        self.map.removeData()
         self.root.after_cancel(self.lastTaskID)
         super(FPParty, self).reopenLastFrame()
+
+    def speedGameChanged(self):
+        scalebarValue = int(self.scalebarSpeedGame.get())
+        if (scalebarValue == 0):
+            self.root.after_cancel(self.lastTaskID)
+            self.gameIsStopped = True
+        else:
+            self.speedGame = int(510 - self.scalebarSpeedGame.get())
+            if (self.gameIsStopped):
+                self.gameIsStopped = False
+                self.nextPartyStep()

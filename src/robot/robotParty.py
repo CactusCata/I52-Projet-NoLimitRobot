@@ -1,6 +1,7 @@
+
 class RobotParty():
 
-    def __init__(self, x, y, energy=500, detec=4, vanish=False):
+    def __init__(self, x, y):
         """
         Initialise l'instance du Robot dans la partie.
         Ici sera stocké son énergie, qui descendra lors de la partie, comprise
@@ -19,12 +20,12 @@ class RobotParty():
             - energy: entier
             - detect: entier
         """
-        self.__energy = energy
-        self.__max_energy = energy
+        self.__energy = 500
+        self.__max_energy = 500
         self.__x = x
         self.__y = y
-        self.__detec = detec
-        self.__vanished = vanish
+        self.__detec = 4
+        self.__vanished = False
         self.__instructionCursor = 0
         self.__onDangerInstruction = False
 
@@ -40,11 +41,23 @@ class RobotParty():
     def get_id(self):
         return self.__id
 
+    def set_detection_distance(self, distance_detection):
+        self.__detec = distance_detection
+
+    def get_distance_detect(self):
+        return self.__detec
+
+    def set_max_energy(self, maxEnergy):
+        self.__max_energy = maxEnergy
+
     def get_energy(self):
         return self.__energy
 
     def get_max_energy(self):
         return self.__max_energy
+
+    def reset_energy(self):
+        self.__energy = self.__max_energy
 
     def get_x(self):
         return self.__x
@@ -55,6 +68,8 @@ class RobotParty():
     def move(self, position):
         self.__x = position[0]
         self.__y = position[1]
+        if self.is_vanish():
+            self.unvanish()
 
     def decreaseEnery(self, n):
         if self.__energy - n < 0:
@@ -64,9 +79,6 @@ class RobotParty():
 
     def copy(self):
         return RobotParty(self.get_x(), self.get_y, self.get_energy(), self.get_detect_distance(), self.is_vanish())
-
-    def get_detect_distance(self):
-        return self.__detec
 
     def is_vanish(self):
         return self.__vanished

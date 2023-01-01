@@ -21,7 +21,7 @@ class FPlay(IFrame):
         labelTitle.pack()
 
         frameMain = super().createFrame(root)
-        frameMain.pack(pady=tkUtils.ratioHeight(0.3, root))
+        frameMain.pack(pady=tkUtils.ratioHeight(0.03, root))
 
         buttonNewGame = super().createButton(master=frameMain, text="Nouvelle partie", cmd=lambda: rootManager.runNewFrame(FPPlayerConfig(self)))
         buttonNewGame.pack(pady=tkUtils.ratioHeight(0.02, root))

@@ -9,6 +9,22 @@ def applyColor(image, color):
     return image simple
     """
     matrixColor = Image.new('RGB', image.size, color)
-    matrixAlpha = Image.new('RGBA', image.size, (0, 0, 0, 123))
+    matrixAlpha = Image.new('RGBA', image.size, (0, 0, 0, 150))
     colorMatrix = Image.composite(image, matrixColor, matrixAlpha).convert('RGB')
     return colorMatrix
+
+def createTransparent(image, alphaValue):
+    """
+    Crée une version transparente de l'image donnée
+    """
+    newImage = image.copy()
+
+    # Create a new image with an alpha channel
+    alpha = Image.new('L', newImage.size, 255)
+
+    for x in range(newImage.size[0]):
+        for y in range(newImage.size[1]):
+            alpha.putpixel((x, y), alphaValue)
+
+    newImage.putalpha(alpha)
+    return newImage

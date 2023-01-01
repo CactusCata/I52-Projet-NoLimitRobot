@@ -25,9 +25,11 @@ class FT(IInstruction):
 
         super().decreaseRobotEnergy(robot)
 
-        print(f"Current robot pos: {robot.get_x()}, {robot.get_y()}")
         nearestRobot = map.getNearestRobot(robot)[0]
-        print(f"nearest robot pos: {nearestRobot.get_x()}, {nearestRobot.get_y()}")
+        
+        # Append if all others robots are vanished
+        if (nearestRobot == None):
+            return
 
 
         neighboors = mapUtils.getNeighbour(map, (robot.get_x(), robot.get_y()))

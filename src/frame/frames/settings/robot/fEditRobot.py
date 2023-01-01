@@ -8,6 +8,8 @@ from frame.messagesHelp import HELP_FEDITROBOT
 from robot.robotFile import RobotFile
 from utils.tkinter.tkPerformer import TkPerformer
 
+import player.playerManager as playerManager
+
 import tkinter as tk
 from tkinter import Scrollbar
 import utils.tkinter.tkUtils as tkUtils
@@ -35,7 +37,7 @@ class FEditRobot(IFrame):
         self.comboboxName.pack()
 
         # Logo
-        self.canvasLogo = super().createCanvas(master=frameRobot, width=100, height=100)
+        self.canvasLogo = super().createCanvas(master=frameRobot, width=playerManager.PLAYER_ICON_DIMENSIONS[0] + 2, height=playerManager.PLAYER_ICON_DIMENSIONS[1] + 2)
         self.canvasLogo.pack()
 
         # Description
@@ -113,10 +115,10 @@ class FEditRobot(IFrame):
         self.currentRobotFile = RobotFile(robotSelectedName)
 
         # Mise a jour du logo
-        self.currentRobotFile.load_logo(dimX=100, dimY=100)
-        self.currentRobotFile.load_logo_tk()
+        self.currentRobotFile.load_icon()
+        self.currentRobotFile.load_icon_tk()
         self.canvasLogo.delete("all")
-        self.canvasLogo.create_image(50, 50, image=self.currentRobotFile.get_logo_tk())
+        self.canvasLogo.create_image((playerManager.PLAYER_ICON_DIMENSIONS[0] // 2) + 1, (playerManager.PLAYER_ICON_DIMENSIONS[1] // 2) + 1, image=self.currentRobotFile.get_icon_tk())
 
         # Suppression du contenu des boite à texte
         self.entryDescription.delete(0,"end")
@@ -138,6 +140,9 @@ class FEditRobot(IFrame):
         robotName = self.currentRobotFile.get_name()
         robotDescription = self.entryDescription.get()
         robotInstructionText = self.instructTextBox.get("1.0", "end-1c")
+
+        if (len(robotInstructionText.split("\n")) < 6):
+            self.labelHelpInstruct["text"] = "Au moins 6 instructions sont nécéssaires"
 
         instructionCorrect = instructionAnalyser.instructionsAreValide(robotInstructionText)
         if (instructionCorrect != instructionAnalyser.INSTRUCTION_CORRECT):

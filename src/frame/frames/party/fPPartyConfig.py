@@ -1,17 +1,10 @@
 import frame.rootManager as rootManager
-import game.gameManager as gameManager
+import player.playerManager as playerManager
 
 from frame.iFrame import IFrame
 from frame.frames.party.fPMapConfig import FPMapConfig
 
 class FPPartyConfig(IFrame):
-    """
-    Energie 'scroll bar'
-    Distance de detection/repérage
-    suivant
-    retour
-    aide
-    """
 
     def __init__(self, previousFrame):
         super().__init__(previousFrame, "AIDE")
@@ -41,9 +34,12 @@ class FPPartyConfig(IFrame):
         différentes erreurs présentes
         """
         energyPerRobot = int(self.scalebarEnergy.get())
-        detectionDistance = int (self.scalebarDetection.get())
+        detectionDistance = int(self.scalebarDetection.get())
 
-        gameManager.setEnergyPerRobot(energyPerRobot)
-        gameManager.setRobotDistanceDetection(detectionDistance)
+        for player in playerManager.PLAYER_LIST:
+            playerRobot = player.getRobotParty()
+            playerRobot.set_max_energy(energyPerRobot)
+            playerRobot.reset_energy()
+            playerRobot.set_detection_distance(detectionDistance)
 
         rootManager.runNewFrame(FPMapConfig(self))
