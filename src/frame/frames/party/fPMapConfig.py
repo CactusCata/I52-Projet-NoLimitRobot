@@ -1,6 +1,5 @@
 import frame.rootManager as rootManager
 import map.mapManager as mapManager
-import game.gameManager as gameManager
 import player.playerManager as playerManager
 
 from map.mapDrawer import MapDrawer
@@ -27,7 +26,10 @@ class FPMapConfig(IFrame):
         super().__init__(previousFrame, HELP_FPMAPCONFIG)
 
         self.scalebarMinSpreadDistance = None
+        self.labelScalebar = None
         self.map = None
+        self.robotsPosition = []
+        self.mapDrawer = None
 
     def draw(self):
         root = rootManager.getRoot()
@@ -38,9 +40,9 @@ class FPMapConfig(IFrame):
         frameLeft.pack(side="left", ipadx=50)
 
         self.frameLeftTop = super().createFrame(master=frameLeft)
-        self.frameLeftTop.pack(side="top", ipady=50)
+        self.frameLeftTop.pack(side="top", ipady=20)
         frameLeftBot = super().createFrame(master=frameLeft)
-        frameLeftBot.pack(side="bottom", ipady=50)
+        frameLeftBot.pack(side="bottom", ipady=20)
 
         frameRight = super().createFrame()
         frameRight.pack(side="right", ipadx=50)
@@ -64,13 +66,20 @@ class FPMapConfig(IFrame):
         self.radioButtonSpread = super().createRadioButton(master=self.frameLeftTop, text="spread robots", serializedValue="SPREAD_ROBOTS", variable=self.stringVarRadioButton, callback=lambda: self.updateRadioButton())
         self.radioButtonSpread.pack()
 
+        # Afficher de nouveau la scalebar le l'utilisateur appuie sur le bouton de retour
+        self.updateRadioButton()
+
         # Confirmer
         buttonConfirm = super().createButton(master=frameLeftBot, text="Voir la partie", cmd=lambda:self.followingFrame())
         buttonConfirm.pack()
 
         # Retour
-        buttonBack = super().createButton(master=frameLeftBot, text="Retour", cmd=lambda:super(FPMapConfig, self).reopenLastFrame())
+        buttonBack = super().createButton(master=frameLeftBot, text="Retour", cmd=lambda:self.tryToGoBack())
         buttonBack.pack()
+
+    def tryToGoBack(self):
+        self.mapDrawer.stopDrawIPs()
+        super(FPMapConfig, self).reopenLastFrame()
 
     def mapSelectedChanged(self, event):
         """
@@ -82,9 +91,17 @@ class FPMapConfig(IFrame):
         # object map associé
         self.map = mapManager.loadMapFileContent(self.mapName)
 
+        if (self.mapDrawer != None):
+            self.mapDrawer.stopDrawIPs()
+
         self.mapDrawer = MapDrawer(self.canvasMap, self.map)
         self.mapDrawer.drawMap()
         self.mapDrawer.drawGrid()
+        if self.scalebarMinSpreadDistance == None:
+            self.robotsPosition = mapUtils.generateEquidistanceRobotsPositions(self.map, len(playerManager.PLAYER_LIST))
+            self.mapDrawer.startDrawIPs(self.robotsPosition)
+        else:
+            self.mapDrawer.startDrawBigIP()
 
     def followingFrame(self):
 
@@ -93,22 +110,20 @@ class FPMapConfig(IFrame):
             return
 
         # Met à jour la map choisi
-        gameManager.setPartyMap(self.map) # a supprimer
-        gameManager.setPlacementMethod(self.stringVarRadioButton) # a supprimer
         gamePlayerList = playerManager.PLAYER_LIST
         robotsPosition = None
-        if self.stringVarRadioButton == "SPREAD_ROBOTS":
+        if self.scalebarMinSpreadDistance != None:
             minSpreadDistance = int(self.scalebarMinSpreadDistance.get())
             robotsPosition = mapUtils.generateRandomSpreadRobotPositions(self.map, len(gamePlayerList), minSpreadDistance)
         else:
-            robotsPosition = mapUtils.generateEquidistanceRobotsPositions(self.map, len(gamePlayerList))
+            robotsPosition = self.robotsPosition
 
         for i in range(len(gamePlayerList)):
             player = gamePlayerList[i]
             position = robotsPosition[i]
-            player.getRobotParty().move(position)
             self.map.updateRobotPosition(player.getRobotParty(), position)
 
+        self.mapDrawer.stopDrawIPs()
         rootManager.runNewFrame(FPParty(self, self.map))
 
 
@@ -121,6 +136,10 @@ class FPMapConfig(IFrame):
             if (self.scalebarMinSpreadDistance != None):
                 self.scalebarMinSpreadDistance.destroy()
                 self.scalebarMinSpreadDistance = None
+                self.labelScalebar.destroy()
+                self.labelScalebar = None
+            if (self.mapDrawer != None):
+                self.mapDrawer.startDrawIPs(self.robotsPosition)
 
         elif (self.stringVarRadioButton.get() == "SPREAD_ROBOTS" and self.scalebarMinSpreadDistance == None):
             self.scalebarMinSpreadDistance = super().createScalebar(master=self.frameLeftTop, text="Distance minimale entre chaque robot",

@@ -13,13 +13,13 @@ def getRandomValideRobotPosition(map):
 
     return position
 
-def getMinDistanceBetweenRobotAndOthers(map, robotPosition, robotsPosition):
+def getMinDistanceBetweenRobotAndOthers(robotPosition, robotsPosition):
     """
     Renvoie la plus petite distance entre un robot
     """
-    minDistance = mathsUtils.distance(robotPosition[0], robotPosition[1], robotsPosition[0][0], robotsPosition[0][1])
+    minDistance = mathsUtils.distance_tchebychev(robotPosition, robotsPosition[0])
     for i in range(1, len(robotsPosition)):
-        currentDistance = mathsUtils.distance(robotPosition[0], robotPosition[1], robotsPosition[i][0], robotsPosition[i][1])
+        currentDistance = mathsUtils.distance_tchebychev(robotPosition, robotsPosition[i])
         if minDistance > currentDistance:
             minDistance = currentDistance
 
@@ -30,15 +30,15 @@ def generateRandomSpreadRobotPositions(map, playerAmount, minDistance, maxTried=
     Génère un ensemble de position aléatoire pour les robots avec une distance minimale à
     respecter entre chaque robot
     """
-    robotsPosition = []
+    robotsPosition = [getRandomValideRobotPosition(map)]
 
-    for i in range(playerAmount):
+    for i in range(1, playerAmount):
         tryedCount = 0
         randomPosition = getRandomValideRobotPosition(map)
-        currentMinDistance = getMinDistanceBetweenRobotAndOthers(randomPosition)
+        currentMinDistance = getMinDistanceBetweenRobotAndOthers(randomPosition, robotsPosition)
         while (currentMinDistance > minDistance and tryedCount < maxTried):
             randomPosition = getRandomValideRobotPosition(map)
-            currentMinDistance = getMinDistanceBetweenRobotAndOthers(randomPosition)
+            currentMinDistance = getMinDistanceBetweenRobotAndOthers(randomPosition, robotsPosition)
             tryedCount += 1
         robotsPosition.append(randomPosition)
 
@@ -58,7 +58,8 @@ def generateEquidistanceRobotsPositions(map, playerAmount):
 
     for i in range(playerAmount):
         alpha = (2 * math.pi * i) / playerAmount
-        robotPosition = (int((1 + math.cos(alpha)) * mapDimX * 0.4), int((1 + math.sin(alpha)) * mapDimY * 0.4))
+
+        robotPosition = (2+int((1 + math.cos(alpha)) * mapDimX * 0.4), 2+int((1 + math.sin(alpha)) * mapDimY * 0.4))
         robotPosition = generateValideRobotPosition(map, robotPosition)
         robotsPositions.append(robotPosition)
 

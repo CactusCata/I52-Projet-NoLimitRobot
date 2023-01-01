@@ -3,6 +3,10 @@ import player.playerManager as playerManager
 import image.imageManager as imageManager
 import utils.tkinter.tkUtils as tkUtils
 
+import random
+
+MS_BETWEEN_TWO_IP_REFRESH = 20
+
 class MapDrawer:
 
     def __init__(self, canvas, map, players=[], xStart=10, yStart=10):
@@ -14,6 +18,12 @@ class MapDrawer:
         self.yStart = yStart
         self.xPas = imageManager.MAP_BLOC_DIMENSIONS[0] + 2
         self.yPas = imageManager.MAP_BLOC_DIMENSIONS[1] + 2
+
+        self.ipNumber = 0
+        self.ipMvmt = +1
+        self.ipTaskID = -1
+        self.lastActiveID = -1
+        self.lastIPImgIDs = []
 
         self.robotsDrawID = []
 
@@ -57,6 +67,59 @@ class MapDrawer:
                     player = playerManager.PLAYER_LIST[playerID]
                     mineBlockTk = player.getMineBlocTk()
                     self.drawImage(mineBlockTk, x, y)
+
+
+    def startDrawIPs(self, robotsPosition):
+        self.lastActiveID = random.randint(0, 1 << 12)
+        self.drawIps(robotsPosition, self.lastActiveID)
+
+    def drawIps(self, robotsPosition, lastActiveID):
+        for imgID in self.lastIPImgIDs:
+            self.canvas.delete(imgID)
+
+        if (self.lastActiveID != lastActiveID):
+            return
+
+        for robotPosition in robotsPosition:
+            imgID = self.drawImage(imageManager.IMG_MAP_INTERROGATIVE_POINT_TRANSPARENT_TK[self.ipNumber], robotPosition[0], robotPosition[1])
+            self.lastIPImgIDs.append(imgID)
+
+        self.ipNumber += self.ipMvmt
+        if self.ipNumber == imageManager.IMG_MAP_INTERROGATIVE_POINT_TRANSPARENT_AMOUNT:
+            self.ipNumber -= 1
+            self.ipMvmt = -1
+        elif self.ipNumber == -1:
+            self.ipNumber += 1
+            self.ipMvmt = +1
+
+        self.ipTaskID = self.canvas.after(MS_BETWEEN_TWO_IP_REFRESH, lambda: self.drawIps(robotsPosition, lastActiveID))
+
+    def stopDrawIPs(self):
+        self.lastActiveID = random.randint(0, 1 << 12)
+
+    def startDrawBigIP(self):
+        self.lastActiveID = random.randint(0, 1 << 12)
+        self.drawBigIP(self.lastActiveID)
+
+    def drawBigIP(self, lastActiveID):
+        for imgID in self.lastIPImgIDs:
+            self.canvas.delete(imgID)
+
+        if (lastActiveID != self.lastActiveID):
+            return
+
+        imgID = self.drawImage(imageManager.IMG_MAP_INTERROGATIVE_BIG_POINT_TRANSPARENT_TK[self.ipNumber], 10, 7)
+        self.lastIPImgIDs.append(imgID)
+
+        self.ipNumber += self.ipMvmt
+        if self.ipNumber == imageManager.IMG_MAP_INTERROGATIVE_POINT_TRANSPARENT_AMOUNT:
+            self.ipNumber -= 1
+            self.ipMvmt = -1
+        elif self.ipNumber == -1:
+            self.ipNumber += 1
+            self.ipMvmt = +1
+
+        self.ipTaskID = self.canvas.after(MS_BETWEEN_TWO_IP_REFRESH, lambda: self.drawBigIP(lastActiveID))
 
 
     def drawImage(self, img, col, line, tag=""):

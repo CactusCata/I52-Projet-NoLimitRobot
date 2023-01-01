@@ -67,6 +67,15 @@ class Map:
 
         self.rockAmount = 0
 
+    def removeData(self):
+        """
+        Supprime tous les robots et les mines de la carte
+        """
+        for x in range(self.dimX):
+            for y in range(self.dimY):
+                if self.getID(x, y) == MINE_ID or self.getID(x, y) == PLAYER_ID:
+                    self.modify(x, y, AIR_ID, None)
+
     def isAccessible(self, pos):
         """
         Renvoie vrai si la case demandé est bien dans les dimensions de la map et que la case est accessible.
@@ -204,6 +213,7 @@ class Map:
         Renvoie un couple:
         - instance de robot qui se trouve être le plus proche
         - le path de notre robot jusqu'au robot le plus proche
+        Renvoie le couple (None, None) si aucun robot n'est accessible (joueur seul ou les autres sont en vanish)
         """
         startX = robot.get_x()
         startY = robot.get_y()
@@ -213,7 +223,7 @@ class Map:
         nearestRobotPath = None
         while i < len(playerManager.PLAYER_LIST) and nearestRobot is None:
             playerRobot = playerManager.PLAYER_LIST[i].getRobotParty()
-            if playerRobot != robot:
+            if playerRobot != robot and not playerRobot.is_vanish():
                 nearestRobot = playerRobot
                 nearestRobotPath = mapUtils.getPath(self, (startX, startY), (playerRobot.get_x(), playerRobot.get_y()))
             i += 1
@@ -221,7 +231,7 @@ class Map:
 
         for player in playerManager.PLAYER_LIST:
             playerRobot = player.getRobotParty()
-            if (playerRobot != robot):
+            if (playerRobot != robot and not playerRobot.is_vanish()):
                 currentPath = mapUtils.getPath(self, (startX, startY), (playerRobot.get_x(), playerRobot.get_y()))
                 if (len(currentPath) < len(nearestRobotPath)):
                     nearestRobot = playerRobot
