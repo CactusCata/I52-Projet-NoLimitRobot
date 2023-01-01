@@ -60,7 +60,7 @@ est compris entre 2 et 6."
 HELP_FPPARTYCONFIG = "Sur ce menu vous pouvez modifier quelques options de la partie. Cela vous permet \
 ainsi de diversifier votre expérience de jeu.\n\n\n\nVous pouvez donc modifier l'énergie des robots \
 , énergie des robots étant leur points de vie ainsi que leur points d'actions pour effectuer leurs \
-instructions, et de modifier la distance de détection des robots.\n\nUn robot peut utiliser \
+instructions, et modifier la distance de détection des robots.\n\nUn robot peut utiliser \
 une instruction de test et pour cela utilisera cette dite distance de détection pour faire des choix \
 d'instructions"
 

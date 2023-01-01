@@ -75,7 +75,8 @@ class FPMapConfig(IFrame):
 
         # Retour
         buttonBack = super().createButton(master=frameLeftBot, text="Retour", cmd=lambda:self.tryToGoBack())
-        buttonBack.pack()
+        super().modifyButton(buttonBack ,bg = "darkred", ab = "red")
+        buttonBack.pack(side="bottom", anchor="w", padx=10, pady=10)
 
     def tryToGoBack(self):
         self.mapDrawer.stopDrawIPs()
