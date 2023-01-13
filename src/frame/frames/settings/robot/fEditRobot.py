@@ -10,16 +10,20 @@ from utils.tkinter.tkPerformer import TkPerformer
 
 import player.playerManager as playerManager
 
-import tkinter as tk
 from tkinter import Scrollbar
-import utils.tkinter.tkUtils as tkUtils
 
 class FEditRobot(IFrame):
+    """
+    Propose d'éditer un robot
+    """
 
     def __init__(self, previousFrame):
         super().__init__(previousFrame, HELP_FEDITROBOT)
 
+        # Fichier du robot en cours d'édition
         self.currentRobotFile = None
+
+        # Est-ce que des changements ont eu lieu
         self.currentRobotHasChanged = False
 
     def draw(self):
@@ -88,6 +92,7 @@ class FEditRobot(IFrame):
         labelHelpInstruct = super().createLabel(master=frameHelpInstruct, text="Aide sur les instructions")
         labelHelpInstruct.pack()
 
+        # Dictionnaire des instructions
         self.comboboxHelpInstruct = super().createComboBox(master=frameHelpInstruct, list=list(instructionUtils.INSTRUCTION_LIST.keys()), callback=lambda event: self.selectInstructionEvent(event))
         self.comboboxHelpInstruct.pack()
 
@@ -103,6 +108,7 @@ class FEditRobot(IFrame):
         # Nom du robot
         robotSelectedName = self.comboboxName.get()
 
+        # Propose de sauvegarder l'état du robot s'il a été modifié
         if (self.currentRobotHasChanged and robotSelectedName != self.currentRobotFile.get_name()):
             returnCode = TkPerformer(rootManager.getRoot(), "Editeur de robot", "Voulez-vous sauvegarder les modifications ?").run()
             if (returnCode == 0):
@@ -127,11 +133,13 @@ class FEditRobot(IFrame):
         # Insertion des données du robot dans les boites à texte
         self.entryDescription.insert(0, self.currentRobotFile.get_desc())
 
+        # Insertion des instructions du robot dans la boite à texte
+        self.instructTextBox.insert(float(1), self.currentRobotFile.get_danger_instruction() + "\n")
         instructions = self.currentRobotFile.get_instr()
         if (len(instructions) > 0):
-            for i in range(len(instructions) - 1):
-                self.instructTextBox.insert(float(i + 1), instructions[i] + '\n')
-            self.instructTextBox.insert(float(len(instructions)), instructions[len(instructions) - 1])
+            for i in range(1, len(instructions)):
+                self.instructTextBox.insert(float(i + 1), instructions[i - 1] + '\n')
+            self.instructTextBox.insert(float(len(instructions) + 1), instructions[len(instructions) - 1])
 
     def saveRobotConfig(self):
         """
@@ -141,17 +149,31 @@ class FEditRobot(IFrame):
         robotDescription = self.entryDescription.get()
         robotInstructionText = self.instructTextBox.get("1.0", "end-1c")
 
+        # Ne pas sauvegarder si le nombre d'instruction est
+        # inférieur à 6
         if (len(robotInstructionText.split("\n")) < 6):
             self.labelHelpInstruct["text"] = "Au moins 6 instructions sont nécéssaires"
+            return
 
+        # Ne pas sauvegarder si le nombre d'instruction est
+        # supérieur à 20
+        if (len(robotInstructionText.split("\n")) > 20):
+            self.labelHelpInstruct["text"] = "Vous avez trop d'instructions !"
+            return
+
+        # Si les instructions ne sont pas valides, annuler
+        # et indiquer pourquoi
         instructionCorrect = instructionAnalyser.instructionsAreValide(robotInstructionText)
         if (instructionCorrect != instructionAnalyser.INSTRUCTION_CORRECT):
             self.labelInstructError["text"] = instructionCorrect
             return
 
+        # Si pas d'erreur, retirer le dernier message
+        # d'erreur s'il y en a un
         if (self.labelInstructError["text"] != ""):
             self.labelInstructError["text"] = ""
 
+        # Mise à jour des instructions des robots
         robotInstructions = robotInstructionText.split('\n')
         robotManager.updateRobot(robotName, robotDescription, robotInstructions)
         self.buttonSave["state"] = "disabled"
@@ -159,13 +181,18 @@ class FEditRobot(IFrame):
 
     def writeInTextBox(self, event):
         """
-        Evenement déclanché lorsque l'utilisateur écrit dans la zone de description
+        Evenement déclanché lorsque l'utilisateur écrit dans la zone de description.
+        Propose alors la sauvegarde.
         """
         if (not self.currentRobotHasChanged):
             self.buttonSave["state"] = "normal"
             self.currentRobotHasChanged = True
 
     def tryToReopenLastFrame(self):
+        """
+        Propose à l'utilisateur de sauvegarder si une édition à eu lieu
+        sans sauvegarde
+        """
 
         if (self.currentRobotHasChanged):
             returnCode = TkPerformer(rootManager.getRoot(), "Editeur de robot", "Voulez-vous sauvegarder les modifications ?").run()
@@ -177,6 +204,9 @@ class FEditRobot(IFrame):
         super(FEditRobot, self).reopenLastFrame()
 
     def selectInstructionEvent(self, event):
+        """
+        Informe l'utilisateur sur une instruction
+        """
         indexInstruct = self.comboboxHelpInstruct.get()
         instruction = instructionUtils.INSTRUCTION_LIST[indexInstruct]
 

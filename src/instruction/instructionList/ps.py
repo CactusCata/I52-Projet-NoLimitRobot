@@ -20,12 +20,18 @@ class PS(IInstruction):
 
         super().decreaseRobotEnergy(robot)
 
-        nearestRobotPath = map.getNearestRobot(robot)[1]
-        
-        # Append if all others robots are vanished
-        if nearestRobotPath == None:
+        nearestRobot = map.getNearestRobot(robot)
+
+        if (nearestRobot == None):
             return
 
+        nearestRobotPath = nearestRobot[1]
+        
+        # Append if all others robots are vanished
+        if nearestRobotPath == None or len(nearestRobotPath) == 0:
+            return
+
+        # Se déplace d'une case vers le robot le plus proche
         if len(nearestRobotPath) > 1:
             nextCase = nearestRobotPath[1]
             map.updateRobotPosition(robot, nextCase)

@@ -7,6 +7,11 @@ PLAYER_ID = 2
 MINE_ID = 3
 
 class Map:
+    """
+    Carte/Arène du jeu
+    Pour récuperer des infos sur la carte passer par les méthodes getID(x, y) et getData(x, y)
+    Pour modifier des infos, utiliser la méthode modify(x, y, id, instance)
+    """
 
     def __init__(self, matrixMapBasic):
 
@@ -25,6 +30,7 @@ class Map:
         # mine: instance de Mine
         self.matrixMapInstance = []
 
+        # Dimensions de la carte
         self.dimY = len(matrixMapBasic)
         self.dimX = len(matrixMapBasic[0])
 
@@ -218,12 +224,13 @@ class Map:
         startX = robot.get_x()
         startY = robot.get_y()
 
+        # Récupère le robot le plus proche
         i = 0
         nearestRobot = None
         nearestRobotPath = None
         while i < len(playerManager.PLAYER_LIST) and nearestRobot is None:
             playerRobot = playerManager.PLAYER_LIST[i].getRobotParty()
-            if playerRobot != robot and not playerRobot.is_vanish():
+            if playerRobot != robot and not playerRobot.is_vanish() and playerRobot.get_energy() > 0:
                 nearestRobot = playerRobot
                 nearestRobotPath = mapUtils.getPath(self, (startX, startY), (playerRobot.get_x(), playerRobot.get_y()))
             i += 1
@@ -231,7 +238,7 @@ class Map:
 
         for player in playerManager.PLAYER_LIST:
             playerRobot = player.getRobotParty()
-            if (playerRobot != robot and not playerRobot.is_vanish()):
+            if (playerRobot != robot and not playerRobot.is_vanish() and playerRobot.get_energy() > 0):
                 currentPath = mapUtils.getPath(self, (startX, startY), (playerRobot.get_x(), playerRobot.get_y()))
                 if (len(currentPath) < len(nearestRobotPath)):
                     nearestRobot = playerRobot
@@ -276,9 +283,12 @@ class Map:
         else:
             print(f"map.robotShoot(...): direction \"{selectedDirection}\" is unknowed")
 
+        # On continue tant qu'on est pas sortie
+        # des dimensions de la carte
+        # ou qu'on a pas croisé un obstacle
         x += directionVect[0]
         y += directionVect[1]
-        while (0 < x < self.getDimX() - 1) and (0 < y < self.getDimY() - 1) and (self.getID(x, y) == AIR_ID or self.getID(x, y) == MINE_ID):
+        while (1 < x < self.getDimX() - 2) and (1 < y < self.getDimY() - 2) and (self.getID(x, y) == AIR_ID or self.getID(x, y) == MINE_ID):
             if (self.getID(x, y) == MINE_ID):
                 mine = self.getData(x, y)
                 if mine.get_playerId() != playerID:
@@ -286,7 +296,8 @@ class Map:
             x += directionVect[0]
             y += directionVect[1]
 
-        if self.getID(x, y) == PLAYER_ID:
+        # Si l'obstacle est une joueur, lui appliquer les dégats
+        if self.isAccessible((x, y)) and self.getID(x, y) == PLAYER_ID:
             robot = self.getData(x, y)
             robot.decreaseEnery(damage)
 
@@ -306,6 +317,8 @@ class Map:
                 break
         playerMoved = playerManager.PLAYER_LIST[playerID]
 
+        # Si le robot qui se déplace tombe sur une mine,
+        # Alors lui infliger des dégats
         x = position[0]
         y = position[1]
         if self.getID(x, y) == MINE_ID:

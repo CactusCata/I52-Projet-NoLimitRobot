@@ -9,25 +9,34 @@ from frame.iFrame import IFrame
 from frame.frames.party.fPMapConfig import FPMapConfig
 
 class FPPartyConfig(IFrame):
+    """
+    Interface permetant à l'utilisateur de choisir la quantité
+    d'energie pour chaque robot ainsi que leur distance de
+    détection.
+    """
 
     def __init__(self, previousFrame):
         super().__init__(previousFrame, HELP_FPPARTYCONFIG)
 
     def draw(self):
+
         root = rootManager.getRoot()
 
         super().createButtonHelp()
 
+        
         labelTitle = super().createLabel(master=root, text="Paramètres de partie", fontSize=30)
         labelTitle.pack()
 
         frameMain = super().createFrame(root)
         frameMain.pack(pady = tkUtils.ratioHeight(0.04, root))
 
-        self.scalebarEnergy = super().createScalebar(master=frameMain, text="Energie pour chaque robot", from_=500, to=3000, defaultValue=1000, length=600, tickInterval=250, resolution=50)
+        # Energie pour chaque robot
+        self.scalebarEnergy = super().createScalebar(master=frameMain, text="Energie pour chaque robot", from_=500, to=3000, defaultValue=1000, length=400, tickInterval=500, resolution=50)
         self.scalebarEnergy.pack(pady = tkUtils.ratioHeight(0.01, root), fill=tk.X)
 
-        self.scalebarDetection = super().createScalebar(master=frameMain, text="Distance de détection", from_=3, to=6, defaultValue=4, length=600, tickInterval=1, resolution=1)
+        # Distance de détection
+        self.scalebarDetection = super().createScalebar(master=frameMain, text="Distance de détection", from_=3, to=6, defaultValue=4, length=400, tickInterval=1, resolution=1)
         self.scalebarDetection.pack(pady = tkUtils.ratioHeight(0.01, root), fill=tk.X)
 
         # Confirmer
@@ -47,6 +56,8 @@ class FPPartyConfig(IFrame):
         energyPerRobot = int(self.scalebarEnergy.get())
         detectionDistance = int(self.scalebarDetection.get())
 
+        # Initialise l'energie/energie max/distanc de détection
+        # pour le robot de chaque joueur
         for player in playerManager.PLAYER_LIST:
             playerRobot = player.getRobotParty()
             playerRobot.set_max_energy(energyPerRobot)

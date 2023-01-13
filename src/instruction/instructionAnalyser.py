@@ -7,8 +7,7 @@ INSTRUCTION_CORRECT = "correct"
 
 def instructionsAreValide(textInstruct):
     """
-    Renvoie un message.
-    Si valide renvoie "correct"
+    Renvoie "correct" si valide
     sinon renvoie le message d'erreur
     """
 

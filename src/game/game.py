@@ -2,11 +2,16 @@ import utils.instructionUtils as instructionUtils
 import player.playerManager as playerManager
 
 class Game():
+    """
+    Permet le déroulement logique d'une partie.
+    """
 
     def __init__(self, map):
+
+        # Carte sur laquelle va se dérouler la partie
         self.map = map
 
-
+        # Liste des joueurs en vie
         self.alivePlayersIndex = [i for i in range(len(playerManager.PLAYER_LIST))]
 
         # Prochain joueur qui doit jouer
@@ -55,6 +60,7 @@ class Game():
         for playerIndex in deadPlayersIndex:
             self.alivePlayersIndex.remove(playerIndex)
 
+        # Déclarer une gagnant s'il ne reste qu'un seul joueur
         if (len(self.alivePlayersIndex) == 1):
                 self.winner = playerManager.PLAYER_LIST[self.alivePlayersIndex[0]]
                 return
@@ -70,6 +76,9 @@ class Game():
         return self.winner
 
     def isEnded(self):
+        """
+        Renvoie True s'il ne reste qu'un seul joueur
+        """
         return len(self.alivePlayersIndex) <= 1
 
     

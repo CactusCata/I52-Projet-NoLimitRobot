@@ -1,6 +1,0 @@
-fpMapConfig:updateRadioButton()
-Afficher la répartition des joueurs sur la carte quand on est en mode equidistance avec des images de point d'intérogation
-Afficher un gros point d'intérogation sur la carte un peu transparent quand on est en mode spreadplayers
-
-faire un objet party et changer le jeu dedans
-Permet aussi de sérialiser la party pour en faire un fichier avec un partyManager

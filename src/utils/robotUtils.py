@@ -5,7 +5,7 @@ def get_desc_from_name(name):
     Retourne la description d'un robot dans le fichier instruction.rbt affilié à
     celui-ci. La donnée retournée est une chaîne de caractère.
     """
-    file = open(f"{ROBOT_FOLDER_PATH}{name}/instructions.rbt", "r")
+    file = open(f"{ROBOT_FOLDER_PATH}{name}/instructions.rbt", "r", encoding='utf8')
     firstLine = file.readline().rstrip()
     description = firstLine[1:]
     file.close()
@@ -17,7 +17,7 @@ def get_instr_from_name(name):
     n instructions en position de 1 à n-1 inclus. Ces instructions sont extraites
     depuis le ficher instructions.rbt du robot affilié.
     """
-    file = open(f"{ROBOT_FOLDER_PATH}{name}/instructions.rbt")
+    file = open(f"{ROBOT_FOLDER_PATH}{name}/instructions.rbt", encoding='utf8')
     fileContent = file.read()
     lines = fileContent.split('\n')[1:]
     file.close()

@@ -25,15 +25,22 @@ class FT(IInstruction):
 
         super().decreaseRobotEnergy(robot)
 
-        nearestRobot = map.getNearestRobot(robot)[0]
+        nearestRobot = map.getNearestRobot(robot)
+
+        if (nearestRobot == None or len(nearestRobot) == 0):
+            return
+
+        nearestRobot = nearestRobot[0]
         
         # Append if all others robots are vanished
         if (nearestRobot == None):
             return
 
-
+        # Listes des cases disponibles autour du robot 
         neighboors = mapUtils.getNeighbour(map, (robot.get_x(), robot.get_y()))
 
+        # Choisi la case qui ajoutera le plus
+        # de chemin à faire pour le robot aux alentours
         farestPathLength = -1
         bestCase = (-1, -1)
         for neighboor in neighboors:

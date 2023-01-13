@@ -12,6 +12,9 @@ from tkinter import END
 import utils.tkinter.tkUtils as tkUtils
 
 class FCreateRobot(IFrame):
+    """
+    Permet à l'utilisateur de créer un robot
+    """
 
     def __init__(self, previousFrame):
         super().__init__(previousFrame, HELP_FCREATEROBOT)
@@ -21,7 +24,6 @@ class FCreateRobot(IFrame):
 
         # Aide
         super().createButtonHelp()
-        #
 
         frameMain = super().createFrame(root)
         frameMain.pack()
@@ -33,7 +35,6 @@ class FCreateRobot(IFrame):
         textName.pack(side="left")
         self.entryName = super().createEntry(master=frameNameRobot, width=15)
         self.entryName.pack(fill=tk.X)
-        #
 
         # Description
         frameDescription = super().createFrame(frameMain)
@@ -42,7 +43,6 @@ class FCreateRobot(IFrame):
         textDescription.pack(side="left")
         self.entryDescription = super().createEntry(master=frameDescription, width=tkUtils.ratioWidth(0.04, root))
         self.entryDescription.pack(fill=tk.X)
-        #
 
         # Logo
         frameLogoSelected = super().createFrame(frameMain)
@@ -52,13 +52,13 @@ class FCreateRobot(IFrame):
         logoButtonChooseLogoPath = super().createButton(master=frameLogoSelected, text="Sélectionnez votre Logo", cmd=lambda:self.selectLogoPath())
         logoButtonChooseLogoPath.pack(fill=tk.X)
 
+        # Path vers le logo
         frameLogoPath = super().createFrame(frameMain)
         frameLogoPath.pack(fill=tk.X)
         logoLabelPath = super().createLabel(master=frameLogoPath, text="Chemin absolu de votre logo:")
         logoLabelPath.pack(side="left")
         self.entryLogoPath = super().createEntry(master=frameLogoPath, width=tkUtils.ratioWidth(0.04, root))
         self.entryLogoPath.pack(fill=tk.X)
-        #
 
         # Confirmer
         frameConfirm = super().createFrame(frameMain)
@@ -72,13 +72,11 @@ class FCreateRobot(IFrame):
         buttonConfirm["activebackground"] = "blue"
         buttonConfirm["activeforeground"] = "lightgrey"
         buttonConfirm.pack(fill = tk.X)
-        #
 
         # Retour
         buttonBack = super().createButton(text="Retour", cmd=lambda:super(FCreateRobot, self).reopenLastFrame())
         super().modifyButton(buttonBack ,bg = "darkred", ab = "red")
         buttonBack.pack(side="bottom", anchor="w", padx=10, pady=10)
-        #
 
     def selectLogoPath(self):
         """
@@ -111,11 +109,11 @@ class FCreateRobot(IFrame):
         robotManager.createNewRobot(robotName, description, [], logoPath)
         rootManager.runNewFrame(FEditRobot(self))
 
-    def error(self, widget): #Erreur si l'utilisateur n'a pas mit de nom
+    def error(self, widget):
         widget.destroy()
 
     def createMessage(self, message):
-        labelerror = super().createLabel(message, 30)
+        labelerror = super().createLabel(master=rootManager.getRoot(), text=message, fontSize=30)
         labelerror["fg"] = "#FA0000"
         labelerror.pack()
         labelerror.after(5000, lambda:self.error(labelerror))

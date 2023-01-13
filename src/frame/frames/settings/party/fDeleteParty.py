@@ -4,12 +4,15 @@ from frame.iFrame import IFrame
 from frame.messagesHelp import HELP_FDELETEPARTY
 
 class FDeleteParty(IFrame):
+    """
+    Permet à l'utilisateur de supprimer une partie.
+    (Pas codé)
+    """
 
     def __init__(self, previousFrame):
         super().__init__(previousFrame, HELP_FDELETEPARTY)
 
     def draw(self):
-        root = rootManager.getRoot()
 
         super().createButtonHelp()
 

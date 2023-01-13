@@ -9,6 +9,9 @@ def isString(s, startIndex, stringWanted):
     return True
 
 def analex(text):
+    """
+    Analyse lexicale du texte
+    """
     arrayOfLexicalsUnits = []
 
     i = 0

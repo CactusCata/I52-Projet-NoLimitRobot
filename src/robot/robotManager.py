@@ -54,7 +54,7 @@ def createRobotDescAndInstructs(name, description, instructions):
     Créée le fichier instructions.rbt dans le dossier du robot avec comme attributs
     la description et les instructions
     """
-    file = open(f"{ROBOT_FOLDER_PATH}{name}/instructions.{ROBOT_EXTENSION_NAME}", "w")
+    file = open(f"{ROBOT_FOLDER_PATH}{name}/instructions.{ROBOT_EXTENSION_NAME}", "w", encoding='utf8')
     file.write(";" + description + "\n")
 
     if len(instructions) < ROBOT_MIN_INSTRUCTION_AMOUNT:

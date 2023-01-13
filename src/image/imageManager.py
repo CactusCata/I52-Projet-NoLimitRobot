@@ -31,6 +31,9 @@ IMG_MAP_INTERROGATIVE_BIG_POINT_TRANSPARENT = [None] * IMG_MAP_INTERROGATIVE_POI
 IMG_MAP_INTERROGATIVE_BIG_POINT_TRANSPARENT_TK = [None] * IMG_MAP_INTERROGATIVE_POINT_TRANSPARENT_AMOUNT
 
 def loadImages():
+    """
+    Charge toutes les images du jeu
+    """
     global IMG_MAP_ROCK, IMG_MAP_AIR, IMG_MAP_MINE, IMG_MAP_INTERROGATIVE_POINT_BASIC, IMG_MAP_BIG_INTERROGATIVE_POINT_BASIC, IMG_MAP_INTERROGATIVE_POINT_TRANSPARENT, IMG_MAP_INTERROGATIVE_BIG_POINT_TRANSPARENT
 
     IMG_MAP_ROCK = loadImage("../res/img/map/rock.png", MAP_BLOC_DIMENSIONS)
@@ -46,6 +49,9 @@ def loadImages():
         IMG_MAP_INTERROGATIVE_BIG_POINT_TRANSPARENT[i] = img2
 
 def loadImage(path, dimensions):
+    """
+    Charge une image
+    """
     if (not fileUtils.fileExist(path)):
         print(f"Le fichier \"{path}\" n'existe pas")
         return None
@@ -55,6 +61,9 @@ def loadImage(path, dimensions):
     return img
 
 def loadImagesTk():
+    """
+    Charge les images Tk
+    """
     global IMG_MAP_ROCK_TK, IMG_MAP_AIR_TK, IMG_MAP_MINE_TK, IMG_MAP_BIG_INTERROGATIVE_POINT_TK_BASIC, IMG_MAP_INTERROGATIVE_POINT_TK_BASIC, IMG_MAP_INTERROGATIVE_POINT_TRANSPARENT_TK, IMG_MAP_INTERROGATIVE_BIG_POINT_TRANSPARENT_TK
 
     IMG_MAP_ROCK_TK = loadImageTk(IMG_MAP_ROCK)

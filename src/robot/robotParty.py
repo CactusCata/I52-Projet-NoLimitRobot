@@ -33,45 +33,84 @@ class RobotParty():
         return self.__onDangerInstruction
 
     def update_instruction_cursor(self, n):
+        """
+        Met à jour le compteur d'instruction
+        """
         self.__instructionCursor = n
 
     def get_instruction_number(self):
+        """
+        Renvoie le nombre d'instruction du robot
+        """
         return self.__instructionCursor
 
     def get_id(self):
+        """
+        Renvoie l'id du robot
+        """
         return self.__id
 
     def set_detection_distance(self, distance_detection):
+        """
+        Met à jour la distance de detection du robot
+        """
         self.__detec = distance_detection
 
     def get_distance_detect(self):
+        """
+        Renvoie la distance de détection du robot
+        """
         return self.__detec
 
     def set_max_energy(self, maxEnergy):
+        """
+        Met l'energy max d'un robot
+        """
         self.__max_energy = maxEnergy
 
     def get_energy(self):
+        """
+        Renvoie l'energie d'un robot
+        """
         return self.__energy
 
     def get_max_energy(self):
+        """
+        Renvoie l'energie max du robot
+        """
         return self.__max_energy
 
     def reset_energy(self):
+        """
+        Met l'energie du robot au maximum
+        """
         self.__energy = self.__max_energy
 
     def get_x(self):
+        """
+        Renvoie le 'x' d'un robot
+        """
         return self.__x
 
     def get_y(self):
+        """
+        Renvoie le 'y' d'un robot
+        """
         return self.__y
 
     def move(self, position):
+        """
+        Met à jour les coordonnées d'un robot
+        """
         self.__x = position[0]
         self.__y = position[1]
         if self.is_vanish():
             self.unvanish()
 
     def decreaseEnery(self, n):
+        """
+        Diminue l'energie d'un robot
+        """
         if self.__energy - n < 0:
             self.__energy = 0
         else:
@@ -81,12 +120,22 @@ class RobotParty():
         return RobotParty(self.get_x(), self.get_y, self.get_energy(), self.get_detect_distance(), self.is_vanish())
 
     def is_vanish(self):
+        """
+        Renvoie True si le robot est vanish.
+        Sinon revoie False
+        """
         return self.__vanished
 
     def vanish(self):
+        """
+        Applique le vanish a un robot
+        """
         self.__vanished = True
 
     def unvanish(self):
+        """
+        Retire le vanish a un robot
+        """
         self.__vanished = False
 
     def print_id(self):

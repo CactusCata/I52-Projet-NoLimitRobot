@@ -11,6 +11,12 @@ from frame.frames.settings.robot.fEditRobot import FEditRobot
 from frame.frames.settings.robot.fDeleteRobot import FDeleteRobot
 
 class FConfigRobot(IFrame):
+    """
+    Permet à l'utilisateur de:
+        - Créer un robot
+        - Editer un robot
+        - Supprimer un robot
+    """
 
     def __init__(self, previousFrame):
         super().__init__(previousFrame, HELP_FCONFIGROBOT)
@@ -26,15 +32,19 @@ class FConfigRobot(IFrame):
         frameMainButtons = super().createFrame(root)
         frameMainButtons.pack(pady=tkUtils.ratioHeight(0.1, root))
 
+        # Créer robot
         buttonCreateRobot = super().createButton(master=frameMainButtons, text="Créer robot", cmd=lambda:rootManager.runNewFrame(FCreateRobot(self)))
         buttonCreateRobot.pack(pady = tkUtils.ratioHeight(0.02, root), fill=tk.X)
 
+        # Editer robot
         buttonEditRobot = super().createButton(master=frameMainButtons,text="Editer robot", cmd=lambda:rootManager.runNewFrame(FEditRobot(self)))
         buttonEditRobot.pack(pady = tkUtils.ratioHeight(0.02, root), fill=tk.X)
 
+        # Supprimer robot
         buttonDeleteRobot = super().createButton(master=frameMainButtons,text="Supprimer robot", cmd=lambda:rootManager.runNewFrame(FDeleteRobot(self)))
         buttonDeleteRobot.pack(pady = tkUtils.ratioHeight(0.02, root), fill=tk.X)
 
+        # Retour
         buttonBack = super().createButton(text="Retour", cmd=lambda:super(FConfigRobot, self).reopenLastFrame())
         super().modifyButton(buttonBack ,bg = "darkred", ab = "red")
         buttonBack.pack(side="bottom", anchor="w", padx=10, pady=10)

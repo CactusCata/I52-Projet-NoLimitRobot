@@ -17,10 +17,15 @@ MIN_PLAYER_AMOUNT = 2
 MAX_PLAYER_AMOUNT = 6
 
 class FPPlayerConfig(IFrame):
+    """
+    Interface permetant à l'utilisateur de choisir
+    des robots qui s'affronteront
+    """
 
     def __init__(self, previousFrame):
         super().__init__(previousFrame, HELP_FPPLAYERCONFIG)
 
+        # Est-ce qu'un robot a été sélectionné
         self.selectedRobot = False
 
     def draw(self):
@@ -33,6 +38,7 @@ class FPPlayerConfig(IFrame):
         # Remet à zero la liste des joueurs
         playerManager.initPlayerList()
 
+        # Charge la liste des robots disponibles
         robotsFile = []
         for robotName in robotsNames:
             robotsFile.append(RobotFile(robotName))
@@ -55,6 +61,7 @@ class FPPlayerConfig(IFrame):
 
         framePlayerSection = super().createFrame()
         framePlayerSection.pack(side="right", ipadx=40)
+
         # canvas et textes des robots-joueurs
         self.canvasPlayerList = []
         self.labelPlayerList = []
@@ -66,6 +73,7 @@ class FPPlayerConfig(IFrame):
             currentLabelPlayer.pack()
             self.labelPlayerList.append(currentLabelPlayer)
 
+        # Grille de sélection des robots
         self.robotChooser = RobotChooser(self.canvas, robotsFile)
         self.robotChooser.drawGrid()
         self.robotChooser.drawRobots()
@@ -84,6 +92,10 @@ class FPPlayerConfig(IFrame):
 
 
     def clickEvent(self, x, y):
+        """
+        Evènement déclanché lorsque un joueur clic
+        dans dans le canvas de sélection des robots
+        """
         id = self.robotSelectedID
         if (id == -1):
             return
@@ -97,11 +109,15 @@ class FPPlayerConfig(IFrame):
         if (self.playerRobotCursor >= MAX_PLAYER_AMOUNT):
             return
 
+        # Si c'est la première selection de robot pour le
+        # joueur, alors, on ajoute le joueur
+        # Sinon on met à jour son robot
         if (len(playerManager.PLAYER_LIST) <= self.playerRobotCursor):
             playerManager.addPlayer(robotFile)
         else:
             playerManager.updatePlayer(robotFile, self.playerRobotCursor)
 
+        # On déssine l'icon du robot dans la case du joueur
         player = playerManager.getPlayer(self.playerRobotCursor)
         logoPlayer = player.getRobotIconTk()
         currentCanvas = self.canvasPlayerList[self.playerRobotCursor]
@@ -111,13 +127,22 @@ class FPPlayerConfig(IFrame):
         self.selectedRobot = True
 
     def confirmRobot(self):
+        """
+        Fonction appelée lorsque un robot est confirmé
+        par un joueur
+        """
 
+        # Pas de confirmation possible si tous les
+        # joueurs ont déjà un robot
         if (self.playerRobotCursor >= MAX_PLAYER_AMOUNT):
             return
 
+        # On annule si aucun robot n'a été sélectionné
         if not self.selectedRobot:
             return
 
+        # On met en vert le nom du joueur pour lui prouver la
+        # réussite de sa confirmation
         self.labelPlayerList[self.playerRobotCursor]["fg"] = "#00FF00"
 
         playerManager.getPlayer(self.playerRobotCursor)
@@ -131,6 +156,10 @@ class FPPlayerConfig(IFrame):
 
 
     def moveMouse(self, x, y):
+        """
+        Fonction appelé lorsque l'utilisateur bouge la souris.
+        Permet de mettre en valeur le choix du robot du joueur.
+        """
 
         ids = self.canvas.find_withtag("current")
 

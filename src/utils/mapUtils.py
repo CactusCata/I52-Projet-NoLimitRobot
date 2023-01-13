@@ -143,6 +143,8 @@ def generateRobotEndPos(map, endPos):
 
 def getPath(map, startPos, endPos):
     """
+    Génère une liste de position successives qui correspond
+    à un chemin de startPos à endPos
     """
 
     if (not map.isAccessible(endPos)):
@@ -218,6 +220,10 @@ def addPointTo(listToAdd, initPos, endPos, pos, deplacementCount, gcost, hcost, 
 
 
 def getNeighbour(map, pos):
+    """
+    Renvoie la liste des positions accessibles autour
+    d'un point (en carré)
+    """
     validNeighbour = []
     for i in {-1, 0, 1}:
         for j in {-1, 0, 1}:

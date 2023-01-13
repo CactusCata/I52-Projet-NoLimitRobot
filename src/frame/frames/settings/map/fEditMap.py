@@ -16,18 +16,24 @@ from frame.messagesHelp import HELP_FEDITMAP
 from random import uniform, randint
 
 class FEditMap(IFrame):
+    """
+    Editeur de carte qui permet de modifier une
+    carte déjà existante.
+    """
 
     def __init__(self, previousFrame):
         super().__init__(previousFrame, HELP_FEDITMAP)
 
+        # Carte en cours d'édition
         self.map = None
         self.mapName = None
         self.mapDrawer = None
 
+        # Est-ce que la map actuelle a été modifiée
+        # depuis son chargement
         self.currentMapHasChanged = False
 
     def draw(self):
-        root = rootManager.getRoot()
 
         super().createButtonHelp()
 
@@ -180,8 +186,7 @@ class FEditMap(IFrame):
         """
         Evenement déclanché lorsque l'utilisateur change l'état du radio button
         """
-        print("value changed")
-        print(self.stringVarRadioButton.get())
+        pass
 
     def mapSelectedChanged(self, event):
         """

@@ -4,6 +4,10 @@ from frame.iFrame import IFrame
 from frame.messagesHelp import HELP_FLOADPARTY
 
 class FLoadParty(IFrame):
+    """
+    Propose à l'utilisateur de charger une partie existante
+    (Pas fait)
+    """
 
     def __init__(self, previousFrame):
         super().__init__(previousFrame, HELP_FLOADPARTY)

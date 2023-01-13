@@ -25,12 +25,14 @@ class AL(IInstruction):
 
         super().decreaseRobotEnergy(robot)
 
+        # Liste des déplacements possibles
         possiblesMoves = []
-
         for i in {-1, 1}:
             if map.isAccessible((robot.get_x() + i, robot.get_y())): possiblesMoves.append((robot.get_x() + i, robot.get_y()))
             if map.isAccessible((robot.get_x(), robot.get_y() + i)): possiblesMoves.append((robot.get_x(), robot.get_y() + i))
 
+        # Si aucun déplacement possible (coincé), alors
+        # annuler le déplacement
         if (len(possiblesMoves) == 0):
             return
 

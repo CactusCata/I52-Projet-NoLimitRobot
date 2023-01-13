@@ -18,4 +18,6 @@ class IN(IInstruction):
         robot = player.getRobotParty()
 
         super().decreaseRobotEnergy(robot)
+
+        # Rend invisible le robot pour les autres robots
         robot.vanish()

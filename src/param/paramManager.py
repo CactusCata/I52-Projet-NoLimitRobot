@@ -7,6 +7,9 @@ PARAM_FILE_PATH_NAME_EXTENSION = "../config/param.dat"
 PARAM = None
 
 def loadParam():
+    """
+    Charge les paramètres
+    """
     global PARAM
 
     file = open(f"{PARAM_FILE_PATH_NAME_EXTENSION}", "r")

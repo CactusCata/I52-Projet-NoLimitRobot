@@ -5,13 +5,24 @@ from tkinter.ttk import Combobox, Checkbutton, Style
 
 import param.paramManager as paramManager
 
+# Le style du check bouton doit être enregistré quelque part
 styleCheckButton = None
 
 class IFrame():
+    """
+    Classe mère de toutes les frames.
+    Permet de passer simplement d'un frame à une autre.
+    """
 
     def __init__(self, previousFrame=None, helpMessage="Not help here"):
+        # Liste des widgets créés
         self.items = []
+
+        # On enregistre la dernière frame pour pouvoir la
+        # re-afficher si besoin
         self.previousFrame = previousFrame
+
+        # Message d'aide
         self.helpMessage = helpMessage
 
     def createFrame(self, master=None):
@@ -32,7 +43,7 @@ class IFrame():
         Crée un canvas
 
             - master: Si n'est pas utilisé, alors prend la valeur de rootManager.getRoot
-            - (width, height): dimensions du canvas
+            - (width, height): dimensions du canvas en pixel
         """
         if (master is None):
             master = rootManager.getRoot()
@@ -126,7 +137,15 @@ class IFrame():
         return entryBox
 
 
-    def createCheckButton(self, master=None, text="", variable=None, callback=None, fontSize=14):
+    def createCheckButton(self, master=None, text="", variable=None, callback=None):
+        """
+        Crée un check button
+
+            - master: Si n'est pas utilisé, alors prend la valeur de rootManager.getRoot
+            - text: Texte associé au check button
+            - variable: variable tkinter associée qui permet d'initialiser et de connaitre l'état du checkbutton
+            - callback: fonction executée lorsque l'utilisateur appuie sur le checkbutton
+        """
         if (master is None):
             master = rootManager.getRoot()
 
@@ -166,6 +185,15 @@ class IFrame():
         return scalebar
 
     def createRadioButton(self, master=None, text="", serializedValue=None, variable=None, callback=None):
+        """
+        Crée un radio button
+
+            - master: Si n'est pas utilisé, alors prend la valeur de rootManager.getRoot
+            - text: Texte associé au check button
+            - serializedValue: valeur par défaut
+            - variable: variable tkinter associée qui permet d'initialiser et de connaitre l'état du checkbutton
+            - callback: fonction executée lorsque l'utilisateur appuie sur le checkbutton
+        """
         if (master is None):
             master = rootManager.getRoot()
 
@@ -199,7 +227,7 @@ class IFrame():
 
     def clearFrame(self):
         """
-        Supprime tous les objets (widgets, etc...) crées
+        Supprime tous les objets (widgets, etc...) créés
         """
         for item in self.items:
             item.destroy()
@@ -207,20 +235,26 @@ class IFrame():
 
     def registerItem(self, item):
         """
-        Renseigne qu'un objet (widget, etc...) a été crée
+        Renseigne qu'un objet (widget, etc...) a été créé
         """
         self.items.append(item)
 
     def reopenLastFrame(self):
+        """
+        Déssine l'ancienne frame
+        """
         if (self.previousFrame is not None):
             rootManager.runNewFrame(self.previousFrame)
 
     def createButtonHelp(self):
+        """
+        Crée un bouton d'aide
+        """
         if paramManager.PARAM.isNeedHelp():
             master = rootManager.getRoot()
             buttonTk = self.createButton(master=master, text="Aide", cmd=lambda: self.askHelp())
             self.modifyButton(buttonTk, bg = "darkgreen", ab = "green")
-            buttonTk.pack(anchor = "e", padx = 10, pady = 10, fill="y")
+            buttonTk.pack(anchor = "e", padx = 10, pady = 10)
 
     def modifyButton(self, button, bg = None, ab = None):
         if bg != None:
@@ -229,7 +263,14 @@ class IFrame():
             button["activebackground"] = ab
 
     def askHelp(self):
+        """
+        Si le bouton d'aide est préssé, alors faire apparaitre
+        le message corresponsant à la frame
+        """
         messagebox.showinfo(title="Aide", message=self.helpMessage)
 
     def getScreenDimensions(self, master):
+        """
+        Renvoie les dimensions de la fenetre
+        """
         return (master.winfo_screenwidth(), master.winfo_screenheight())

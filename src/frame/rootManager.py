@@ -2,9 +2,13 @@ from tkinter import Tk, PhotoImage
 
 from frame.frames.fMain import FMain
 
-import utils.tkinter.tkUtils as tkUtils
 import param.paramManager as paramManager
 import image.imageManager as imageManager
+
+"""
+Fichier qui a pour objectif de travailler avec la classe mère
+des frames IFrame.
+"""
 
 GAME_NAME = "No Limit Robot"
 
@@ -66,6 +70,9 @@ def clearCurrentFrame():
         currentFrame.clearFrame()
 
 def runNewFrame(frame):
+    """
+    Déssine une nouvelle frame
+    """
     global currentFrame
 
     clearCurrentFrame()

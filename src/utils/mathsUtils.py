@@ -13,4 +13,7 @@ def distance_tchebychev(posA, posB):
     return max(abs(posB[0] - posA[0]), abs(posB[1] - posA[1]))
 
 def distance_chareyre(posA, posB):
+    """
+    Renvoie la distance de Chareyre
+    """
     return distance_tchebychev(posA, posB) + 0.1 * distance_euclydienne(posA[0], posA[1], posB[0], posB[1])

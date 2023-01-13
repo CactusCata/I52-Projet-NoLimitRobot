@@ -1,6 +1,6 @@
-import sys
-
 from instruction.instructionList.iInstruction import IInstruction
+
+import utils.instructionUtils as instructionUtils
 
 class TT(IInstruction):
     """
@@ -23,14 +23,16 @@ class TT(IInstruction):
         instructionName1 = command.split(" ")[1]
         instructionName2 = command.split(" ")[2]
 
-        if "utils.instructionUtils" not in sys.modules:
-            from utils.instructionUtils import INSTRUCTION_LIST
-
         super().decreaseRobotEnergy(robot)
 
-        nearestRobotPath = map.getNearestRobotPath(map, robot)
+        nearestRobotPath = map.getNearestRobot(robot)[1]
+
+        if nearestRobotPath == None or len(nearestRobotPath) == 0:
+            return
         
+        # Si le un robot est proche, executer l'instruction 1
+        # Sinon excuter l'instruction 2
         if (len(nearestRobotPath) <= robot.get_distance_detect()):
-            INSTRUCTION_LIST[instructionName1].make(robot=robot, map=map, cmd=instructionName1)
+            instructionUtils.INSTRUCTION_LIST[instructionName1].make(player=player, robot=robot, map=map, cmd=instructionName1)
         else:
-            INSTRUCTION_LIST[instructionName2].make(robot=robot, map=map, cmd=instructionName1)
+            instructionUtils.INSTRUCTION_LIST[instructionName2].make(player=player, robot=robot, map=map, cmd=instructionName1)

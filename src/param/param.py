@@ -1,19 +1,26 @@
 import utils.tkinter.tkUtils as tkUtils
 
 class Param:
+    """
+    Permet de connaitre à tout instant les paramètres du jeu.
+    """
 
     def __init__(self, fullScreenState=True, needHelpState=True):
         self.fullScreenState = fullScreenState
         self.needHelpState = needHelpState
+
+        # Est-ce que les options ont été modifiées depuis leur chargement
         self.optionsChanged = False
 
     def optionsHasChanged(self):
+        """
+        Renvoie True si les options ont été modifiées depuis leur chargement
+        Sinon renvoie False
+        """
         return self.optionsChanged
 
     def toggleFullScreen(self, root):
-        print(f"fullscreen from: {self.fullScreenState}")
         self.fullScreenState = False if self.fullScreenState else True
-        print(f"To: {self.fullScreenState}")
         self.applyFullScreenState(root)
 
     def getFullScreenState(self):

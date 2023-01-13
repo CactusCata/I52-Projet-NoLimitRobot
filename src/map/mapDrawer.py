@@ -8,26 +8,44 @@ import random
 MS_BETWEEN_TWO_IP_REFRESH = 20
 
 class MapDrawer:
+    """
+    Permet de dessiner une carte avec ses composantes 
+    """
 
     def __init__(self, canvas, map, players=[], xStart=10, yStart=10):
+
+        # Canvas où l'on dessine
         self.canvas = canvas
+
+        # Map actuelle
         self.map = map
+
+        # Liste des joueurs
         self.players = players
 
+        # Début du dessin des robots
         self.xStart = xStart
         self.yStart = yStart
+
+        # Pas en pixel entre chaque case
         self.xPas = imageManager.MAP_BLOC_DIMENSIONS[0] + 2
         self.yPas = imageManager.MAP_BLOC_DIMENSIONS[1] + 2
 
+        # Infos sur les dessins des points d'interrogation
         self.ipNumber = 0
         self.ipMvmt = +1
         self.ipTaskID = -1
         self.lastActiveID = -1
         self.lastIPImgIDs = []
 
+        # Liste des id des images pour les robots
         self.robotsDrawID = []
 
     def drawGrid(self):
+        """
+        Dessine la grille de la carte
+        """
+
         lineSize = self.map.getDimY() * self.xPas
         colSize = self.map.getDimX() * self.yPas
 
@@ -40,6 +58,9 @@ class MapDrawer:
             self.canvas.create_line(self.xStart + (i * self.xPas), self.yStart, self.xStart + (i * self.xPas), self.yStart + lineSize)
 
     def drawMap(self):
+        """
+        Déssine la carte
+        """
         for x in range(self.map.getDimX()):
             for y in range(self.map.getDimY()):
                 caseValue = self.map.getID(x, y)
@@ -54,11 +75,17 @@ class MapDrawer:
                     self.drawImage(imgToDraw, x, y, tag=f"figure:{x},{y}")
 
     def drawRobot(self):
+        """
+        Dessine les robots
+        """
         for player in self.players:
             robotParty = player.getRobotParty()
             self.drawImage(player.getRobotBlocTk(), robotParty.get_x(), robotParty.get_y())
 
     def drawMine(self):
+        """
+        Dessine les mines
+        """
         for x in range(self.map.getDimX()):
             for y in range(self.map.getDimY()):
                 if (self.map.getID(x, y) == 3):
@@ -70,10 +97,18 @@ class MapDrawer:
 
 
     def startDrawIPs(self, robotsPosition):
+        """
+        Dessine des points d'interrogation sur les coordonnées données
+        """
         self.lastActiveID = random.randint(0, 1 << 12)
         self.drawIps(robotsPosition, self.lastActiveID)
 
     def drawIps(self, robotsPosition, lastActiveID):
+        """
+        Dessine les points d'interrogation.
+        La variable lastActiveID permet de savoir s'il faut toujours dessiner
+        les points d'interrogation
+        """
         for imgID in self.lastIPImgIDs:
             self.canvas.delete(imgID)
 
@@ -95,13 +130,22 @@ class MapDrawer:
         self.ipTaskID = self.canvas.after(MS_BETWEEN_TWO_IP_REFRESH, lambda: self.drawIps(robotsPosition, lastActiveID))
 
     def stopDrawIPs(self):
+        """
+        Arrête de dessiner les points d'interrogation
+        """
         self.lastActiveID = random.randint(0, 1 << 12)
 
     def startDrawBigIP(self):
+        """
+        Dessine un gros point d'interrogation
+        """
         self.lastActiveID = random.randint(0, 1 << 12)
         self.drawBigIP(self.lastActiveID)
 
     def drawBigIP(self, lastActiveID):
+        """
+        Dessine un gros point d'interrogation
+        """
         for imgID in self.lastIPImgIDs:
             self.canvas.delete(imgID)
 
@@ -123,9 +167,15 @@ class MapDrawer:
 
 
     def drawImage(self, img, col, line, tag=""):
+        """
+        Dessine une image sur la grille
+        """
         return self.canvas.create_image(col*self.xPas + (self.xPas - 1), line*self.yPas + (self.yPas - 1), image=img, tag=(tag,))
 
     def getItemCoordinates(self, itemID):
+        """
+        Renvoie les coordonées sur la grille d'un item via son tag
+        """
         tag = tkUtils.itemHasTag(self.canvas, itemID, tkUtils.startWithFunction, "figure")
 
         if (tag == None):
@@ -137,4 +187,7 @@ class MapDrawer:
         return (x, y)
 
     def clear(self):
+        """
+        Supprime toutes les images dessinées
+        """
         self.canvas.delete("all")

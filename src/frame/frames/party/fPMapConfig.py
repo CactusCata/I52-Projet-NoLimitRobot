@@ -13,26 +13,28 @@ from tkinter import StringVar
 
 class FPMapConfig(IFrame):
     """
-    Menu déroulant avec la liste des noms de map
-    canvas avec la visualisation de la map
-    Radio button entre equidistance des robots et spreadplayer
-    Si spreadPlayer, afficher un scalebar de distance minimale entre chaque robot
-    Lancer la partie
-    retour
-    aide
+    Propose à l'utilisateur de choisir une carte/arène où les robots
+    s'affronteront. Permet aussi de choisir un mode de placement des
+    robots (equidistance ou aléatoire).
     """
 
     def __init__(self, previousFrame):
         super().__init__(previousFrame, HELP_FPMAPCONFIG)
 
+        # Scalebar de la distance minimum si mode de répartition aléatoire
         self.scalebarMinSpreadDistance = None
         self.labelScalebar = None
+
+        # Carte choisie
         self.map = None
+
+        # Positions des robots après le choix de la répartition
         self.robotsPosition = []
+
+        # Déssineur de carte
         self.mapDrawer = None
 
     def draw(self):
-        root = rootManager.getRoot()
 
         super().createButtonHelp()
 
@@ -53,7 +55,7 @@ class FPMapConfig(IFrame):
         self.comboBoxMapName = super().createComboBox(master=self.frameLeftTop, list=mapManager.getLoadedMaps(), callback=lambda event: self.mapSelectedChanged(event))
         self.comboBoxMapName.pack()
 
-        # Map
+        # Map dessinée
         self.canvasMap = super().createCanvas(master=frameRight, width=700, height=500)
         self.canvasMap.pack()
 
@@ -66,8 +68,8 @@ class FPMapConfig(IFrame):
         self.radioButtonSpread = super().createRadioButton(master=self.frameLeftTop, text="spread robots", serializedValue="SPREAD_ROBOTS", variable=self.stringVarRadioButton, callback=lambda: self.updateRadioButton())
         self.radioButtonSpread.pack()
 
-        # Afficher de nouveau la scalebar le l'utilisateur appuie sur le bouton de retour
-        self.updateRadioButton()
+        # Afficher de nouveau la scalebar si l'utilisateur appuie sur le bouton de retour
+        #self.updateRadioButton()
 
         # Confirmer
         buttonConfirm = super().createButton(master=frameLeftBot, text="Voir la partie", cmd=lambda:self.followingFrame())
@@ -79,12 +81,19 @@ class FPMapConfig(IFrame):
         buttonBack.pack(side="bottom", anchor="w", padx=10, pady=10)
 
     def tryToGoBack(self):
+        """
+        Fonction appelée lorsque l'utilisateur souhaite
+        revenir en arrière
+        """
         self.mapDrawer.stopDrawIPs()
         super(FPMapConfig, self).reopenLastFrame()
 
     def mapSelectedChanged(self, event):
         """
-        Evenement déclanché lorsque l'utilisateur choisi une carte
+        Evenement déclanché lorsque l'utilisateur choisi une carte.
+        Quand appelé, la carte est déssinée et des points d'intérrogations
+        sont déssinés à l'emplacement des robots en fonction de du mode
+        de répartition de ceux-ci.
         """
 
         self.mapName = self.comboBoxMapName.get()
@@ -92,9 +101,13 @@ class FPMapConfig(IFrame):
         # object map associé
         self.map = mapManager.loadMapFileContent(self.mapName)
 
+        # Si d'anciens points d'intérrogations sont déssinés,
+        # ne plus les déssiner
         if (self.mapDrawer != None):
             self.mapDrawer.stopDrawIPs()
 
+        # (Re-)Initialisation du déssineur de carte
+        # et dessin de la carte
         self.mapDrawer = MapDrawer(self.canvasMap, self.map)
         self.mapDrawer.drawMap()
         self.mapDrawer.drawGrid()
@@ -105,26 +118,30 @@ class FPMapConfig(IFrame):
             self.mapDrawer.startDrawBigIP()
 
     def followingFrame(self):
+        """
+        Méthode appelée lorsque l'utilisateur décide de confirmer
+        ses choix
+        """
 
-        # Si aucune map n'a été sélectionnée, on ne continue pas
-        if self.map == None:
+        # Si aucune map n'a été sélectionnée, on annule
+        if self.map == None or self.mapDrawer == None:
             return
 
-        # Met à jour la map choisi
-        gamePlayerList = playerManager.PLAYER_LIST
-        robotsPosition = None
+        # Créé la positions des robots
         if self.scalebarMinSpreadDistance != None:
             minSpreadDistance = int(self.scalebarMinSpreadDistance.get())
-            robotsPosition = mapUtils.generateRandomSpreadRobotPositions(self.map, len(gamePlayerList), minSpreadDistance)
-        else:
-            robotsPosition = self.robotsPosition
+            self.robotsPosition = mapUtils.generateRandomSpreadRobotPositions(self.map, len(playerManager.PLAYER_LIST), minSpreadDistance)
 
-        for i in range(len(gamePlayerList)):
-            player = gamePlayerList[i]
-            position = robotsPosition[i]
+        # Applique la position des robots à la carte
+        for i in range(len(playerManager.PLAYER_LIST)):
+            player = playerManager.PLAYER_LIST[i]
+            position = self.robotsPosition[i]
             self.map.updateRobotPosition(player.getRobotParty(), position)
 
+        # On arrête de déssiner les points d'intérrogation
         self.mapDrawer.stopDrawIPs()
+        self.mapDrawer.clear()
+
         rootManager.runNewFrame(FPParty(self, self.map))
 
 

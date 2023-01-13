@@ -23,8 +23,8 @@ class MI(IInstruction):
 
         super().decreaseRobotEnergy(robot)
 
+        # Position aléatoire de la mine
         minesPosition = []
-
         for i in {-1, 1}:
             if map.isAccessible((robot.get_x() + i, robot.get_y())): minesPosition.append((robot.get_x() + i, robot.get_y()))
             if map.isAccessible((robot.get_x(), robot.get_y() + i)): minesPosition.append((robot.get_x(), robot.get_y() + i))
